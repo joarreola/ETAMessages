@@ -16,6 +16,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     @IBOutlet weak var mapView: MKMapView!
     
     var locationManager = CLLocationManager()
+    
+    var locPacket = Location()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -111,6 +113,10 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         
         // stop location updates
         self.locationManager.stopUpdatingLocation()
+        
+        // stuff Location structure
+        locPacket.setLatitude(latitude: location!.coordinate.latitude)
+        locPacket.setLongitude(longitude: location!.coordinate.longitude)
     }
     
     @nonobjc func locationManager(manager: CLLocationManager!, didFailWithError error: NSError!) {
@@ -121,5 +127,6 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         errorAlert.show(UIViewController(), sender: manager)
         
     }
+    
 
 }

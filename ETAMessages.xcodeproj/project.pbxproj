@@ -15,6 +15,7 @@
 		DFC5DD7F1ED3920900FF8D97 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DFC5DD7E1ED3920900FF8D97 /* Assets.xcassets */; };
 		DFC5DD8C1ED3921800FF8D97 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFC5DD8B1ED3921800FF8D97 /* CloudKit.framework */; };
 		DFC5DD8E1ED3922B00FF8D97 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFC5DD8D1ED3922B00FF8D97 /* MapKit.framework */; };
+		DFC5DD901ED3A30100FF8D97 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC5DD8F1ED3A30100FF8D97 /* Location.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +55,7 @@
 		DFC5DD8A1ED3921300FF8D97 /* MessagesExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MessagesExtension.entitlements; sourceTree = "<group>"; };
 		DFC5DD8B1ED3921800FF8D97 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		DFC5DD8D1ED3922B00FF8D97 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		DFC5DD8F1ED3A30100FF8D97 /* Location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +96,7 @@
 			children = (
 				DFC5DD6A1ED3920900FF8D97 /* Assets.xcassets */,
 				DFC5DD6C1ED3920900FF8D97 /* Info.plist */,
+				DFC5DD8F1ED3A30100FF8D97 /* Location.swift */,
 			);
 			path = ETAMessages;
 			sourceTree = "<group>";
@@ -234,6 +237,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DFC5DD901ED3A30100FF8D97 /* Location.swift in Sources */,
 				DFC5DD7A1ED3920900FF8D97 /* MessagesViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -263,7 +267,7 @@
 		DFC5DD811ED3920900FF8D97 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -314,7 +318,7 @@
 		DFC5DD821ED3920900FF8D97 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
