@@ -13,6 +13,8 @@
 		DFC5DD7A1ED3920900FF8D97 /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC5DD791ED3920900FF8D97 /* MessagesViewController.swift */; };
 		DFC5DD7D1ED3920900FF8D97 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DFC5DD7B1ED3920900FF8D97 /* MainInterface.storyboard */; };
 		DFC5DD7F1ED3920900FF8D97 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DFC5DD7E1ED3920900FF8D97 /* Assets.xcassets */; };
+		DFC5DD8C1ED3921800FF8D97 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFC5DD8B1ED3921800FF8D97 /* CloudKit.framework */; };
+		DFC5DD8E1ED3922B00FF8D97 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFC5DD8D1ED3922B00FF8D97 /* MapKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +51,9 @@
 		DFC5DD7C1ED3920900FF8D97 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		DFC5DD7E1ED3920900FF8D97 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DFC5DD801ED3920900FF8D97 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DFC5DD8A1ED3921300FF8D97 /* MessagesExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MessagesExtension.entitlements; sourceTree = "<group>"; };
+		DFC5DD8B1ED3921800FF8D97 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		DFC5DD8D1ED3922B00FF8D97 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +62,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				DFC5DD771ED3920900FF8D97 /* Messages.framework in Frameworks */,
+				DFC5DD8E1ED3922B00FF8D97 /* MapKit.framework in Frameworks */,
+				DFC5DD8C1ED3921800FF8D97 /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -94,6 +101,8 @@
 		DFC5DD751ED3920900FF8D97 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DFC5DD8D1ED3922B00FF8D97 /* MapKit.framework */,
+				DFC5DD8B1ED3921800FF8D97 /* CloudKit.framework */,
 				DFC5DD761ED3920900FF8D97 /* Messages.framework */,
 			);
 			name = Frameworks;
@@ -102,6 +111,7 @@
 		DFC5DD781ED3920900FF8D97 /* MessagesExtension */ = {
 			isa = PBXGroup;
 			children = (
+				DFC5DD8A1ED3921300FF8D97 /* MessagesExtension.entitlements */,
 				DFC5DD791ED3920900FF8D97 /* MessagesViewController.swift */,
 				DFC5DD7B1ED3920900FF8D97 /* MainInterface.storyboard */,
 				DFC5DD7E1ED3920900FF8D97 /* Assets.xcassets */,
@@ -166,6 +176,17 @@
 						CreatedOnToolsVersion = 8.3.2;
 						DevelopmentTeam = J5W47NE3WW;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Maps.iOS = {
+								enabled = 1;
+							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+							com.apple.iCloud = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -338,6 +359,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
+				CODE_SIGN_ENTITLEMENTS = MessagesExtension/MessagesExtension.entitlements;
 				DEVELOPMENT_TEAM = J5W47NE3WW;
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
@@ -352,6 +374,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
+				CODE_SIGN_ENTITLEMENTS = MessagesExtension/MessagesExtension.entitlements;
 				DEVELOPMENT_TEAM = J5W47NE3WW;
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";

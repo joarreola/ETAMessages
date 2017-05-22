@@ -8,12 +8,16 @@
 
 import UIKit
 import Messages
+import MapKit
 
 class MessagesViewController: MSMessagesAppViewController {
+    
+    @IBOutlet weak var mapView: MKMapView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        print("-- viewDidLoad ------------------------------------------------------")
     }
     
     override func didReceiveMemoryWarning() {
@@ -28,6 +32,7 @@ class MessagesViewController: MSMessagesAppViewController {
         // This will happen when the extension is about to present UI.
         
         // Use this method to configure the extension and restore previously stored state.
+        print("-- willBecomeActive -------------------------------------------------")
     }
     
     override func didResignActive(with conversation: MSConversation) {
@@ -38,6 +43,7 @@ class MessagesViewController: MSMessagesAppViewController {
         // Use this method to release shared resources, save user data, invalidate timers,
         // and store enough state information to restore your extension to its current state
         // in case it is terminated later.
+        print("-- didResignActive ---------------------------------------------------")
     }
    
     override func didReceive(_ message: MSMessage, conversation: MSConversation) {
@@ -45,28 +51,33 @@ class MessagesViewController: MSMessagesAppViewController {
         // extension on a remote device.
         
         // Use this method to trigger UI updates in response to the message.
+        print("-- didReceive -------------------------------------------------------")
     }
     
     override func didStartSending(_ message: MSMessage, conversation: MSConversation) {
         // Called when the user taps the send button.
+        print("-- didStartSending --------------------------------------------------")
     }
     
     override func didCancelSending(_ message: MSMessage, conversation: MSConversation) {
         // Called when the user deletes the message without sending it.
     
         // Use this to clean up state related to the deleted message.
+        print("-- didCancelSending -------------------------------------------------")
     }
     
     override func willTransition(to presentationStyle: MSMessagesAppPresentationStyle) {
         // Called before the extension transitions to a new presentation style.
     
         // Use this method to prepare for the change in presentation style.
+        print("-- willTransition ---------------------------------------------------")
     }
     
     override func didTransition(to presentationStyle: MSMessagesAppPresentationStyle) {
         // Called after the extension transitions to a new presentation style.
     
         // Use this method to finalize any behaviors associated with the change in presentation style.
+        print("-- didTransition ----------------------------------------------------")
     }
 
 }
