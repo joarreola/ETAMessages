@@ -9,15 +9,25 @@
 import UIKit
 import Messages
 import MapKit
+import CoreLocation
 
-class MessagesViewController: MSMessagesAppViewController {
+class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CLLocationManagerDelegate {
     
     @IBOutlet weak var mapView: MKMapView!
     
+    var locationManager = CLLocationManager()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         print("-- viewDidLoad ------------------------------------------------------")
+        
+        self.locationManager.delegate = self
+        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        self.locationManager.requestWhenInUseAuthorization()
+        self.locationManager.startUpdatingLocation()
+        self.mapView.showsUserLocation = true
+        self.mapView.delegate = self
     }
     
     override func didReceiveMemoryWarning() {
@@ -78,6 +88,37 @@ class MessagesViewController: MSMessagesAppViewController {
     
         // Use this method to finalize any behaviors associated with the change in presentation style.
         print("-- didTransition ----------------------------------------------------")
+    }
+    
+    func locationManager(_ manager: CLLocationManager,
+                         didUpdateLocations locations: [CLLocation]) {
+        let location = locations.last
+        
+        let center = CLLocationCoordinate2D(latitude: location!.coordinate.latitude,
+                                            longitude: location!.coordinate.longitude)
+        
+        let span: MKCoordinateSpan = MKCoordinateSpan(latitudeDelta: 0.1,
+                                                      longitudeDelta: 0.1)
+        
+        let region = MKCoordinateRegion(center: center, span: span)
+        
+        
+        print("-- locationManager -- location: '\(location!)'")
+        
+        // refresh mapView
+        self.mapView.setRegion(region, animated: true)
+        
+        // stop location updates
+        self.locationManager.stopUpdatingLocation()
+    }
+    
+    @nonobjc func locationManager(manager: CLLocationManager!, didFailWithError error: NSError!) {
+        print("didFailWithError: \(error.description)")
+        let alert: UIAlertControllerStyle = UIAlertControllerStyle.alert
+        let errorAlert = UIAlertController(title: "Error", message: "Failed to Get Your Location",
+                                           preferredStyle: alert)
+        errorAlert.show(UIViewController(), sender: manager)
+        
     }
 
 }
