@@ -19,6 +19,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     
     var locPacket = Location()
 
+    @IBOutlet weak var display: UILabel!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -128,5 +130,19 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         
     }
     
+    @IBAction func enable(_ sender: UIBarButtonItem) {
+        
+        // display locPacket
+        display.text = ""
+        display.text =
+        "lat:     \(locPacket.latitude)      " +
+        "long:    \(locPacket.longitude)"
+    }
+    
+    @IBAction func disable(_ sender: UIBarButtonItem) {
+        
+        // clear display
+        display.text = ""
+    }
 
 }

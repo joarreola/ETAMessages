@@ -30,9 +30,17 @@
                                 <items>
                                     <barButtonItem title="Food" id="Qsi-aJ-bGj"/>
                                     <barButtonItem systemItem="flexibleSpace" id="v6r-8Z-AQH"/>
-                                    <barButtonItem title="Enable" id="EwD-F4-1N3"/>
+                                    <barButtonItem title="Enable" id="EwD-F4-1N3">
+                                        <connections>
+                                            <action selector="enable:" destination="ObA-dk-sSI" id="bWN-h4-3LQ"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem systemItem="flexibleSpace" id="HOE-Wq-ed6"/>
-                                    <barButtonItem title="Disable" id="x9H-nz-ezd"/>
+                                    <barButtonItem title="Disable" id="x9H-nz-ezd">
+                                        <connections>
+                                            <action selector="disable:" destination="ObA-dk-sSI" id="0CK-Sq-KH7"/>
+                                        </connections>
+                                    </barButtonItem>
                                 </items>
                             </toolbar>
                             <label opaque="NO" userInteractionEnabled="NO" alpha="0.69999999999999996" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1lU-nL-d0j">
@@ -64,6 +72,7 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="320" height="528"/>
                     <connections>
+                        <outlet property="display" destination="1lU-nL-d0j" id="duo-6h-GgI"/>
                         <outlet property="mapView" destination="1E5-RL-iKt" id="kRj-RT-Sb0"/>
                     </connections>
                 </viewController>
