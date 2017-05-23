@@ -20,6 +20,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     var locPacket = Location()
 
     @IBOutlet weak var display: UILabel!
+    
+    var cloud = Cloud(localUser: "Oscar-iphone")
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -96,7 +98,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     
     func locationManager(_ manager: CLLocationManager,
                          didUpdateLocations locations: [CLLocation]) {
-
+        // Called by CLLocation framework on device location changes
+        
         let location = locations.last
         
         let center = CLLocationCoordinate2D(latitude: location!.coordinate.latitude,
@@ -131,18 +134,59 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     }
     
     @IBAction func enable(_ sender: UIBarButtonItem) {
-        
+        // Entry point to start uploading the current location to iCloud repository
+        print("\n===============================================================\n")
+        print("@IBAction func enable()\n")
+        print("\n===============================================================\n")
+
+        // vars
+        let latitude: CLLocationDegrees
+        let longitude: CLLocationDegrees
+
         // display locPacket
         display.text = ""
         display.text =
-        "lat:     \(locPacket.latitude)      " +
-        "long:    \(locPacket.longitude)"
+        "local: (\(locPacket.latitude),\n         \(locPacket.longitude))"
+        
+        // Upload locPacket to Cloud repository
+        // Hardcode localuser for now
+        let cloudRet = cloud.upload(packet: locPacket)
+        if (cloudRet == nil) {
+            print("\n===============================================================\n")
+            print("-- enable -- cloud.upload(locPacket) returned nil. Exiting enable\n")
+            print("\n===============================================================\n")
+            
+            return
+        }
+        
+        // recheck
+        let fetchRet = cloud.fetchRecord()
+        if (fetchRet.latitude == nil) {
+            print("\n===============================================================\n")
+            print("-- enable -- cloud.fetchRecord() returned nil: Exiting enable")
+            print("\n===============================================================\n")
+            
+            return
+        }
+        
+        (latitude, longitude) = fetchRet as! (CLLocationDegrees, CLLocationDegrees)
+        print("-- enable -- latitude: \(latitude)")
+        print("-- enable -- longitude: \(longitude)")
+
+        print("-- enable -- Cloud(locPacket)\n")
     }
     
     @IBAction func disable(_ sender: UIBarButtonItem) {
-        
+        // Remove location record from iCloud repository.
+        print("\n===============================================================\n")
+        print("@IBAction func disable()\n")
+        print("\n===============================================================\n")
+
         // clear display
         display.text = ""
+        
+        cloud.deleteRecord()
+        
     }
 
 }
