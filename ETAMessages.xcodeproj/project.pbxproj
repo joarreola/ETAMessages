@@ -18,6 +18,7 @@
 		DFC5DD901ED3A30100FF8D97 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC5DD8F1ED3A30100FF8D97 /* Location.swift */; };
 		DFC5DD921ED3AEC700FF8D97 /* Cloud.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC5DD911ED3AEC700FF8D97 /* Cloud.swift */; };
 		DFC5DD941ED3D7C500FF8D97 /* Poll.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC5DD931ED3D7C500FF8D97 /* Poll.swift */; };
+		DFD07B801ED4A94700C559BF /* MapUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFD07B7F1ED4A94700C559BF /* MapUpdate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +61,7 @@
 		DFC5DD8F1ED3A30100FF8D97 /* Location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		DFC5DD911ED3AEC700FF8D97 /* Cloud.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cloud.swift; sourceTree = "<group>"; };
 		DFC5DD931ED3D7C500FF8D97 /* Poll.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Poll.swift; sourceTree = "<group>"; };
+		DFD07B7F1ED4A94700C559BF /* MapUpdate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapUpdate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +127,7 @@
 				DFC5DD801ED3920900FF8D97 /* Info.plist */,
 				DFC5DD911ED3AEC700FF8D97 /* Cloud.swift */,
 				DFC5DD931ED3D7C500FF8D97 /* Poll.swift */,
+				DFD07B7F1ED4A94700C559BF /* MapUpdate.swift */,
 			);
 			path = MessagesExtension;
 			sourceTree = "<group>";
@@ -247,6 +250,7 @@
 				DFC5DD901ED3A30100FF8D97 /* Location.swift in Sources */,
 				DFC5DD921ED3AEC700FF8D97 /* Cloud.swift in Sources */,
 				DFC5DD7A1ED3920900FF8D97 /* MessagesViewController.swift in Sources */,
+				DFD07B801ED4A94700C559BF /* MapUpdate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -442,6 +446,7 @@
 				DFC5DD851ED3920900FF8D97 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		DFC5DD871ED3920900FF8D97 /* Build configuration list for PBXNativeTarget "ETAMessages" */ = {
 			isa = XCConfigurationList;
@@ -450,6 +455,7 @@
 				DFC5DD891ED3920900FF8D97 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

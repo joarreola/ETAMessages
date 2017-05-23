@@ -24,6 +24,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     var cloud = Cloud(localUser: "Oscar-ipad")
     
     var poll = Poll(remoteUser: "Oscar-iphone")
+    
+    var mapUpdate = MapUpdate()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -138,6 +140,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     
     @IBAction func enable(_ sender: UIBarButtonItem) {
         // Entry point to start uploading the current location to iCloud repository
+
         print("\n===============================================================\n")
         print("@IBAction func enable()\n")
         print("\n===============================================================\n")
@@ -183,6 +186,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     
     @IBAction func poll(_ sender: UIBarButtonItem) {
         // check for remoteUser record
+
         print("\n===============================================================\n")
         print("@IBAction func poll()")
         print("\n===============================================================\n")
@@ -218,12 +222,16 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         "local:    ( \(locPacket.latitude),\n            \(locPacket.longitude) )\n" +
         "remote: ( \(locPacket.remoteLatitude),\n             \(locPacket.remoteLongitude) )"
 
+        // add pin on mapView for remoteUser, re-center mapView, update span
+        mapUpdate.addPin(packet: locPacket, mapView: mapView)
+        
         print("-- poll -- poll()\n")
         
     }
 
     @IBAction func disable(_ sender: UIBarButtonItem) {
         // Remove location record from iCloud repository.
+
         print("\n===============================================================\n")
         print("@IBAction func disable()\n")
         print("\n===============================================================\n")

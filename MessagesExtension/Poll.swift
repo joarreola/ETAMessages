@@ -56,8 +56,10 @@ class Poll {
             } else {
                 self.latitude = record?["latitude"] as? CLLocationDegrees
                 self.longitude = record?["longitude"] as? CLLocationDegrees
-                print("-- Poll -- fetchRemote -- closure -- latitude: \(String(describing: self.latitude))")
-                print("-- Poll -- fetchRemote -- closure -- longitude: \(String(describing: self.longitude))")
+                print("-- Poll -- fetchRemote -- closure -- latitude:" +
+                    " \(String(describing: self.latitude))")
+                print("-- Poll -- fetchRemote -- closure -- longitude:" +
+                    " \(String(describing: self.longitude))")
 
                 self.remoteFound = true
                 

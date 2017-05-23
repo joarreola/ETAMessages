@@ -167,7 +167,7 @@ class Cloud {
     }
     
     func deleteRecord() {
-        // deletee a record
+        // delete a record
         
         print("-- Cloud -- deleteRecord\n")
         
@@ -184,7 +184,6 @@ class Cloud {
                 
                 return
             }
-            // Insert successfully delete record code
             print("-- Cloud -- deleteRecord -- Record deleted: \(self.locationRecordID)")
             
             sem.signal()
