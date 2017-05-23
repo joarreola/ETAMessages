@@ -26,6 +26,9 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     var poll = Poll(remoteUser: "Oscar-iphone")
     
     var mapUpdate = MapUpdate()
+    
+    var eta: Int? = 0
+    var distance: Double = 0.0
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -152,7 +155,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         // display locPacket
         display.text = ""
         display.text =
-        "local: ( \(locPacket.latitude),\n          \(locPacket.longitude) )"
+        "local: \t( \(locPacket.latitude),\n \t\t\(locPacket.longitude) )"
         
         // Upload locPacket to Cloud repository
         // Hardcode localuser for now
@@ -161,6 +164,12 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
             print("\n===============================================================\n")
             print("-- enable -- cloud.upload(locPacket) returned nil. Exiting enable\n")
             print("\n===============================================================\n")
+            
+            // display locPacket
+            display.text = ""
+            display.text =
+            "local: \t( \(locPacket.latitude),\n \t\t\(locPacket.longitude) )\n" +
+            "- upload to cloud failed"
             
             return
         }
@@ -172,6 +181,12 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
             print("\n===============================================================\n")
             print("-- enable -- cloud.fetchRecord() returned nil: Exiting enable")
             print("\n===============================================================\n")
+            
+            // display locPacket
+            display.text = ""
+            display.text =
+                "local: \t( \(locPacket.latitude),\n \t\(locPacket.longitude) )\n" +
+                "- fetch after upload to cloud failed"
             
             return
         }
@@ -198,6 +213,13 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         print("\n===============================================================\n")
         print("-- poll --  check for remote location record...")
         print("\n===============================================================\n")
+        
+        // display locPacket
+        display.text = ""
+        display.text =
+        "local: \t( \(locPacket.latitude),\n \t\t\(locPacket.longitude) )\n" +
+        "polling for remote user..."
+        
         let pollRet = poll.fetchRemote()
         
         if (pollRet.latitude == nil) {
@@ -219,12 +241,37 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         // display locPacket
         display.text = ""
         display.text =
-        "local:    ( \(locPacket.latitude),\n            \(locPacket.longitude) )\n" +
-        "remote: ( \(locPacket.remoteLatitude),\n             \(locPacket.remoteLongitude) )"
+        "local: \t\t( \(locPacket.latitude),\n \t\t\t\(locPacket.longitude) )\n" +
+        "remote: \t( \(locPacket.remoteLatitude),\n \t\t\t\(locPacket.remoteLongitude) )"
 
         // add pin on mapView for remoteUser, re-center mapView, update span
-        mapUpdate.addPin(packet: locPacket, mapView: mapView)
+        let pointAnnotation: MKPointAnnotation = mapUpdate.addPin(packet: locPacket, mapView: mapView)
         mapUpdate.centerView(packet: locPacket, mapView: mapView)
+
+        (self.eta, self.distance) = mapUpdate.getEtaDistance(packet: locPacket, mapView: mapView,
+                                                    pointAnnotation: pointAnnotation)
+        
+        if (self.eta == nil) {
+            print("\n===============================================================\n")
+            print("-- enable -- mapUpdate.getEtaDistance() returned nil. Exiting enable\n")
+            print("\n===============================================================\n")
+            
+            // display locPacket
+            display.text = ""
+            display.text =
+                "local: \t\t( \(locPacket.latitude),\n \t\t\t\(locPacket.longitude) )\n" +
+                "remote: \t( \(locPacket.remoteLatitude),\n \t\t\t\(locPacket.remoteLongitude) )\n" +
+                "- getEtaDistance failed"
+            
+            return
+        }
+
+        // display locPacket
+        display.text = ""
+        display.text =
+            "local: \t\t( \(locPacket.latitude),\n \t\t\t\(locPacket.longitude) )\n" +
+            "remote: \t( \(locPacket.remoteLatitude),\n \t\t\t\(locPacket.remoteLongitude) )\n" +
+            "eta: \(String(describing: self.eta!)) \t\tdistance: \(String(describing: self.distance))"
         
         print("-- poll -- end\n")
         
