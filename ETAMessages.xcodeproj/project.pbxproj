@@ -17,6 +17,7 @@
 		DFC5DD8E1ED3922B00FF8D97 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFC5DD8D1ED3922B00FF8D97 /* MapKit.framework */; };
 		DFC5DD901ED3A30100FF8D97 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC5DD8F1ED3A30100FF8D97 /* Location.swift */; };
 		DFC5DD921ED3AEC700FF8D97 /* Cloud.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC5DD911ED3AEC700FF8D97 /* Cloud.swift */; };
+		DFC5DD941ED3D7C500FF8D97 /* Poll.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC5DD931ED3D7C500FF8D97 /* Poll.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +59,7 @@
 		DFC5DD8D1ED3922B00FF8D97 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		DFC5DD8F1ED3A30100FF8D97 /* Location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		DFC5DD911ED3AEC700FF8D97 /* Cloud.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cloud.swift; sourceTree = "<group>"; };
+		DFC5DD931ED3D7C500FF8D97 /* Poll.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Poll.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +124,7 @@
 				DFC5DD7E1ED3920900FF8D97 /* Assets.xcassets */,
 				DFC5DD801ED3920900FF8D97 /* Info.plist */,
 				DFC5DD911ED3AEC700FF8D97 /* Cloud.swift */,
+				DFC5DD931ED3D7C500FF8D97 /* Poll.swift */,
 			);
 			path = MessagesExtension;
 			sourceTree = "<group>";
@@ -240,6 +243,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DFC5DD941ED3D7C500FF8D97 /* Poll.swift in Sources */,
 				DFC5DD901ED3A30100FF8D97 /* Location.swift in Sources */,
 				DFC5DD921ED3AEC700FF8D97 /* Cloud.swift in Sources */,
 				DFC5DD7A1ED3920900FF8D97 /* MessagesViewController.swift in Sources */,

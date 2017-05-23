@@ -16,8 +16,8 @@ class Cloud {
     private var recordSaved: Bool = false
     private var recordFound: Bool = false
     private let localUser: String
-    var latitude: CLLocationDegrees?
-    var longitude: CLLocationDegrees?
+    private var latitude: CLLocationDegrees?
+    private var longitude: CLLocationDegrees?
     
     
     init(localUser: String) {
@@ -32,8 +32,8 @@ class Cloud {
         print("-- Cloud -- init -- locationRecord: \(locationRecord)")
     
         // private container
-        self.myContainer = CKContainer(identifier: "iCloud.edu.ucsc.ETAMessages.MessagesExtention")
-        print("-- Cloud -- init -- myContainer: iCloud.edu.ucsc.ETAMessages.MessagesExtention")
+        self.myContainer = CKContainer(identifier: "iCloud.edu.ucsc.ETAMessages")
+        print("-- Cloud -- init -- myContainer: iCloud.edu.ucsc.ETAMessages")
 
     }
     
@@ -46,10 +46,10 @@ class Cloud {
         locationRecord["latitude"]  = packet.latitude as CKRecordValue
         locationRecord["longitude"] = packet.longitude as CKRecordValue
         
-        // start semaphore block to synchronize completion handles
+        // start semaphore block to synchronize completion handler
         let sem = DispatchSemaphore(value: 0)
 
-        myContainer.privateCloudDatabase.fetch(withRecordID: self.locationRecordID) {
+        self.myContainer.privateCloudDatabase.fetch(withRecordID: self.locationRecordID) {
             (record, error) in
             if let error = error {
                 // Insert error handling
@@ -95,12 +95,12 @@ class Cloud {
     func fetchRecord() -> (latitude: CLLocationDegrees?, longitude: CLLocationDegrees?) {
         // fetch a record
         
-        print("-- Cloud -- fetchRecord -- CKContainer: iCloud.edu.ucsc.ETAMessages.MessagesExtention")
+        print("-- Cloud -- fetchRecord -- CKContainer: iCloud.edu.ucsc.ETAMessages")
     
-        // start semaphore block to synchronize completion handles
+        // start semaphore block to synchronize completion handler
         let sem = DispatchSemaphore(value: 0)
         
-        myContainer.privateCloudDatabase.fetch(withRecordID: locationRecordID) {
+        self.myContainer.privateCloudDatabase.fetch(withRecordID: self.locationRecordID) {
             (record, error) in
             if let error = error {
                 // Insert error handling
@@ -137,12 +137,12 @@ class Cloud {
     func saveRecord() {
         // save a record
         
-        print("-- Cloud -- saveRecord -- CKContainer: iCloud.edu.ucsc.ETAMessages.MessagesExtention")
+        print("-- Cloud -- saveRecord\n")
         
-        // start semaphore block to synchronize completion handles
+        // start semaphore block to synchronize completion handler
         let sem = DispatchSemaphore(value: 0)
         
-        myContainer.privateCloudDatabase.save(locationRecord) {
+        self.myContainer.privateCloudDatabase.save(locationRecord) {
             (record, error) in
             if let error = error {
                 // Insert error handling
@@ -169,12 +169,12 @@ class Cloud {
     func deleteRecord() {
         // deletee a record
         
-        print("-- Cloud -- deleteRecord -- CKContainer: iCloud.edu.ucsc.ETAMessages.MessagesExtention")
+        print("-- Cloud -- deleteRecord\n")
         
-        // start semaphore block to synchronize completion handles
+        // start semaphore block to synchronize completion handler
         let sem = DispatchSemaphore(value: 0)
         
-        myContainer.privateCloudDatabase.delete(withRecordID: locationRecordID) {
+        self.myContainer.privateCloudDatabase.delete(withRecordID: self.locationRecordID) {
             (record, error) in
             if let error = error {
                 // Insert error handling

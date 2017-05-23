@@ -21,7 +21,9 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
     @IBOutlet weak var display: UILabel!
     
-    var cloud = Cloud(localUser: "Oscar-iphone")
+    var cloud = Cloud(localUser: "Oscar-ipad")
+    
+    var poll = Poll(remoteUser: "Oscar-iphone")
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,6 +51,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         
         // Use this method to configure the extension and restore previously stored state.
         print("-- willBecomeActive -------------------------------------------------")
+        display.text = ""
     }
     
     override func didResignActive(with conversation: MSConversation) {
@@ -146,7 +149,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         // display locPacket
         display.text = ""
         display.text =
-        "local: (\(locPacket.latitude),\n         \(locPacket.longitude))"
+        "local: ( \(locPacket.latitude),\n          \(locPacket.longitude) )"
         
         // Upload locPacket to Cloud repository
         // Hardcode localuser for now
@@ -161,6 +164,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         
         // recheck
         let fetchRet = cloud.fetchRecord()
+
         if (fetchRet.latitude == nil) {
             print("\n===============================================================\n")
             print("-- enable -- cloud.fetchRecord() returned nil: Exiting enable")
@@ -174,8 +178,50 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         print("-- enable -- longitude: \(longitude)")
 
         print("-- enable -- Cloud(locPacket)\n")
+    
     }
     
+    @IBAction func poll(_ sender: UIBarButtonItem) {
+        // check for remoteUser record
+        print("\n===============================================================\n")
+        print("@IBAction func poll()")
+        print("\n===============================================================\n")
+        
+        // vars
+        let latitude: CLLocationDegrees
+        let longitude: CLLocationDegrees
+
+        print("\n===============================================================\n")
+        print("-- poll --  check for remote location record...")
+        print("\n===============================================================\n")
+        let pollRet = poll.fetchRemote()
+        
+        if (pollRet.latitude == nil) {
+            print("\n===============================================================\n")
+            print("-- enable -- poll.fetchRemote() returned nil. Exiting enable\n")
+            print("\n===============================================================\n")
+            
+            return
+        }
+        
+        (latitude, longitude) = pollRet as! (CLLocationDegrees, CLLocationDegrees)
+        print("-- poll -- remote latitude: \(latitude)")
+        print("-- poll -- remote longitude: \(longitude)")
+        
+        // stuff Location structure
+        locPacket.setRemoteLatitude(latitude: latitude)
+        locPacket.setRemoteLongitude(longitude: longitude)
+        
+        // display locPacket
+        display.text = ""
+        display.text =
+        "local:    ( \(locPacket.latitude),\n            \(locPacket.longitude) )\n" +
+        "remote: ( \(locPacket.remoteLatitude),\n             \(locPacket.remoteLongitude) )"
+
+        print("-- poll -- poll()\n")
+        
+    }
+
     @IBAction func disable(_ sender: UIBarButtonItem) {
         // Remove location record from iCloud repository.
         print("\n===============================================================\n")
