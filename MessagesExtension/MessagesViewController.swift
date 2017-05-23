@@ -180,7 +180,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         print("-- enable -- latitude: \(latitude)")
         print("-- enable -- longitude: \(longitude)")
 
-        print("-- enable -- Cloud(locPacket)\n")
+        print("-- enable -- end\n")
     
     }
     
@@ -224,8 +224,9 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
         // add pin on mapView for remoteUser, re-center mapView, update span
         mapUpdate.addPin(packet: locPacket, mapView: mapView)
+        mapUpdate.centerView(packet: locPacket, mapView: mapView)
         
-        print("-- poll -- poll()\n")
+        print("-- poll -- end\n")
         
     }
 
