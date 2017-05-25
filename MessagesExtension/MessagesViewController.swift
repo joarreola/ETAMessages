@@ -11,6 +11,7 @@ import Messages
 import MapKit
 import CoreLocation
 
+
 class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CLLocationManagerDelegate {
     
     @IBOutlet weak var mapView: MKMapView!
@@ -20,14 +21,14 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     var locPacket = Location()
 
     @IBOutlet weak var display: UILabel!
-    
+    // hardcoding for now
     var cloud = Cloud(localUser: "Oscar-ipad")
-    
+    // hardcoding for now
     var poll = Poll(remoteUser: "Oscar-iphone")
     
     var mapUpdate = MapUpdate()
     
-    var eta: Int? = 0
+    var eta: TimeInterval? = nil
     var distance: Double = 0.0
 
     override func viewDidLoad() {
@@ -140,7 +141,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         errorAlert.show(UIViewController(), sender: manager)
         
     }
-    
+
+
     @IBAction func enable(_ sender: UIBarButtonItem) {
         // Entry point to start uploading the current location to iCloud repository
 
@@ -209,6 +211,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         // vars
         let latitude: CLLocationDegrees
         let longitude: CLLocationDegrees
+        var pointAnnotation: MKPointAnnotation
 
         print("\n===============================================================\n")
         print("-- poll --  check for remote location record...")
@@ -245,12 +248,18 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         "remote: \t( \(locPacket.remoteLatitude),\n \t\t\t\(locPacket.remoteLongitude) )"
 
         // add pin on mapView for remoteUser, re-center mapView, update span
-        let pointAnnotation: MKPointAnnotation = mapUpdate.addPin(packet: locPacket, mapView: mapView)
-        mapUpdate.centerView(packet: locPacket, mapView: mapView)
+        pointAnnotation = mapUpdate.addPin(packet: locPacket, mapView: mapView)
 
-        (self.eta, self.distance) = mapUpdate.getEtaDistance(packet: locPacket, mapView: mapView,
-                                                    pointAnnotation: pointAnnotation)
-        
+        print("\n===============================================================\n")
+        print("-- poll --  Center and re-span mapView...")
+        print("\n===============================================================\n")
+    
+        // get ETA and distance
+        let center: CLLocationCoordinate2D = mapUpdate.centerView(packet: locPacket,
+                                                                  mapView: mapView)
+        (eta, distance) = mapUpdate.getEtaDistance (packet: locPacket, mapView: mapView,
+                                  pointAnnotation: pointAnnotation, center: center)
+
         if (self.eta == nil) {
             print("\n===============================================================\n")
             print("-- enable -- mapUpdate.getEtaDistance() returned nil. Exiting enable\n")
@@ -266,16 +275,18 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
             return
         }
 
+
         // display locPacket
         display.text = ""
         display.text =
             "local: \t\t( \(locPacket.latitude),\n \t\t\t\(locPacket.longitude) )\n" +
             "remote: \t( \(locPacket.remoteLatitude),\n \t\t\t\(locPacket.remoteLongitude) )\n" +
-            "eta: \(String(describing: self.eta!)) \t\tdistance: \(String(describing: self.distance))"
+            "eta: \(String(describing: self.eta)) \t\tdistance: \(String(describing: self.distance))"
         
         print("-- poll -- end\n")
-        
+
     }
+  
 
     @IBAction func disable(_ sender: UIBarButtonItem) {
         // Remove location record from iCloud repository.
@@ -290,5 +301,6 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         cloud.deleteRecord()
         
     }
+
 
 }

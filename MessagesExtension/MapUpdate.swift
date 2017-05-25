@@ -7,10 +7,12 @@
 //
 
 import Foundation
+import Messages
 import MapKit
 import CoreLocation
 import CloudKit
 
+//class MapUpdate: MessagesViewController {
 class MapUpdate {
     private var locLatitude: CLLocationDegrees = 0.0
     private var locLongitude: CLLocationDegrees = 0.0
@@ -20,9 +22,9 @@ class MapUpdate {
     private var lngDistTo: Double = 0.0
     private var centerLatitude: CLLocationDegrees = 0.0
     private var centerLongitude: CLLocationDegrees = 0.0
-    private var eta: Int? = 0
-    private var distance: Double = 0.0
-
+    public var eta: TimeInterval? = nil
+    public var distance: Double = 0.0
+    
     func showRemote (packet: Location, mapView: MKMapView) {
         
     }
@@ -46,7 +48,7 @@ class MapUpdate {
         return pointAnnotation
     }
 
-    func centerView (packet: Location, mapView: MKMapView) {
+    func centerView (packet: Location, mapView: MKMapView) -> CLLocationCoordinate2D {
         print("-- MapUpdate -- centerView: center mapView between local and remote users")
     
         let lLat  = packet.latitude
@@ -65,86 +67,121 @@ class MapUpdate {
             (centerLongitude = lLong + lngDistTo)
         
         // re-center
-        let center = CLLocationCoordinate2D(latitude: centerLatitude,
+        let center: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: centerLatitude,
                                             longitude: centerLongitude)
         
         mapView.setCenter(center, animated: true)
+    
+        return center
         
     }
-    
-    func getEtaDistance (packet: Location, mapView: MKMapView, pointAnnotation: MKPointAnnotation) ->
-        (eta: Int?, distance: Double) {
-        print("-- MapUpdate -- getEtaDistance: get eta from local to remote device," +
-            " and travel distance between devices")
-        
-        // compose source MKMapItem
-        var source: MKMapItem = MKMapItem()
-        source = MKMapItem.forCurrentLocation()
-        
-        // compose destination MKMapItem
-        let destinationPlacemark = MKPlacemark(coordinate: pointAnnotation.coordinate)
-        let destination: MKMapItem = MKMapItem(placemark: destinationPlacemark)
 
+    func getEtaDistance (packet: Location, mapView: MKMapView, pointAnnotation: MKPointAnnotation,
+                         center: CLLocationCoordinate2D) ->
+            (eta: TimeInterval?, distance: Double) {
+
+        print("-- MapUpdate -- getEtaDistance: get eta from local to remote device," +
+                    " and travel distance between devices")
+    
         // compose a request
         let mkDirReq: MKDirectionsRequest = MKDirectionsRequest()
-        mkDirReq.source = source
-        mkDirReq.destination = destination
-        print("------------------------------------------------------------------------")
-        print(mkDirReq.source)
-        print("------------------------------------------------------------------------")
-        print( mkDirReq.destination)
-        print("------------------------------------------------------------------------")
         
-        // ask for directions
-        let mkDirections: MKDirections = MKDirections(request: mkDirReq)
+        // source
+        mkDirReq.source = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: packet.latitude, longitude: packet.longitude), addressDictionary: nil))
+        
+        // destination
+        mkDirReq.destination = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: packet.remoteLatitude, longitude: packet.remoteLongitude), addressDictionary: nil))
+        
+        mkDirReq.requestsAlternateRoutes = false
+        //request.transportType = .car
+        mkDirReq.transportType = .walking
+        
+        let mkDirections = MKDirections(request: mkDirReq)
 
         // start semaphore block to synchronize completion handler
-        let sem = DispatchSemaphore(value: 0)
+        //let sem = DispatchSemaphore(value: 0)
         
-        print("pre -- mkDirections.calculateETA()")
-        mkDirections.calculateETA() {
-            (response, error) in
-            if let error = error {
-                // Insert error handling
-                print("-- MapUpdate -- getEtaDistance -- Error: \(error)")
+        print("-- MapUpdate -- pre --- mkDirections.calculate()")
+        mkDirections.calculate { [unowned self] response, error in
+            // can't get self.eta nor self.distance out of the closure
+            guard let unwrappedResponse = response else {
+                
+                print("-- MapUpdate -- mkDirections.calculate -- Error: \(String(describing: error))")
+                //sem.signal()
                 
                 self.eta = nil
 
-                sem.signal()
-                
-                return
-
-            } else {
-                print("-- MapUpdate -- getEtaDistance -- response:" +
-                    " \(String(describing: response)))")
-                
-                self.eta = Int((response?.expectedTravelTime)! / 60)
-                
-                print("-- MapUpdate -- getEtaDistance -- eta:" +
-                    " \(String(describing: self.eta))) min")
-                
-                // scale per eta and travel method: car, walk
-                self.distance = ((response?.distance)! * 3.2808) / 5280
-
-                print("-- MapUpdate -- getEtaDistance -- distance:" +
-                    " \(String(describing: self.distance))) miles")
-                
-                sem.signal()
-                
                 return
             }
-        }
-        // got here after sem.signal()
-        let semResult: DispatchTimeoutResult = sem.wait(timeout: DispatchTime.init(uptimeNanoseconds: 1000000000000))
-
-        print("semResult: \(semResult)")
-        if (semResult == DispatchTimeoutResult.timedOut) {
-                self.eta = nil
-        }
-        return (self.eta, self.distance)
-        
-    }
+            
+            for route in unwrappedResponse.routes {
+                mapView.add(route.polyline)
+                mapView.setVisibleMapRect(route.polyline.boundingMapRect, animated: true)
+                print("-- MapUpdate -- mkDirections.calculate -- closure -- Distance: \(route.distance/1000) meters")
+                print("-- MapUpdate -- mkDirections.calculate -- closure -- ETA: \(route.expectedTravelTime/60) min")
+                self.eta = route.distance * 3.2808
+                self.distance = route.expectedTravelTime
+                print("-- MapUpdate -- mkDirections.calculate -- closure -- Distance: \(self.distance) feet")
+                print("-- MapUpdate -- mkDirections.calculate -- closure -- ETA: \(String(describing: self.eta)) sec")
+                
+                for step in route.steps {
+                    print(step.instructions)
+                }
+                
+                // compute a delta to reset the span
+                let delta: Float
+                switch self.distance {
+                    
+                case 0..<100:
+                    
+                    delta = 0.0001
+                    
+                case 100..<500:
+                    
+                    delta = 0.005
+                
+                case 500..<1000:
+                    
+                    delta = 0.001
+                    
+                case 1000..<1500:
+                    
+                    delta = 0.05
     
+                case 1500..<2000:
+                    
+                    delta = 0.01
+                    
+                case 2000..<5000:
+                    
+                    delta = 0.5
+        
+                case 5000..<100000:
+                    
+                    delta = 0.1
+                    
+                default:
+                    
+                    delta = 0.1
+                }
+                print("delta: \(delta)")
+                
+                let span: MKCoordinateSpan = MKCoordinateSpan(latitudeDelta: CLLocationDegrees(delta),
+                                                              longitudeDelta: CLLocationDegrees(delta))
+                let region = MKCoordinateRegion(center: center, span: span)
+                mapView.setRegion(region, animated: true)
+
+            }
+        
+        }
+        print("-- MapUpdate mkDirections.calculate -- Post closure")
+        print("self.eta: \(String(describing: self.eta))")
+        print("self.distance: \(self.distance)")
+
+        return (self.eta, self.distance)
+
+    }
+
     func snapView (packet: Location, mapView: MKMapView) {
         
     }
