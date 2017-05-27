@@ -14,14 +14,14 @@ struct Location {
     var longitude: CLLocationDegrees
     var remoteLatitude: CLLocationDegrees
     var remoteLongitude: CLLocationDegrees
-    
+
     init() {
         self.latitude = 0.0
         self.longitude = 0.0
         self.remoteLatitude = 0.0
         self.remoteLongitude = 0.0
     }
-    
+
     mutating func setLatitude(latitude: CLLocationDegrees) {
         self.latitude = latitude
     }

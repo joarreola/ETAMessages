@@ -33,8 +33,7 @@ class MapUpdate {
         
     }
 
-    func addPin (packet: Location, mapView: MKMapView)
-        -> MKPointAnnotation {
+    func addPin (packet: Location, mapView: MKMapView) -> MKPointAnnotation {
     
         print("-- MapUpdate -- addPin: add pin for remoteUser")
     
@@ -93,8 +92,7 @@ class MapUpdate {
         
     }
 
-    func getEtaDistance (packet: Location, mapView: MKMapView, center: CLLocationCoordinate2D)
-        -> (eta: TimeInterval?, distance: Double) {
+    func getEtaDistance (packet: Location, mapView: MKMapView, display: UILabel) -> (eta: TimeInterval?, distance: Double) {
 
         print("-- MapUpdate -- getEtaDistance: get eta from local to remote device," +
                     " and travel distance between devices")
@@ -212,6 +210,14 @@ class MapUpdate {
                 print("-- MapUpdate -- mkDirections.calculate -- closure -- re-span mapView...")
                 
                 mapView.setRegion(region, animated: true)
+                
+                // display locPacket
+                display.text = ""
+                display.text =
+                    "local:\t( \(packet.latitude),\n\t\t\(packet.longitude) )\n" +
+                    "remote:\t( \(packet.remoteLatitude),\n\t\t\(packet.remoteLongitude) )\n" +
+                "eta: \(String(describing: self.eta)) sec   \tdistance: \(String(describing: self.distance)) ft"
+    
             // MARK:-
             }
             

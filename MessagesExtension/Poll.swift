@@ -8,6 +8,7 @@
 
 import Foundation
 import CloudKit
+import MapKit
 
 class Poll {
     private var latitude: CLLocationDegrees?
@@ -17,6 +18,7 @@ class Poll {
     private let locationRecordID: CKRecordID
     private let locationRecord: CKRecord
     private let myContainer: CKContainer
+    private var myPacket: Location
     
     init(remoteUser: String) {
         self.latitude = 0.0
@@ -33,6 +35,9 @@ class Poll {
         // private container
         self.myContainer = CKContainer(identifier: "iCloud.edu.ucsc.ETAMessages")
         print("-- Poll -- init -- set CKContainer: iCloud.edu.ucsc.ETAMessages")
+        
+        myPacket = Location()
+        
     }
     
     func fetchRemote() -> (latitude: CLLocationDegrees?, longitude: CLLocationDegrees?) {
@@ -55,10 +60,10 @@ class Poll {
             } else {
                 self.latitude = record?["latitude"] as? CLLocationDegrees
                 self.longitude = record?["longitude"] as? CLLocationDegrees
-                print("-- Poll -- fetchRemote -- closure -- latitude:" +
-                    " \(String(describing: self.latitude))")
-                print("-- Poll -- fetchRemote -- closure -- longitude:" +
-                    " \(String(describing: self.longitude))")
+                //print("-- Poll -- fetchRemote -- closure -- latitude:" +
+                //    " \(String(describing: self.latitude))")
+                //print("-- Poll -- fetchRemote -- closure -- longitude:" +
+                //    " \(String(describing: self.longitude))")
 
                 self.remoteFound = true
                 
@@ -75,5 +80,72 @@ class Poll {
         
         return(self.latitude, self.longitude)
     }
+    
+    func pollRemote(packet: Location, mapView: MKMapView, mapUpdate: MapUpdate,
+                    display: UILabel) {
+        // fetchRemote() -> addPin() -> getEtaDistance()
+        
+        var rlat: CLLocationDegrees?
+        var rlong: CLLocationDegrees?
+        self.myPacket = packet
+        
+        let queque = OperationQueue()
+        queque.addOperation {
+            print("\n===============================================================\n")
+            print("-- Poll -- pollRemote -- Enter")
+            print("\n===============================================================\n")
+            
+            while true {
+    
+                // fetchRemote()
+                (rlat, rlong) = self.fetchRemote()
+                if self.remoteFound {
+                    //print("-- Poll -- pollRemote -- self.myPacket.remoteLatitude: \(self.myPacket.remoteLatitude)")
+                    //print("-- Poll -- pollRemote -- self.myPacket.remoteLongitude: \(self.myPacket.remoteLongitude)")
+                }
+            
+                //print("-- Poll -- pollRemote -- packet.latitude: \(packet.latitude)")
+                //print("-- Poll -- pollRemote -- packet.longitude: \(packet.longitude)")
 
+                if self.remoteFound &&
+                    (rlat != self.myPacket.remoteLatitude ||
+                     rlong != self.myPacket.remoteLongitude ||
+                     packet.latitude != self.myPacket.latitude ||
+                     packet.longitude != self.myPacket.longitude
+                    )
+                {
+                    // update packet
+                    self.myPacket.setRemoteLatitude(latitude: rlat!)
+                    self.myPacket.setRemoteLongitude(longitude: rlong!)
+                
+                    OperationQueue.main.addOperation() {
+                    
+                        _ = mapUpdate.addPin(packet: self.myPacket, mapView: mapView)
+                
+                        (_, _) = mapUpdate.getEtaDistance(packet: self.myPacket, mapView: mapView, display: display)
+    
+                    }
+                    
+                    if packet.latitude != self.myPacket.latitude ||
+                        packet.longitude != self.myPacket.longitude
+                    {
+                        self.myPacket.setLatitude(latitude: packet.latitude)
+                        self.myPacket.setLongitude(longitude: packet.longitude)
+                    }
+                }
+        
+                //print("-- Poll -- pollRemote -- sleep 2...")
+                // sleep
+                sleep(2)
+            }
+            print("\n===============================================================\n")
+            print("-- Poll -- pollRemote -- Exit")
+            print("\n===============================================================\n")
+        }
+
+    }
+
+    
 }
+
+

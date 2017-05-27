@@ -32,6 +32,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     var distance: Double = 0.0
     var locPacket_updated: Bool = false
     var enabled_uploading: Bool = false
+    var poll_entered: Int = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -265,7 +266,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         var latitude: CLLocationDegrees
         var longitude: CLLocationDegrees
         var pointAnnotation: MKPointAnnotation
-        var center: CLLocationCoordinate2D
+        //var center: CLLocationCoordinate2D
+        poll_entered += 1
 
         print("\n===============================================================\n")
         print("-- poll --  check for remote location record...")
@@ -309,14 +311,14 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         print("\n===============================================================\n")
     
         // center mapView between remote and local user
-        center = mapUpdate.centerView(packet: locPacket, mapView: mapView)
+        //center = mapUpdate.centerView(packet: locPacket, mapView: mapView)
 
         // done in mapUpdate.centerView()
         //self.mapView.setCenter(center, animated: true)
 
         // get ETA and distance
-        (self.eta, self.distance) = mapUpdate.getEtaDistance (packet: locPacket,
-            mapView: mapView, center: center)
+        (self.eta, self.distance) = mapUpdate.getEtaDistance (packet: locPacket, mapView: mapView,
+                                                              display: display)
 
         if (self.eta == nil) {
             print("\n===============================================================\n")
@@ -345,6 +347,13 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
             
             // MARK:
                 // FIXME: call methods to do polling of mobile user for notifications
+            
+            // start RemoteUser polling
+            if poll_entered > 1 {
+                poll.pollRemote(packet: locPacket, mapView: mapView, mapUpdate: mapUpdate,
+                                display: display)
+            }
+
             // MARK:-
         }
 
