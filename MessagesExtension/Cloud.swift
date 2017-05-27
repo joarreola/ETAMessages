@@ -40,6 +40,10 @@ class Cloud {
 
         var ret: Bool? = false
 
+        self.locationRecordID = CKRecordID(recordName: self.localUser)
+        print("-- Cloud -- upload -- locationRecordID: \(locationRecordID)")
+        self.locationRecord = CKRecord(recordType: "Location", recordID: locationRecordID)
+        
         // Set the record’s fields.
         self.locationRecord["latitude"]  = packet.latitude as CKRecordValue
         self.locationRecord["longitude"] = packet.longitude as CKRecordValue
@@ -52,7 +56,7 @@ class Cloud {
             if let error = error {
                 // Insert error handling
                 print("-- Cloud -- upload - fetch: \(self.locationRecordID): \(error)")
-                print("-- Cloud -- upload: Record doesn't exist, saving...\n")
+                print("-- Cloud -- upload: Record doesn't exist, saving...")
         
                 self.recordSaved = false
                 
@@ -70,6 +74,11 @@ class Cloud {
 
                 print("-- Cloud -- upload: Saving...")
                 
+                self.locationRecordID = CKRecordID(recordName: self.localUser)
+                self.locationRecord = CKRecord(recordType: "Location", recordID: self.locationRecordID)
+                self.locationRecord["latitude"]  = packet.latitude as CKRecordValue
+                self.locationRecord["longitude"] = packet.longitude as CKRecordValue
+                
                 self.saveRecord()
                 
                 self.recordSaved = true
@@ -81,7 +90,7 @@ class Cloud {
         }
         _ = sem.wait(timeout: DispatchTime.distantFuture)
     
-        print("-- Cloud -- upload: end: self.recordSaved: \(self.recordSaved)\n")
+        print("-- Cloud -- upload: end: self.recordSaved: \(self.recordSaved)")
     
         (self.recordSaved) ? (ret = true) : (ret = nil)
         
@@ -134,7 +143,7 @@ class Cloud {
     func saveRecord() {
         // save a record
         
-        print("-- Cloud -- saveRecord()\n")
+        print("-- Cloud -- saveRecord()")
         
         // start semaphore block to synchronize completion handler
         let sem = DispatchSemaphore(value: 0)
@@ -165,7 +174,7 @@ class Cloud {
     func deleteRecord() {
         // delete a record
         
-        print("-- Cloud -- deleteRecord\n")
+        print("-- Cloud -- deleteRecord")
         
         // start semaphore block to synchronize completion handler
         let sem = DispatchSemaphore(value: 0)

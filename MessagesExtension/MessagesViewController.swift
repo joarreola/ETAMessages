@@ -119,18 +119,20 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         
         let location = locations.last
         
-        let center = CLLocationCoordinate2D(latitude: location!.coordinate.latitude,
+        if !locPacket_updated {
+            let center = CLLocationCoordinate2D(latitude: location!.coordinate.latitude,
                                             longitude: location!.coordinate.longitude)
         
-        let span: MKCoordinateSpan = MKCoordinateSpan(latitudeDelta: 0.05,
+            let span: MKCoordinateSpan = MKCoordinateSpan(latitudeDelta: 0.05,
                                                       longitudeDelta: 0.05)
         
-        let region = MKCoordinateRegion(center: center, span: span)
+            let region = MKCoordinateRegion(center: center, span: span)
 
-        // refresh mapView
-        print("-- locationManager -- self.mapView.setRegion()")
-        self.mapView.setRegion(region, animated: true)
-        
+            // refresh mapView
+            print("-- locationManager -- self.mapView.setRegion()")
+            self.mapView.setRegion(region, animated: true)
+        }
+
         // stop location updates
         // will result in mapView re-center to local coordinates if stopUpdatingLocation
         // is not called!
@@ -138,14 +140,31 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         //self.locationManager.stopUpdatingLocation()
 
         // stuff Location structure if a new location
-        if (location!.coordinate.latitude != locPacket.latitude ||
-            location!.coordinate.longitude != locPacket.longitude) {
+        if location!.coordinate.latitude != locPacket.latitude ||
+            location!.coordinate.longitude != locPacket.longitude {
 
             print("-- locationManager -- location: '\(location!)'")
 
             locPacket.setLatitude(latitude: location!.coordinate.latitude)
     
             locPacket.setLongitude(longitude: location!.coordinate.longitude)
+            
+            locPacket_updated = true
+            
+            //upload to iCloud if enabled_uploading set in IBAction enable()
+            if enabled_uploading {
+                let cloudRet = cloud.upload(packet: locPacket)
+                if cloudRet == nil {
+                    print("-- locationManager -- cloud.upload() -- Failed")
+                } else {
+                    print("-- locationManager -- cloud.upload() -- succeeded")
+                    
+                    // display locPacket
+                    display.text = ""
+                    display.text =
+                    "local: \t( \(locPacket.latitude),\n \t\t\(locPacket.longitude) )"
+                }
+            }
         }
     }
     
@@ -213,18 +232,23 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         print("-- enable -- latitude: \(latitude)")
         print("-- enable -- longitude: \(longitude)")
 
-        print("\n===============================================================\n")
-        print("-- enable -- stopUpdatingLocation\n")
-        print("\n===============================================================\n")
-        self.locationManager.stopUpdatingLocation()
+        //print("\n===============================================================\n")
+        //print("-- enable -- stopUpdatingLocation\n")
+        //print("\n===============================================================\n")
+        //self.locationManager.stopUpdatingLocation()
         
         // refresh mapView
-        //self.locationManager.stopUpdatingLocation()
         let center = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        
         let span: MKCoordinateSpan = MKCoordinateSpan(latitudeDelta: 0.1,
                                                       longitudeDelta: 0.1)
+        
         let region = MKCoordinateRegion(center: center, span: span)
+        
         self.mapView.setRegion(region, animated: true)
+
+        // this allows for uploading of coordinates on location changes
+        enabled_uploading = true
 
         print("-- enable -- end\n")
     

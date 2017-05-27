@@ -12,6 +12,10 @@ import MapKit
 import CoreLocation
 import CloudKit
 
+struct PointAnnotations {
+    var pointAnnotation: MKPointAnnotation?
+}
+
 class MapUpdate {
     private var locLatitude: CLLocationDegrees = 0.0
     private var locLongitude: CLLocationDegrees = 0.0
@@ -23,6 +27,7 @@ class MapUpdate {
     private var centerLongitude: CLLocationDegrees = 0.0
     public var eta: TimeInterval? = nil
     public var distance: Double = 0.0
+    public var pointAnnotationStruct = PointAnnotations()
     
     func showRemote (packet: Location, mapView: MKMapView) {
         
@@ -41,10 +46,16 @@ class MapUpdate {
         
         pointAnnotation = MKPointAnnotation()
         
-        mapView.removeAnnotation(pointAnnotation)
+        if pointAnnotationStruct.pointAnnotation != nil {
+            mapView.removeAnnotation(pointAnnotationStruct.pointAnnotation!)
+            print("-- MapUpdate -- addPin -- removed pointAnnotation: \(String(describing: pointAnnotationStruct.pointAnnotation))")
+        }
             
         pointAnnotation.coordinate = CLLocationCoordinate2D(latitude: remLatitude,
                                                             longitude: remLongitude)
+            
+        pointAnnotationStruct.pointAnnotation = pointAnnotation
+
         mapView.addAnnotation(pointAnnotation)
         
         print("-- MapUpdate -- addPin -- added pointAnnotation: \(pointAnnotation)")
@@ -151,23 +162,27 @@ class MapUpdate {
                     
                 case 500..<1000:
                     
-                    delta = 0.001
+                    delta = 0.005
                     
                 case 1000..<2500:
                     
-                    delta = 0.005
+                    delta = 0.007
                     
                 case 2500..<5000:
                     
                     delta = 0.01
                     
-                case 5000..<20000:
+                case 5000..<10000:
                     
-                    delta = 0.15
+                    delta = 0.05
                 
+                case 10000..<20000:
+                    
+                    delta = 0.1
+        
                 case 20000..<40000:
                     
-                    delta = 0.2
+                    delta = 0.13
                     
                 case 40000..<50000:
                     
@@ -175,14 +190,20 @@ class MapUpdate {
                 
                 case 50000..<100000:
                     
-                    delta = 0.5
+                    delta = 0.4
+                
+                case 100000..<200000:
                     
+                    delta = 0.5
+
                 default:
                     
                     delta = 0.1
                 }
                 print("-- MapUpdate -- mkDirections.calculate -- closure -- delta: \(delta)")
                 
+                let center = self.centerView(packet: packet, mapView: mapView)
+
                 let span: MKCoordinateSpan = MKCoordinateSpan(latitudeDelta: CLLocationDegrees(delta),
                                                               longitudeDelta: CLLocationDegrees(delta))
                 
