@@ -11,8 +11,8 @@ import CloudKit
 
 class Cloud {
     private var locationRecordID: CKRecordID
-    private let locationRecord: CKRecord
-    private let myContainer: CKContainer
+    private var locationRecord: CKRecord
+    private var myContainer: CKContainer
     private var recordSaved: Bool = false
     private var recordFound: Bool = false
     private let localUser: String
@@ -26,12 +26,10 @@ class Cloud {
         self.locationRecordID = CKRecordID(recordName: self.localUser)
         print("-- Cloud -- init -- locationRecordID: \(locationRecordID)")
     
-        // Create a record object.
         self.locationRecord = CKRecord(recordType: "Location",
                                        recordID: locationRecordID)
         print("-- Cloud -- init -- locationRecord: \(locationRecord)")
     
-        // private container
         self.myContainer = CKContainer(identifier: "iCloud.edu.ucsc.ETAMessages")
         print("-- Cloud -- init -- myContainer: iCloud.edu.ucsc.ETAMessages")
 
@@ -41,10 +39,10 @@ class Cloud {
         // Called by the enabl() @IBAction function on a tap of the 'Enable' button
 
         var ret: Bool? = false
-        
+
         // Set the record’s fields.
-        locationRecord["latitude"]  = packet.latitude as CKRecordValue
-        locationRecord["longitude"] = packet.longitude as CKRecordValue
+        self.locationRecord["latitude"]  = packet.latitude as CKRecordValue
+        self.locationRecord["longitude"] = packet.longitude as CKRecordValue
         
         // start semaphore block to synchronize completion handler
         let sem = DispatchSemaphore(value: 0)
@@ -69,7 +67,7 @@ class Cloud {
                 print("-- Cloud -- upload: Record Exists, deleting...")
     
                 self.deleteRecord()
-    
+
                 print("-- Cloud -- upload: Saving...")
                 
                 self.saveRecord()
@@ -81,7 +79,6 @@ class Cloud {
                 return
             }
         }
-        // got here after sem.signal()
         _ = sem.wait(timeout: DispatchTime.distantFuture)
     
         print("-- Cloud -- upload: end: self.recordSaved: \(self.recordSaved)\n")
@@ -99,13 +96,14 @@ class Cloud {
     
         // start semaphore block to synchronize completion handler
         let sem = DispatchSemaphore(value: 0)
-        
         self.myContainer.privateCloudDatabase.fetch(withRecordID: self.locationRecordID) {
             (record, error) in
             if let error = error {
                 // Insert error handling
                 print("-- Cloud -- fetchRecord -- Error: \(self.locationRecordID): \(error)")
                 
+                self.recordFound = false
+
                 sem.signal()
                 
                 return
@@ -123,7 +121,6 @@ class Cloud {
             return
     
         }
-        // got here after sem.signal()
         _ = sem.wait(timeout: DispatchTime.distantFuture)
         
         if(!self.recordFound) {
@@ -137,7 +134,7 @@ class Cloud {
     func saveRecord() {
         // save a record
         
-        print("-- Cloud -- saveRecord\n")
+        print("-- Cloud -- saveRecord()\n")
         
         // start semaphore block to synchronize completion handler
         let sem = DispatchSemaphore(value: 0)
@@ -156,13 +153,12 @@ class Cloud {
             }
             // Insert successfully saved record code
             print("-- Cloud -- saveRecord -- Record saved: \(self.locationRecordID)")
-            print(record as Any)
+            //print(record as Any)
             
             self.recordSaved = true
             
             sem.signal()
         }
-        // got here after sem.signal()
         _ = sem.wait(timeout: DispatchTime.distantFuture)
     }
     
@@ -188,7 +184,6 @@ class Cloud {
             
             sem.signal()
         }
-        // got here after sem.signal()
         _ = sem.wait(timeout: DispatchTime.distantFuture)
     }
     

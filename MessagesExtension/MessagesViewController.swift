@@ -22,14 +22,16 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
     @IBOutlet weak var display: UILabel!
     // hardcoding for now
-    var cloud = Cloud(localUser: "Oscar-ipad")
+    var cloud = Cloud(localUser: "Oscar-iphone")
     // hardcoding for now
-    var poll = Poll(remoteUser: "Oscar-iphone")
+    var poll = Poll(remoteUser: "Oscar-ipad")
     
     var mapUpdate = MapUpdate()
     
     var eta: TimeInterval? = nil
     var distance: Double = 0.0
+    var locPacket_updated: Bool = false
+    var enabled_uploading: Bool = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,6 +44,12 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         self.locationManager.startUpdatingLocation()
         self.mapView.showsUserLocation = true
         self.mapView.delegate = self
+        
+        func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+            let renderer = MKPolylineRenderer(polyline: overlay as! MKPolyline)
+            renderer.strokeColor = UIColor.blue
+            return renderer
+        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -114,23 +122,31 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         let center = CLLocationCoordinate2D(latitude: location!.coordinate.latitude,
                                             longitude: location!.coordinate.longitude)
         
-        let span: MKCoordinateSpan = MKCoordinateSpan(latitudeDelta: 0.1,
-                                                      longitudeDelta: 0.1)
+        let span: MKCoordinateSpan = MKCoordinateSpan(latitudeDelta: 0.05,
+                                                      longitudeDelta: 0.05)
         
         let region = MKCoordinateRegion(center: center, span: span)
-        
-        
-        print("-- locationManager -- location: '\(location!)'")
-        
+
         // refresh mapView
+        print("-- locationManager -- self.mapView.setRegion()")
         self.mapView.setRegion(region, animated: true)
         
         // stop location updates
-        self.locationManager.stopUpdatingLocation()
-        
-        // stuff Location structure
-        locPacket.setLatitude(latitude: location!.coordinate.latitude)
-        locPacket.setLongitude(longitude: location!.coordinate.longitude)
+        // will result in mapView re-center to local coordinates if stopUpdatingLocation
+        // is not called!
+        // call in enable() IBAction
+        //self.locationManager.stopUpdatingLocation()
+
+        // stuff Location structure if a new location
+        if (location!.coordinate.latitude != locPacket.latitude ||
+            location!.coordinate.longitude != locPacket.longitude) {
+
+            print("-- locationManager -- location: '\(location!)'")
+
+            locPacket.setLatitude(latitude: location!.coordinate.latitude)
+    
+            locPacket.setLongitude(longitude: location!.coordinate.longitude)
+        }
     }
     
     @nonobjc func locationManager(manager: CLLocationManager!, didFailWithError error: NSError!) {
@@ -197,6 +213,19 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         print("-- enable -- latitude: \(latitude)")
         print("-- enable -- longitude: \(longitude)")
 
+        print("\n===============================================================\n")
+        print("-- enable -- stopUpdatingLocation\n")
+        print("\n===============================================================\n")
+        self.locationManager.stopUpdatingLocation()
+        
+        // refresh mapView
+        //self.locationManager.stopUpdatingLocation()
+        let center = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        let span: MKCoordinateSpan = MKCoordinateSpan(latitudeDelta: 0.1,
+                                                      longitudeDelta: 0.1)
+        let region = MKCoordinateRegion(center: center, span: span)
+        self.mapView.setRegion(region, animated: true)
+
         print("-- enable -- end\n")
     
     }
@@ -209,9 +238,10 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         print("\n===============================================================\n")
         
         // vars
-        let latitude: CLLocationDegrees
-        let longitude: CLLocationDegrees
+        var latitude: CLLocationDegrees
+        var longitude: CLLocationDegrees
         var pointAnnotation: MKPointAnnotation
+        var center: CLLocationCoordinate2D
 
         print("\n===============================================================\n")
         print("-- poll --  check for remote location record...")
@@ -220,14 +250,14 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         // display locPacket
         display.text = ""
         display.text =
-        "local: \t( \(locPacket.latitude),\n \t\t\(locPacket.longitude) )\n" +
+        "local:\t\t( \(locPacket.latitude),\n\t\t\t\(locPacket.longitude) )\n" +
         "polling for remote user..."
         
         let pollRet = poll.fetchRemote()
         
         if (pollRet.latitude == nil) {
             print("\n===============================================================\n")
-            print("-- enable -- poll.fetchRemote() returned nil. Exiting enable\n")
+            print("-- poll -- poll.fetchRemote() returned nil. Exiting enable\n")
             print("\n===============================================================\n")
             
             return
@@ -244,45 +274,56 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         // display locPacket
         display.text = ""
         display.text =
-        "local: \t\t( \(locPacket.latitude),\n \t\t\t\(locPacket.longitude) )\n" +
-        "remote: \t( \(locPacket.remoteLatitude),\n \t\t\t\(locPacket.remoteLongitude) )"
+        "local:\t\t( \(locPacket.latitude),\n\t\t\t\(locPacket.longitude) )\n" +
+        "remote:\t( \(locPacket.remoteLatitude),\n\t\t\t\(locPacket.remoteLongitude) )"
 
         // add pin on mapView for remoteUser, re-center mapView, update span
         pointAnnotation = mapUpdate.addPin(packet: locPacket, mapView: mapView)
 
         print("\n===============================================================\n")
-        print("-- poll --  Center and re-span mapView...")
+        print("-- poll --  Center mapView...")
         print("\n===============================================================\n")
     
+        // center mapView between remote and local user
+        center = mapUpdate.centerView(packet: locPacket, mapView: mapView)
+
+        // done in mapUpdate.centerView()
+        //self.mapView.setCenter(center, animated: true)
+
         // get ETA and distance
-        let center: CLLocationCoordinate2D = mapUpdate.centerView(packet: locPacket,
-                                                                  mapView: mapView)
-        (eta, distance) = mapUpdate.getEtaDistance (packet: locPacket, mapView: mapView,
-                                  pointAnnotation: pointAnnotation, center: center)
+        (self.eta, self.distance) = mapUpdate.getEtaDistance (packet: locPacket,
+            mapView: mapView, center: center)
 
         if (self.eta == nil) {
             print("\n===============================================================\n")
-            print("-- enable -- mapUpdate.getEtaDistance() returned nil. Exiting enable\n")
+            print("-- poll -- mapUpdate.getEtaDistance() returned nil. Exiting\n")
             print("\n===============================================================\n")
-            
+
             // display locPacket
             display.text = ""
             display.text =
-                "local: \t\t( \(locPacket.latitude),\n \t\t\t\(locPacket.longitude) )\n" +
-                "remote: \t( \(locPacket.remoteLatitude),\n \t\t\t\(locPacket.remoteLongitude) )\n" +
+                "local:\t\t( \(locPacket.latitude),\n\t\t\t\(locPacket.longitude) )\n" +
+                "remote:\t( \(locPacket.remoteLatitude),\n\t\t\t\(locPacket.remoteLongitude) )\n" +
                 "- getEtaDistance failed"
             
             return
+
+        } else {
+            print("-- poll -- self.eta: \(String(describing: self.eta))")
+            print("-- poll -- self.distance: \(self.distance)")
+
+            // display locPacket
+            display.text = ""
+            display.text =
+                "local:\t( \(locPacket.latitude),\n\t\t\(locPacket.longitude) )\n" +
+                "remote:\t( \(locPacket.remoteLatitude),\n\t\t\(locPacket.remoteLongitude) )\n" +
+            "eta: \(String(describing: self.eta)) sec   \tdistance: \(String(describing: self.distance)) ft"
+            
+            // MARK:
+                // FIXME: call methods to do polling of mobile user for notifications
+            // MARK:-
         }
 
-
-        // display locPacket
-        display.text = ""
-        display.text =
-            "local: \t\t( \(locPacket.latitude),\n \t\t\t\(locPacket.longitude) )\n" +
-            "remote: \t( \(locPacket.remoteLatitude),\n \t\t\t\(locPacket.remoteLongitude) )\n" +
-            "eta: \(String(describing: self.eta)) \t\tdistance: \(String(describing: self.distance))"
-        
         print("-- poll -- end\n")
 
     }

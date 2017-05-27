@@ -26,7 +26,6 @@ class Poll {
         self.locationRecordID = CKRecordID(recordName: remoteUser)
         print("-- Poll -- init -- set CKRecordID: \(locationRecordID)")
         
-        // Create a record object.
         self.locationRecord = CKRecord(recordType: "Location",
                                        recordID: locationRecordID)
         print("-- Poll -- init -- locationRecord: \(locationRecord)")
@@ -68,7 +67,6 @@ class Poll {
                 return
             }
         }
-        // got here after sem.signal()
         _ = sem.wait(timeout: DispatchTime.distantFuture)
         
         if(!self.remoteFound) {
