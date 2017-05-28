@@ -100,8 +100,8 @@ class Poll {
                 // fetchRemote()
                 (rlat, rlong) = self.fetchRemote()
                 if self.remoteFound {
-                    //print("-- Poll -- pollRemote -- self.myPacket.remoteLatitude: \(self.myPacket.remoteLatitude)")
-                    //print("-- Poll -- pollRemote -- self.myPacket.remoteLongitude: \(self.myPacket.remoteLongitude)")
+                    print("-- Poll -- pollRemote -- self.myPacket.remoteLatitude: \(self.myPacket.remoteLatitude)")
+                    print("-- Poll -- pollRemote -- self.myPacket.remoteLongitude: \(self.myPacket.remoteLongitude)")
                 }
             
                 //print("-- Poll -- pollRemote -- packet.latitude: \(packet.latitude)")
@@ -120,7 +120,8 @@ class Poll {
                 
                     OperationQueue.main.addOperation() {
                     
-                        _ = mapUpdate.addPin(packet: self.myPacket, mapView: mapView)
+                        let remove = false
+                        _ = mapUpdate.addPin(packet: self.myPacket, mapView: mapView, remove)
                 
                         (_, _) = mapUpdate.getEtaDistance(packet: self.myPacket, mapView: mapView, display: display)
     
@@ -134,7 +135,7 @@ class Poll {
                     }
                 }
         
-                //print("-- Poll -- pollRemote -- sleep 2...")
+                print("-- Poll -- pollRemote -- sleep 2...")
                 // sleep
                 sleep(2)
             }

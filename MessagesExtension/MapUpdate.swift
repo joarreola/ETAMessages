@@ -33,7 +33,7 @@ class MapUpdate {
         
     }
 
-    func addPin (packet: Location, mapView: MKMapView) -> MKPointAnnotation {
+    func addPin (packet: Location, mapView: MKMapView, _ remove: Bool) -> MKPointAnnotation {
     
         print("-- MapUpdate -- addPin: add pin for remoteUser")
     
@@ -55,9 +55,13 @@ class MapUpdate {
             
         pointAnnotationStruct.pointAnnotation = pointAnnotation
 
-        mapView.addAnnotation(pointAnnotation)
+        if remove {
+            print("-- MapUpdate -- addPin -- removed pointAnnotation: \(pointAnnotation)")
+        } else {
+            mapView.addAnnotation(pointAnnotation)
         
-        print("-- MapUpdate -- addPin -- added pointAnnotation: \(pointAnnotation)")
+            print("-- MapUpdate -- addPin -- added pointAnnotation: \(pointAnnotation)")
+        }
             
         return pointAnnotation
     }
@@ -122,8 +126,8 @@ class MapUpdate {
             }
             
             for route in unwrappedResponse.routes {
-                mapView.add(route.polyline)
-                mapView.setVisibleMapRect(route.polyline.boundingMapRect, animated: true)
+                //mapView.add(route.polyline)
+                //mapView.setVisibleMapRect(route.polyline.boundingMapRect, animated: true)
     
                 print("-- MapUpdate -- mkDirections.calculate -- closure -- Distance: \(route.distance) meters")
                 print("-- MapUpdate -- mkDirections.calculate -- closure -- ETA: \(route.expectedTravelTime) sec")
@@ -131,7 +135,7 @@ class MapUpdate {
                 self.eta = route.expectedTravelTime
                 self.distance = route.distance * 3.2808
                 print("-- MapUpdate -- mkDirections.calculate -- closure -- self.distance: \(self.distance) feet")
-                print("-- MapUpdate -- mkDirections.calculate -- closure -- self.eta: \(String(describing: self.eta)) sec")
+                print("-- MapUpdate -- mkDirections.calculate -- closure -- self.eta: \(self.eta!)) sec")
                 
                 for step in route.steps {
                     print(step.instructions)
@@ -150,11 +154,11 @@ class MapUpdate {
                     
                     delta = 0.0001
                     
-                case 50..<100:
+                case 50..<250:
                     
                     delta = 0.0001
                     
-                case 100..<500:
+                case 250..<500:
                     
                     delta = 0.0005
                     
@@ -184,15 +188,15 @@ class MapUpdate {
                     
                 case 40000..<50000:
                     
-                    delta = 0.3
+                    delta = 0.2
                 
                 case 50000..<100000:
                     
-                    delta = 0.4
+                    delta = 0.3
                 
                 case 100000..<200000:
                     
-                    delta = 0.5
+                    delta = 0.4
 
                 default:
                     
@@ -214,10 +218,11 @@ class MapUpdate {
                 // display locPacket
                 display.text = ""
                 display.text =
-                    "local:\t( \(packet.latitude),\n\t\t\(packet.longitude) )\n" +
-                    "remote:\t( \(packet.remoteLatitude),\n\t\t\(packet.remoteLongitude) )\n" +
-                "eta: \(String(describing: self.eta)) sec   \tdistance: \(String(describing: self.distance)) ft"
-    
+                    "local:\t\t( \(packet.latitude),\n\t\t\t\(packet.longitude) )\n" +
+                    "remote:\t( \(packet.remoteLatitude),\n\t\t\t\(packet.remoteLongitude) )\n" +
+                    "eta:\t\t\((self.eta!)) sec\n" +
+                    "distance:\t\((self.distance)) ft"
+                
             // MARK:-
             }
             
