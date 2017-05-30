@@ -33,6 +33,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     var locPacket_updated: Bool = false
     var enabled_uploading: Bool = false
     var poll_entered: Int = 0
+    let pointer = UnsafeMutableRawPointer.allocate(bytes: 64, alignedTo: 8)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -308,12 +309,31 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         //var center: CLLocationCoordinate2D
         poll_entered += 1
 
+        // start RemoteUser polling
+        //  eta and distance checked at 1 sec interval
+        if poll_entered > 1 {
+            print("\n=============================================================\n")
+            print("-- poll -- calling poll.pollRemote()")
+            print("\n=============================================================\n")
+            
+            let x = pointer.load(as: TimeInterval.self)
+
+            print("-- Poll -- pollRemote -- pointer: \(x)")
+    
+            poll.pollRemote(packet: locPacket, mapView: mapView,
+                            mapUpdate: mapUpdate, display: display, pointer: self.pointer)
+            
+            print("-- poll -- poll(): exit\n")
+            
+            return
+        }
+        
         // Upload locPacket to Cloud repository
         // Hardcode localuser for now
         let cloudRet = cloud.upload(packet: locPacket)
         if (cloudRet == nil) {
             print("\n=============================================================\n")
-            print("-- poll -- cloud.upload(locPacket) returned nil. Exiting poll\n")
+            print("-- poll -- cloud.upload(locPacket) returned nil. Exiting poll()")
             print("\n=============================================================\n")
             
             // display locPacket
@@ -333,7 +353,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         
         if (fetchRet.latitude == nil) {
             print("\n=============================================================\n")
-            print("-- poll -- poll.fetchRemote() returned nil. Exiting poll\n")
+            print("-- poll -- poll.fetchRemote() returned nil. Exiting poll()")
             print("\n=============================================================\n")
             
             return
@@ -356,32 +376,23 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         print("\n=================================================================\n")
         print("-- poll --  mapUpdate.getEtaDistance...")
         print("\n=================================================================\n")
+    
+        // use pointer to hold eta data
+        self.pointer.initializeMemory(as: TimeInterval.self, count: 64, to: 0.0)
+
         (self.eta, self.distance) = mapUpdate.getEtaDistance (packet: locPacket,
                                                               mapView: mapView,
-                                                              display: display)
+                                                              display: display,
+                                                              pointer: self.pointer)
 
         if (self.eta == nil) {
             print("\n=============================================================\n")
-            print("-- poll -- mapUpdate.getEtaDistance() returned nil. Exiting\n")
+            print("-- poll -- mapUpdate.getEtaDistance() returned nil.")
             print("\n=============================================================\n")
     
-            return
-
         } else {
             print("-- poll -- self.eta: \(self.eta!))")
             print("-- poll -- self.distance: \(self.distance)")
-            
-            // MARK:
-                // FIXME: call methods to do polling of mobile user for notifications
-            
-            // start RemoteUser polling
-            //  eta and distance checked at 1 sec interval
-            if poll_entered > 1 {
-                poll.pollRemote(packet: locPacket, mapView: mapView,
-                                mapUpdate: mapUpdate, display: display)
-            }
-
-            // MARK:-
         }
 
         // this allows for uploading of coordinates on location changes
@@ -432,9 +443,11 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         let remove: Bool = false
         _ = mapUpdate.addPin(packet: locPacket, mapView: mapView, remove)
         
-        (self.eta, self.distance) = mapUpdate.getEtaDistance (packet: locPacket,
+        (_, _) = mapUpdate.getEtaDistance (packet: locPacket,
                                                               mapView: mapView,
-                                                              display: display)
+                                                              display: display,
+                                                              pointer: pointer)
+        
         return true
     }
 

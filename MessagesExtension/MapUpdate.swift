@@ -96,7 +96,8 @@ class MapUpdate {
         
     }
 
-    func getEtaDistance (packet: Location, mapView: MKMapView, display: UILabel) -> (eta: TimeInterval?, distance: Double) {
+    func getEtaDistance (packet: Location, mapView: MKMapView, display: UILabel,
+                         pointer: UnsafeMutableRawPointer) -> (eta: TimeInterval?, distance: Double) {
 
         print("-- MapUpdate -- getEtaDistance: get eta from local to remote device," +
                     " and travel distance between devices")
@@ -223,6 +224,20 @@ class MapUpdate {
                     "eta:\t\t\((self.eta!)) sec\n" +
                     "distance:\t\((self.distance)) ft"
                 
+                // check pointer
+                var x = pointer.load(as: TimeInterval.self)
+                print("-- MapUpdate -- mkDirections.calculate -- closure -- pointer: \(x)")
+                
+                // set
+                if self.eta != nil {
+                    let etaValue = self.eta!
+                    pointer.storeBytes(of: etaValue, as: TimeInterval.self)
+                    print("-- MapUpdate -- mkDirections.calculate -- closure -- updated pointer")
+                }
+                x = pointer.load(as: TimeInterval.self)
+                print("-- MapUpdate -- mkDirections.calculate -- closure -- pointer: \(x)")
+                
+    
             // MARK:-
             }
             

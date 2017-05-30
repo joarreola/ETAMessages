@@ -19,6 +19,7 @@ class Poll {
     private let locationRecord: CKRecord
     private let myContainer: CKContainer
     private var myPacket: Location
+    private var myEta: TimeInterval?
     
     init(remoteUser: String) {
         self.latitude = 0.0
@@ -82,26 +83,34 @@ class Poll {
     }
     
     func pollRemote(packet: Location, mapView: MKMapView, mapUpdate: MapUpdate,
-                    display: UILabel) {
+                    display: UILabel, pointer: UnsafeMutableRawPointer) {
         // fetchRemote() -> addPin() -> getEtaDistance()
         
         var rlat: CLLocationDegrees?
         var rlong: CLLocationDegrees?
         self.myPacket = packet
         
+        // below code runs in a separate thread
         let queque = OperationQueue()
         queque.addOperation {
             print("\n===============================================================\n")
-            print("-- Poll -- pollRemote -- Enter")
+            print("-- Poll -- pollRemote -- in queque.addOperation()")
             print("\n===============================================================\n")
             
+            print("-- Poll -- pollRemote -- into while{}")
             while true {
+    
+                // check pointer
+                let x = pointer.load(as: TimeInterval.self)
+                print("-- Poll -- pollRemote -- pointer: \(x)")
     
                 // fetchRemote()
                 (rlat, rlong) = self.fetchRemote()
                 if self.remoteFound {
-                    print("-- Poll -- pollRemote -- self.myPacket.remoteLatitude: \(self.myPacket.remoteLatitude)")
-                    print("-- Poll -- pollRemote -- self.myPacket.remoteLongitude: \(self.myPacket.remoteLongitude)")
+                    print("-- Poll -- pollRemote -- self.fetchRemote() -- rlat: \(String(describing: rlat))")
+                    print("-- Poll -- pollRemote -- self.fetchRemote() -- rlong: \(String(describing: rlong))")
+                } else {
+                    print("-- Poll -- pollRemote -- self.remoteFound: \(self.remoteFound)")
                 }
             
                 //print("-- Poll -- pollRemote -- packet.latitude: \(packet.latitude)")
@@ -109,21 +118,22 @@ class Poll {
 
                 if self.remoteFound &&
                     (rlat != self.myPacket.remoteLatitude ||
-                     rlong != self.myPacket.remoteLongitude ||
-                     packet.latitude != self.myPacket.latitude ||
-                     packet.longitude != self.myPacket.longitude
+                     rlong != self.myPacket.remoteLongitude
+                     //packet.latitude != self.myPacket.latitude ||
+                     //packet.longitude != self.myPacket.longitude
                     )
                 {
-                    // update packet
+                    // update myPacket
                     self.myPacket.setRemoteLatitude(latitude: rlat!)
                     self.myPacket.setRemoteLongitude(longitude: rlong!)
                 
+                    // do UI updates in the main thread
                     OperationQueue.main.addOperation() {
                     
                         let remove = false
                         _ = mapUpdate.addPin(packet: self.myPacket, mapView: mapView, remove)
                 
-                        (_, _) = mapUpdate.getEtaDistance(packet: self.myPacket, mapView: mapView, display: display)
+                        (_, _) = mapUpdate.getEtaDistance(packet: self.myPacket, mapView: mapView, display: display, pointer: pointer)
     
                     }
                     
@@ -136,8 +146,9 @@ class Poll {
                 }
         
                 print("-- Poll -- pollRemote -- sleep 2...")
-                // sleep
                 sleep(2)
+                
+                
             }
             print("\n===============================================================\n")
             print("-- Poll -- pollRemote -- Exit")
