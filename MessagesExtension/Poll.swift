@@ -20,11 +20,14 @@ class Poll {
     private let myContainer: CKContainer
     private var myPacket: Location
     private var myEta: TimeInterval?
+    private var etaOriginal: TimeInterval
     
     init(remoteUser: String) {
         self.latitude = 0.0
         self.longitude = 0.0
         self.remoteUser = remoteUser
+        self.myEta = 0.0
+        self.etaOriginal = 0.0
         
         self.locationRecordID = CKRecordID(recordName: remoteUser)
         print("-- Poll -- init -- set CKRecordID: \(locationRecordID)")
@@ -83,7 +86,7 @@ class Poll {
     }
     
     func pollRemote(packet: Location, mapView: MKMapView, mapUpdate: MapUpdate,
-                    display: UILabel, pointer: UnsafeMutableRawPointer) {
+                    display: UILabel, etaPointer: UnsafeMutableRawPointer) {
         // fetchRemote() -> addPin() -> getEtaDistance()
         
         var rlat: CLLocationDegrees?
@@ -98,11 +101,16 @@ class Poll {
             print("\n===============================================================\n")
             
             print("-- Poll -- pollRemote -- into while{}")
+            
+            // etaOriginal
+            self.etaOriginal = etaPointer.load(as: TimeInterval.self)
+            print("-- Poll -- pollRemote -- self.etaOriginal: \(self.etaOriginal)")
+    
             while true {
     
                 // check pointer
-                let x = pointer.load(as: TimeInterval.self)
-                print("-- Poll -- pollRemote -- pointer: \(x)")
+                self.myEta = etaPointer.load(as: TimeInterval.self)
+                print("-- Poll -- pollRemote -- pointer: \(self.myEta!)")
     
                 // fetchRemote()
                 (rlat, rlong) = self.fetchRemote()
@@ -133,7 +141,7 @@ class Poll {
                         let remove = false
                         _ = mapUpdate.addPin(packet: self.myPacket, mapView: mapView, remove)
                 
-                        (_, _) = mapUpdate.getEtaDistance(packet: self.myPacket, mapView: mapView, display: display, pointer: pointer)
+                        (_, _) = mapUpdate.getEtaDistance(packet: self.myPacket, mapView: mapView, display: display, etaPointer: etaPointer)
     
                     }
                     
@@ -143,6 +151,11 @@ class Poll {
                         self.myPacket.setLatitude(latitude: packet.latitude)
                         self.myPacket.setLongitude(longitude: packet.longitude)
                     }
+                }
+                
+                if  self.myEta != self.etaOriginal {
+                    self.etaNotification(etaOriginal: self.etaOriginal, myEta: self.myEta!,
+                                         display: display)
                 }
         
                 print("-- Poll -- pollRemote -- sleep 2...")
@@ -157,7 +170,42 @@ class Poll {
 
     }
 
+    func etaNotification(etaOriginal: TimeInterval, myEta: TimeInterval, display: UILabel) {
+        print("Poll - etaNotification -- etaOriginal: \(etaOriginal) myEta: \(myEta)")
+        
+        switch myEta {
+        case etaOriginal:
+            
+            print("Poll - etaNotification -- myEta == etaOriginal")
+            
+        case (etaOriginal / 4) * 3:
     
+            print("Poll - etaNotification -- myEta == etaOriginal/4 * 3")
+            display.text = ""
+            display.text =
+                "local:\t\t( \(myPacket.latitude),\n\t\t\t\(myPacket.longitude) )\n" +
+                "remote:\t( \(myPacket.remoteLatitude),\n\t\t\t\(myPacket.remoteLongitude) )\n" +
+                "eta:\t\t\((myEta)) sec\n" +
+                "3/4's notification"
+    
+        case (etaOriginal / 4) * 2:
+            
+            print("Poll - etaNotification -- myEta == etaOriginal/4 * 2")
+            
+        case (etaOriginal / 4) * 1:
+            
+            print("Poll - etaNotification -- myEta == etaOriginal/4 * 1")
+            
+        case 0:
+            
+            print("Poll - etaNotification -- myEta == 0")
+            
+        default:
+            
+            print("Poll - etaNotification -- default")
+        }
+
+    }
 }
 
 

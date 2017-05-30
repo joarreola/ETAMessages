@@ -97,7 +97,7 @@ class MapUpdate {
     }
 
     func getEtaDistance (packet: Location, mapView: MKMapView, display: UILabel,
-                         pointer: UnsafeMutableRawPointer) -> (eta: TimeInterval?, distance: Double) {
+                         etaPointer: UnsafeMutableRawPointer) -> (eta: TimeInterval?, distance: Double) {
 
         print("-- MapUpdate -- getEtaDistance: get eta from local to remote device," +
                     " and travel distance between devices")
@@ -109,8 +109,8 @@ class MapUpdate {
         mkDirReq.destination = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: packet.remoteLatitude, longitude: packet.remoteLongitude), addressDictionary: nil))
         
         mkDirReq.requestsAlternateRoutes = false
-        mkDirReq.transportType = .automobile
-        //mkDirReq.transportType = .walking
+        //mkDirReq.transportType = .automobile
+        mkDirReq.transportType = .walking
         
         let mkDirections = MKDirections(request: mkDirReq)
 
@@ -224,18 +224,18 @@ class MapUpdate {
                     "eta:\t\t\((self.eta!)) sec\n" +
                     "distance:\t\((self.distance)) ft"
                 
-                // check pointer
-                var x = pointer.load(as: TimeInterval.self)
-                print("-- MapUpdate -- mkDirections.calculate -- closure -- pointer: \(x)")
+                // check etaPointer
+                var x = etaPointer.load(as: TimeInterval.self)
+                print("-- MapUpdate -- mkDirections.calculate -- closure -- etaPointer: \(x)")
                 
                 // set
                 if self.eta != nil {
                     let etaValue = self.eta!
-                    pointer.storeBytes(of: etaValue, as: TimeInterval.self)
-                    print("-- MapUpdate -- mkDirections.calculate -- closure -- updated pointer")
+                    etaPointer.storeBytes(of: etaValue, as: TimeInterval.self)
+                    print("-- MapUpdate -- mkDirections.calculate -- closure -- updated etaPointer")
                 }
-                x = pointer.load(as: TimeInterval.self)
-                print("-- MapUpdate -- mkDirections.calculate -- closure -- pointer: \(x)")
+                x = etaPointer.load(as: TimeInterval.self)
+                print("-- MapUpdate -- mkDirections.calculate -- closure -- etaPointer: \(x)")
                 
     
             // MARK:-
