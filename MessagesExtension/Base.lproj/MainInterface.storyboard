@@ -35,11 +35,13 @@
                                             <action selector="enable:" destination="ObA-dk-sSI" id="bWN-h4-3LQ"/>
                                         </connections>
                                     </barButtonItem>
+                                    <barButtonItem systemItem="flexibleSpace" id="eIe-w7-chK"/>
                                     <barButtonItem title="Poll" id="HOE-Wq-ed6">
                                         <connections>
                                             <action selector="poll:" destination="ObA-dk-sSI" id="DTZ-BJ-yjw"/>
                                         </connections>
                                     </barButtonItem>
+                                    <barButtonItem systemItem="flexibleSpace" id="nHQ-i4-SjP"/>
                                     <barButtonItem title="Disable" id="x9H-nz-ezd">
                                         <connections>
                                             <action selector="disable:" destination="ObA-dk-sSI" id="0CK-Sq-KH7"/>

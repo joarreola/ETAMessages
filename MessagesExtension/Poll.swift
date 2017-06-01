@@ -110,9 +110,10 @@ class Poll {
     
                 // check pointer
                 self.myEta = etaPointer.load(as: TimeInterval.self)
-                print("-- Poll -- pollRemote -- pointer: \(self.myEta!)")
+                print("-- Poll -- pollRemote -- self.myEta: \(self.myEta!)")
     
                 // fetchRemote()
+                print("-- Poll -- pollRemote -- pre self.fetchRemote()")
                 (rlat, rlong) = self.fetchRemote()
                 if self.remoteFound {
                     print("-- Poll -- pollRemote -- self.fetchRemote() -- rlat: \(String(describing: rlat))")
@@ -141,7 +142,8 @@ class Poll {
                         let remove = false
                         _ = mapUpdate.addPin(packet: self.myPacket, mapView: mapView, remove)
                 
-                        (_, _) = mapUpdate.getEtaDistance(packet: self.myPacket, mapView: mapView, display: display, etaPointer: etaPointer)
+                        //(_, _) = mapUpdate.getEtaDistance(packet: self.myPacket, mapView: mapView, display: display, etaPointer: etaPointer)
+                        mapUpdate.getEtaDistance(packet: self.myPacket, mapView: mapView, display: display, etaPointer: etaPointer)
     
                     }
                     
@@ -163,9 +165,7 @@ class Poll {
                 
                 
             }
-            print("\n===============================================================\n")
-            print("-- Poll -- pollRemote -- Exit")
-            print("\n===============================================================\n")
+
         }
 
     }
@@ -206,6 +206,7 @@ class Poll {
         }
 
     }
+
 }
 
 

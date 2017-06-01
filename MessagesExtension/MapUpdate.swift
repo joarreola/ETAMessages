@@ -33,7 +33,8 @@ class MapUpdate {
         
     }
 
-    func addPin (packet: Location, mapView: MKMapView, _ remove: Bool) -> MKPointAnnotation {
+    //func addPin (packet: Location, mapView: MKMapView, _ remove: Bool) -> MKPointAnnotation {
+    func addPin (packet: Location, mapView: MKMapView, _ remove: Bool) {
     
         print("-- MapUpdate -- addPin: add pin for remoteUser")
     
@@ -63,7 +64,8 @@ class MapUpdate {
             print("-- MapUpdate -- addPin -- added pointAnnotation: \(pointAnnotation)")
         }
             
-        return pointAnnotation
+        //return pointAnnotation
+        return
     }
 
     func centerView (packet: Location, mapView: MKMapView) -> CLLocationCoordinate2D {
@@ -96,8 +98,10 @@ class MapUpdate {
         
     }
 
+    //func getEtaDistance (packet: Location, mapView: MKMapView, display: UILabel,
+    //                     etaPointer: UnsafeMutableRawPointer) -> (eta: TimeInterval?, distance: Double) {
     func getEtaDistance (packet: Location, mapView: MKMapView, display: UILabel,
-                         etaPointer: UnsafeMutableRawPointer) -> (eta: TimeInterval?, distance: Double) {
+                         etaPointer: UnsafeMutableRawPointer) {
 
         print("-- MapUpdate -- getEtaDistance: get eta from local to remote device," +
                     " and travel distance between devices")
@@ -243,8 +247,9 @@ class MapUpdate {
             
             return
         }
-        
-        return (self.eta, self.distance)
+        print("-- MapUpdate -- mkDirections.calculate -- returning after closure")
+        //return (self.eta, self.distance)
+        return
 
     }
 

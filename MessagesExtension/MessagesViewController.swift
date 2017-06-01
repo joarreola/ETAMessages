@@ -19,6 +19,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     var locationManager = CLLocationManager()
     
     var locPacket = Location()
+    var etaStruct = Eta()
 
     @IBOutlet weak var display: UILabel!
     // hardcoding for now
@@ -34,7 +35,6 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     var locPacket_updated: Bool = false
     var enabled_uploading: Bool = false
     var poll_entered: Int = 0
-    let etaPointer = UnsafeMutableRawPointer.allocate(bytes: 64, alignedTo: 8)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,9 +68,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         
         // Use this method to configure the extension and restore previously stored state.
         print("-- willBecomeActive -------------------------------------------------")
-        
-        display.text = ""
-        
+
     }
     
     override func didResignActive(with conversation: MSConversation) {
@@ -189,7 +187,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                         print("-- locationManager -- call check_remote()")
 
                         if !check_remote() {
-                            // failed to fetch RemoteUser's location. 
+                            // failed to fetch RemoteUser's location.
                             // Assumed due to Disabled by RemoteUser
                             //  - reset poll_entered to 0
                             //  - update display
@@ -241,7 +239,9 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         let longitude: CLLocationDegrees
 
         // init etaPointer
-        self.etaPointer.initializeMemory(as: TimeInterval.self, count: 64, to: 0.0)
+        print("-- enable -- pre -- self.etaStruct.initializeMemory()")
+        self.etaStruct.initializeMemory()
+        print("-- enable -- post -- self.etaStruct.initializeMemory()")
 
         // display locPacket
         display.text = ""
@@ -311,15 +311,25 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         print("\n=================================================================\n")
         print("@IBAction func poll()")
         print("\n=================================================================\n")
+
+        // stop location updates to see if it's a source of the crashes
+        self.locationManager.stopUpdatingLocation()
         
         // vars
         var latitude: CLLocationDegrees
         var longitude: CLLocationDegrees
-        var pointAnnotation: MKPointAnnotation
+        //var pointAnnotation: MKPointAnnotation
         poll_entered += 1
 
         // init etaPointer
-        //self.etaPointer.initializeMemory(as: TimeInterval.self, count: 64, to: 0.0)
+        if poll_entered == 1 {
+            print("-- poll -- pre -- self.etaStruct.initializeMemory()")
+            self.etaStruct.initializeMemory()
+            print("-- poll -- post -- self.etaStruct.initializeMemory()")
+        }
+        
+        // stop location updates to see if it's a source of the crashes
+        self.locationManager.stopUpdatingLocation()
 
         // start RemoteUser polling
         //  eta and distance checked at 1 sec interval
@@ -327,13 +337,14 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
             print("\n=============================================================\n")
             print("-- poll -- calling poll.pollRemote()")
             print("\n=============================================================\n")
+    
+            let x = self.etaStruct.loadPointer()
             
-            let x = etaPointer.load(as: TimeInterval.self)
-
             print("-- Poll -- pollRemote -- etaPointer: \(x)")
     
             poll.pollRemote(packet: locPacket, mapView: mapView,
-                            mapUpdate: mapUpdate, display: display, etaPointer: self.etaPointer)
+                            mapUpdate: mapUpdate, display: display,
+                            etaPointer: self.etaStruct.etaPointer)
             
             print("-- poll -- poll(): exit\n")
             
@@ -354,6 +365,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                 "local:\t( \(locPacket.latitude),\n\t\t\(locPacket.longitude) )\n" +
                 "- upload to cloud failed"
             
+            poll_entered = 0;
+
             return
         }
 
@@ -368,6 +381,14 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
             print("-- poll -- poll.fetchRemote() returned nil. Exiting poll()")
             print("\n=============================================================\n")
             
+            // display locPacket
+            display.text = ""
+            display.text =
+                "local:\t( \(locPacket.latitude),\n\t\t\(locPacket.longitude) )\n" +
+            "- fetchRemote failed"
+    
+            poll_entered = 0;
+
             return
         }
         
@@ -381,28 +402,22 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
         // add pin on mapView for remoteUser, re-center mapView, update span
         let remove: Bool = false
-        pointAnnotation = mapUpdate.addPin(packet: locPacket,
-                                           mapView: mapView, remove)
+        mapUpdate.addPin(packet: locPacket, mapView: mapView, remove)
 
         // get ETA and distance
         print("\n=================================================================\n")
         print("-- poll -- mapUpdate.getEtaDistance...")
         print("\n=================================================================\n")
-    
-        // use etaPointer to hold eta data
-        print("-- poll -- self.etaPointer.initializeMemory()")
-        self.etaPointer.initializeMemory(as: TimeInterval.self, count: 64, to: 0.0)
-
-        (self.eta, self.distance) = mapUpdate.getEtaDistance (packet: locPacket,
-                                                              mapView: mapView,
-                                                              display: display,
-                                                              etaPointer: self.etaPointer)
+       
+        mapUpdate.getEtaDistance (packet: locPacket, mapView: mapView, display: display,
+                                  etaPointer: self.etaStruct.etaPointer)
 
         // this allows for uploading of coordinates on location changes
         enabled_uploading = true
 
         print("-- poll -- exit\n")
 
+        return
     }
   
 
@@ -450,11 +465,10 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         //print("-- check_remote -- self.etaPointer.initializeMemory()")
         //self.etaPointer.initializeMemory(as: TimeInterval.self, count: 64, to: 0.0)
 
-        print("-- check_remote -- ()")
-        (_, _) = mapUpdate.getEtaDistance (packet: locPacket,
-                                                              mapView: mapView,
-                                                              display: display,
-                                                              etaPointer: etaPointer)
+        print("-- check_remote -- mapUpdate.getEtaDistance()")
+    
+        mapUpdate.getEtaDistance(packet: locPacket, mapView: mapView, display: display,
+                                  etaPointer: self.etaStruct.etaPointer)
         
         return true
     }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DF2A9F921EDFC45D00485BD1 /* Eta.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF2A9F911EDFC45D00485BD1 /* Eta.swift */; };
 		DFC5DD6B1ED3920900FF8D97 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DFC5DD6A1ED3920900FF8D97 /* Assets.xcassets */; };
 		DFC5DD721ED3920900FF8D97 /* MessagesExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = DFC5DD711ED3920900FF8D97 /* MessagesExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		DFC5DD771ED3920900FF8D97 /* Messages.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFC5DD761ED3920900FF8D97 /* Messages.framework */; };
@@ -46,6 +47,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		DF2A9F911EDFC45D00485BD1 /* Eta.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Eta.swift; sourceTree = "<group>"; };
 		DFC5DD671ED3920900FF8D97 /* ETAMessages.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ETAMessages.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFC5DD6A1ED3920900FF8D97 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DFC5DD6C1ED3920900FF8D97 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 				DFC5DD6A1ED3920900FF8D97 /* Assets.xcassets */,
 				DFC5DD6C1ED3920900FF8D97 /* Info.plist */,
 				DFC5DD8F1ED3A30100FF8D97 /* Location.swift */,
+				DF2A9F911EDFC45D00485BD1 /* Eta.swift */,
 			);
 			path = ETAMessages;
 			sourceTree = "<group>";
@@ -248,6 +251,7 @@
 			files = (
 				DFC5DD941ED3D7C500FF8D97 /* Poll.swift in Sources */,
 				DFC5DD901ED3A30100FF8D97 /* Location.swift in Sources */,
+				DF2A9F921EDFC45D00485BD1 /* Eta.swift in Sources */,
 				DFC5DD921ED3AEC700FF8D97 /* Cloud.swift in Sources */,
 				DFC5DD7A1ED3920900FF8D97 /* MessagesViewController.swift in Sources */,
 				DFD07B801ED4A94700C559BF /* MapUpdate.swift in Sources */,
