@@ -52,7 +52,6 @@ class Poll {
         self.myContainer.privateCloudDatabase.fetch(withRecordID: self.locationRecordID) {
             (record, error) in
             if let error = error {
-                // Insert error handling
                 print("-- Poll -- fetchRemote -- Error: \(self.locationRecordID): \(error)")
             
                 self.remoteFound = false
@@ -64,10 +63,6 @@ class Poll {
             } else {
                 self.latitude = record?["latitude"] as? CLLocationDegrees
                 self.longitude = record?["longitude"] as? CLLocationDegrees
-                //print("-- Poll -- fetchRemote -- closure -- latitude:" +
-                //    " \(String(describing: self.latitude))")
-                //print("-- Poll -- fetchRemote -- closure -- longitude:" +
-                //    " \(String(describing: self.longitude))")
 
                 self.remoteFound = true
                 
@@ -87,7 +82,6 @@ class Poll {
     
     func pollRemote(packet: Location, mapView: MKMapView, mapUpdate: MapUpdate,
                     display: UILabel, etaPointer: UnsafeMutableRawPointer) {
-        // fetchRemote() -> addPin() -> getEtaDistance()
         
         var rlat: CLLocationDegrees?
         var rlong: CLLocationDegrees?
@@ -106,6 +100,8 @@ class Poll {
             self.etaOriginal = etaPointer.load(as: TimeInterval.self)
             print("-- Poll -- pollRemote -- self.etaOriginal: \(self.etaOriginal)")
     
+            // MARK:
+                // FIXME: Add loop-terminating code
             while true {
     
                 // check pointer
@@ -140,9 +136,8 @@ class Poll {
                     OperationQueue.main.addOperation() {
                     
                         let remove = false
-                        _ = mapUpdate.addPin(packet: self.myPacket, mapView: mapView, remove)
+                        mapUpdate.addPin(packet: self.myPacket, mapView: mapView, remove)
                 
-                        //(_, _) = mapUpdate.getEtaDistance(packet: self.myPacket, mapView: mapView, display: display, etaPointer: etaPointer)
                         mapUpdate.getEtaDistance(packet: self.myPacket, mapView: mapView, display: display, etaPointer: etaPointer)
     
                     }
@@ -159,12 +154,12 @@ class Poll {
                     self.etaNotification(etaOriginal: self.etaOriginal, myEta: self.myEta!,
                                          display: display)
                 }
-        
+                // FIXME: switch to NSTime
                 print("-- Poll -- pollRemote -- sleep 2...")
                 sleep(2)
-                
-                
+    
             }
+            // MARK:-
 
         }
 

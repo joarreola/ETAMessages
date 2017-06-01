@@ -64,7 +64,6 @@ class MapUpdate {
             print("-- MapUpdate -- addPin -- added pointAnnotation: \(pointAnnotation)")
         }
             
-        //return pointAnnotation
         return
     }
 
@@ -98,8 +97,6 @@ class MapUpdate {
         
     }
 
-    //func getEtaDistance (packet: Location, mapView: MKMapView, display: UILabel,
-    //                     etaPointer: UnsafeMutableRawPointer) -> (eta: TimeInterval?, distance: Double) {
     func getEtaDistance (packet: Location, mapView: MKMapView, display: UILabel,
                          etaPointer: UnsafeMutableRawPointer) {
 
@@ -238,6 +235,7 @@ class MapUpdate {
                     etaPointer.storeBytes(of: etaValue, as: TimeInterval.self)
                     print("-- MapUpdate -- mkDirections.calculate -- closure -- updated etaPointer")
                 }
+    
                 x = etaPointer.load(as: TimeInterval.self)
                 print("-- MapUpdate -- mkDirections.calculate -- closure -- etaPointer: \(x)")
                 
@@ -248,7 +246,7 @@ class MapUpdate {
             return
         }
         print("-- MapUpdate -- mkDirections.calculate -- returning after closure")
-        //return (self.eta, self.distance)
+    
         return
 
     }

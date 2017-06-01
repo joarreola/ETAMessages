@@ -19,17 +19,17 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     var locationManager = CLLocationManager()
     
     var locPacket = Location()
-    var etaStruct = Eta()
+    var eta = Eta()
 
     @IBOutlet weak var display: UILabel!
     // hardcoding for now
-    var cloud = Cloud(localUser: "Oscar-ipad")
+    var cloud = Cloud(localUser: "Oscar-iphone")
     // hardcoding for now
-    var poll = Poll(remoteUser: "Oscar-iphone")
+    var poll = Poll(remoteUser: "Oscar-ipad")
     
     var mapUpdate = MapUpdate()
     
-    var eta: TimeInterval? = nil
+    //var eta: TimeInterval? = nil
     var etaOriginal: TimeInterval = 0.0
     var distance: Double = 0.0
     var locPacket_updated: Bool = false
@@ -47,12 +47,13 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         self.locationManager.startUpdatingLocation()
         self.mapView.showsUserLocation = true
         self.mapView.delegate = self
-        
+        /*
         func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
             let renderer = MKPolylineRenderer(polyline: overlay as! MKPolyline)
             renderer.strokeColor = UIColor.blue
             return renderer
         }
+        */
     }
     
     override func didReceiveMemoryWarning() {
@@ -161,7 +162,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
                 let cloudRet = cloud.upload(packet: locPacket)
 
-                if cloudRet == nil
+                if cloudRet == false
                 {
                     print("-- locationManager -- cloud.upload() -- Failed")
                 }
@@ -205,7 +206,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                             "\t\t\t\(locPacket.longitude) )\n" +
                             "remote:\t( \(locPacket.remoteLatitude),\n" +
                             "\t\t\t\(locPacket.remoteLongitude) )\n" +
-                            "eta:\t\t\(String(describing: self.eta!)) sec\n" +
+                            "eta:\t\t\(String(describing: self.eta.getEta())) sec\n" +
                             "distance:\t\(String(describing: self.distance)) ft"
                     }
                 }
@@ -217,12 +218,12 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     @nonobjc func locationManager(manager: CLLocationManager!,
                                   didFailWithError error: NSError!) {
 
-        print("didFailWithError: \(error.description)")
-        let alert: UIAlertControllerStyle = UIAlertControllerStyle.alert
-        let errorAlert = UIAlertController(title: "Error",
-                                           message: "Failed to Get Your Location",
-                                           preferredStyle: alert)
-        errorAlert.show(UIViewController(), sender: manager)
+        print("-- locationManager -- didFailWithError: \(error.description)")
+        //let alert: UIAlertControllerStyle = UIAlertControllerStyle.alert
+        //let errorAlert = UIAlertController(title: "Error",
+        //                                   message: "Failed to Get Your Location",
+        //                                   preferredStyle: alert)
+        //errorAlert.show(UIViewController(), sender: manager)
         
     }
 
@@ -239,9 +240,11 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         let longitude: CLLocationDegrees
 
         // init etaPointer
-        print("-- enable -- pre -- self.etaStruct.initializeMemory()")
-        self.etaStruct.initializeMemory()
-        print("-- enable -- post -- self.etaStruct.initializeMemory()")
+        /*
+        print("-- enable -- pre -- self.eta.initializeMemory()")
+        self.eta.initializeMemory()
+        print("-- enable -- post -- self.eta.initializeMemory()")
+        */
 
         // display locPacket
         display.text = ""
@@ -251,7 +254,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         // Upload locPacket to Cloud repository
         // Hardcode localuser for now
         let cloudRet = cloud.upload(packet: locPacket)
-        if (cloudRet == nil) {
+        if (cloudRet == false) {
             print("\n=============================================================\n")
             print("-- enable -- cloud.upload(locPacket) returned nil." +
                 " Exiting enable\n")
@@ -312,7 +315,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         print("@IBAction func poll()")
         print("\n=================================================================\n")
 
-        // stop location updates to see if it's a source of the crashes
+        // stop location updates as this path is for the stationary user
         self.locationManager.stopUpdatingLocation()
         
         // vars
@@ -321,15 +324,14 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         //var pointAnnotation: MKPointAnnotation
         poll_entered += 1
 
-        // init etaPointer
+        // init etaPointer just once
+        /*
         if poll_entered == 1 {
-            print("-- poll -- pre -- self.etaStruct.initializeMemory()")
-            self.etaStruct.initializeMemory()
-            print("-- poll -- post -- self.etaStruct.initializeMemory()")
+            print("-- poll -- pre -- self.eta.initializeMemory()")
+            self.eta.initializeMemory()
+            print("-- poll -- post -- self.eta.initializeMemory()")
         }
-        
-        // stop location updates to see if it's a source of the crashes
-        self.locationManager.stopUpdatingLocation()
+        */
 
         // start RemoteUser polling
         //  eta and distance checked at 1 sec interval
@@ -338,15 +340,15 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
             print("-- poll -- calling poll.pollRemote()")
             print("\n=============================================================\n")
     
-            let x = self.etaStruct.loadPointer()
+            let x = self.eta.loadPointer()
             
-            print("-- Poll -- pollRemote -- etaPointer: \(x)")
+            print("-- Poll -- pollRemote -- self.eta.loadPointer(): \(x)")
     
             poll.pollRemote(packet: locPacket, mapView: mapView,
                             mapUpdate: mapUpdate, display: display,
-                            etaPointer: self.etaStruct.etaPointer)
+                            etaPointer: self.eta.etaPointer)
             
-            print("-- poll -- poll(): exit\n")
+            print("-- poll -- poll(): return\n")
             
             return
         }
@@ -354,7 +356,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         // Upload locPacket to Cloud repository
         // Hardcode localuser for now
         let cloudRet = cloud.upload(packet: locPacket)
-        if (cloudRet == nil) {
+        if cloudRet == false {
             print("\n=============================================================\n")
             print("-- poll -- cloud.upload(locPacket) returned nil. Exiting poll()")
             print("\n=============================================================\n")
@@ -367,6 +369,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
             
             poll_entered = 0;
 
+            print("-- poll -- poll(): return\n")
+
             return
         }
 
@@ -376,7 +380,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
         let fetchRet = poll.fetchRemote()
         
-        if (fetchRet.latitude == nil) {
+        if fetchRet.latitude == nil {
             print("\n=============================================================\n")
             print("-- poll -- poll.fetchRemote() returned nil. Exiting poll()")
             print("\n=============================================================\n")
@@ -389,6 +393,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     
             poll_entered = 0;
 
+            print("-- poll -- poll(): return\n")
+    
             return
         }
         
@@ -410,12 +416,12 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         print("\n=================================================================\n")
        
         mapUpdate.getEtaDistance (packet: locPacket, mapView: mapView, display: display,
-                                  etaPointer: self.etaStruct.etaPointer)
+                                  etaPointer: self.eta.etaPointer)
 
         // this allows for uploading of coordinates on location changes
         enabled_uploading = true
 
-        print("-- poll -- exit\n")
+        print("-- poll -- return\n")
 
         return
     }
@@ -434,8 +440,22 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         
         let remove: Bool = true
         
-        _ = mapUpdate.addPin(packet: locPacket, mapView: mapView, remove)
+        mapUpdate.addPin(packet: locPacket, mapView: mapView, remove)
         
+        // refresh mapView for possible poll use
+        let center = CLLocationCoordinate2D(latitude: locPacket.latitude,
+                                            longitude: locPacket.longitude)
+        
+        let span: MKCoordinateSpan = MKCoordinateSpan(latitudeDelta: 0.1,
+                                                      longitudeDelta: 0.1)
+        
+        let region = MKCoordinateRegion(center: center, span: span)
+        
+        self.mapView.setRegion(region, animated: true)
+    
+        // stop location updates as this path is for the stationary user
+        self.locationManager.stopUpdatingLocation()
+
         enabled_uploading = false
         
     }
@@ -468,7 +488,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         print("-- check_remote -- mapUpdate.getEtaDistance()")
     
         mapUpdate.getEtaDistance(packet: locPacket, mapView: mapView, display: display,
-                                  etaPointer: self.etaStruct.etaPointer)
+                                  etaPointer: self.eta.etaPointer)
         
         return true
     }

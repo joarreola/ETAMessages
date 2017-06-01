@@ -35,10 +35,11 @@ class Cloud {
 
     }
     
-    func upload(packet: Location) -> Bool? {
-        // Called by the enabl() @IBAction function on a tap of the 'Enable' button
+    func upload(packet: Location) -> Bool {
+        // Called by enable() and poll() @IBAction functions
+        print("-- Cloud -- in upload()")
 
-        var ret: Bool? = false
+        var ret: Bool = false
 
         self.locationRecordID = CKRecordID(recordName: self.localUser)
         print("-- Cloud -- upload -- locationRecordID: \(locationRecordID)")
@@ -92,7 +93,7 @@ class Cloud {
     
         print("-- Cloud -- upload: end: self.recordSaved: \(self.recordSaved)")
     
-        (self.recordSaved) ? (ret = true) : (ret = nil)
+        (self.recordSaved) ? (ret = true) : (ret = false)
         
         return ret
 
@@ -101,7 +102,7 @@ class Cloud {
     func fetchRecord() -> (latitude: CLLocationDegrees?, longitude: CLLocationDegrees?) {
         // fetch a record
         
-        print("-- Cloud -- fetchRecord -- CKContainer: iCloud.edu.ucsc.ETAMessages")
+        print("-- Cloud -- in fetchRecord()")
     
         // start semaphore block to synchronize completion handler
         let sem = DispatchSemaphore(value: 0)
@@ -143,7 +144,7 @@ class Cloud {
     func saveRecord() {
         // save a record
         
-        print("-- Cloud -- saveRecord()")
+        print("-- Cloud -- in saveRecord()")
         
         // start semaphore block to synchronize completion handler
         let sem = DispatchSemaphore(value: 0)
@@ -174,7 +175,7 @@ class Cloud {
     func deleteRecord() {
         // delete a record
         
-        print("-- Cloud -- deleteRecord")
+        print("-- Cloud -- in deleteRecord()")
         
         // start semaphore block to synchronize completion handler
         let sem = DispatchSemaphore(value: 0)

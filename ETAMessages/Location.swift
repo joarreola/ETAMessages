@@ -16,6 +16,7 @@ struct Location {
     var remoteLongitude: CLLocationDegrees
 
     init() {
+        print("-- Location -- init")
         self.latitude = 0.0
         self.longitude = 0.0
         self.remoteLatitude = 0.0

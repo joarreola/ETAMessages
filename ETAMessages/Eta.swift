@@ -8,28 +8,39 @@
 
 import Foundation
 
-struct Eta {
+class Eta {
     var etaPointer: UnsafeMutableRawPointer
-    var eta: TimeInterval
+    var eta: TimeInterval?
     
     init() {
         print("-- Eta -- init")
         self.eta = 0.0
         self.etaPointer = UnsafeMutableRawPointer.allocate(bytes: 64, alignedTo: 1)
-    }
-    
-    mutating func initializeMemory() {
         self.etaPointer.bindMemory(to: TimeInterval.self, capacity: 64)
-        self.etaPointer.initializeMemory(as: TimeInterval.self, count: 64, to: 0.0)
+        //self.etaPointer.initializeMemory(as: TimeInterval.self, count: 64, to: 0.0)
+        self.etaPointer.storeBytes(of: 0.0, as: TimeInterval.self)
+
     }
     
-    mutating func deallocatePointer() {
+    func loadPointer(data: TimeInterval) {
+        self.etaPointer.storeBytes(of: data, as: TimeInterval.self)
+    }
+    
+    func deallocatePointer() {
         self.etaPointer.deallocate(bytes: 64, alignedTo: 8)
     }
     
-    mutating func loadPointer() -> TimeInterval {
+    func loadPointer() -> TimeInterval {
         let x = self.etaPointer.load(as: TimeInterval.self)
         
         return x
+    }
+    
+    func setEta(eta: TimeInterval) {
+        self.eta = eta
+    }
+    
+    func getEta() -> TimeInterval {
+        return self.eta!
     }
 }
