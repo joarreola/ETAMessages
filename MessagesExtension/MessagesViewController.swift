@@ -159,7 +159,16 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
             //if enabled_uploading || poll_entered > 0
             if enabled_uploading
             {
+                // refresh mapView
+                print("-- locationManager -- refresh mapView")
+                let center = CLLocationCoordinate2D(latitude: locPacket.latitude,
+                                                    longitude: locPacket.longitude)
+                let span: MKCoordinateSpan = MKCoordinateSpan(latitudeDelta: 0.1,
+                                                              longitudeDelta: 0.1)
+                let region = MKCoordinateRegion(center: center, span: span)
+                self.mapView.setRegion(region, animated: true)
 
+                // upload coordinates
                 let cloudRet = cloud.upload(packet: locPacket)
 
                 if cloudRet == false
