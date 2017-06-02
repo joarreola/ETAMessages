@@ -50,6 +50,10 @@ Nuked in the last push. Will need to redo.
   UnsafeMutableRawPointer (for eta data storage in completionhandled
   closures). Getting better, but not yet cleared.
   
+  The latest commit looks much better. No crashes yet on devs or
+  simulator. Converted Eta from struct to class, and fully inited
+  pointer in Eta's init().
+  
 - What should a reviewer do in order to test your project?
   Location coordinates can be updated in the simulator via Debug->Location.
   Depending on the app mode (mobile/stationary) Debug->Location will move
@@ -57,6 +61,10 @@ Nuked in the last push. Will need to redo.
   
 - Are there any problems that you know you need to fix?
   Yes, the random crashes mentioned above.
+  
+  The latest commit looks much better. No crashes yet on devs or
+  simulator. Converted Eta from struct to class, and fully inited
+  pointer in Eta's init().
   
 - Are there any areas where you would like help?
   Not yet. Got good input/suggestions from Michael in 1st code submittion, will work on them.
