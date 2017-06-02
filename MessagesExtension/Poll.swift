@@ -89,6 +89,7 @@ class Poll {
         
         // below code runs in a separate thread
         let queque = OperationQueue()
+
         queque.addOperation {
             print("\n===============================================================\n")
             print("-- Poll -- pollRemote -- in queque.addOperation()")
@@ -154,6 +155,14 @@ class Poll {
                     self.etaNotification(etaOriginal: self.etaOriginal, myEta: self.myEta!,
                                          display: display)
                 }
+                
+                // ETA == have-arrived
+                if Double(self.myEta!) < 50.0 {
+                    print("-- Poll -- pollRemote -- stopping pollRemote")
+
+                    break
+                }
+                
                 // FIXME: switch to NSTime
                 print("-- Poll -- pollRemote -- sleep 2...")
                 sleep(2)
@@ -174,15 +183,16 @@ class Poll {
             print("Poll - etaNotification -- myEta == etaOriginal")
             
         case (etaOriginal / 4) * 3:
-    
+
             print("Poll - etaNotification -- myEta == etaOriginal/4 * 3")
+            /*
             display.text = ""
             display.text =
                 "local:\t\t( \(myPacket.latitude),\n\t\t\t\(myPacket.longitude) )\n" +
                 "remote:\t( \(myPacket.remoteLatitude),\n\t\t\t\(myPacket.remoteLongitude) )\n" +
                 "eta:\t\t\((myEta)) sec\n" +
                 "3/4's notification"
-    
+            */
         case (etaOriginal / 4) * 2:
             
             print("Poll - etaNotification -- myEta == etaOriginal/4 * 2")
@@ -191,9 +201,19 @@ class Poll {
             
             print("Poll - etaNotification -- myEta == etaOriginal/4 * 1")
             
-        case 0:
-            
-            print("Poll - etaNotification -- myEta == 0")
+        case 0.0...50.0:
+
+            // do UI updates in the main thread
+            OperationQueue.main.addOperation() {
+                
+                print("Poll - etaNotification -- myEta == 0")
+                display.text = ""
+                display.text =
+                    "local:\t\t( \(self.myPacket.latitude),\n\t\t\t\(self.myPacket.longitude) )\n" +
+                    "remote:\t( \(self.myPacket.remoteLatitude),\n\t\t\t\(self.myPacket.remoteLongitude) )\n" +
+                    "eta:\t\t\((myEta)) sec\n" +
+                    "Oscar Has arrived"
+            }
             
         default:
             
