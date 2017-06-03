@@ -1,8 +1,6 @@
 # ETAMessages
 Class project
 
-Nuked in the last push. Will need to redo.
-
 - How did you organize the project's code and resources?
 
   - Cloud.swift
@@ -14,12 +12,16 @@ Nuked in the last push. Will need to redo.
   - MapUpdate.swift
     Manage mapView updates (addPin) and getting ETA and distance between
     local and remote devices/users.
+    
+    Moved getEtaDistance() to Eta.swift.
+    Fixed centerView for when remote location is under local location.
   
   - Location.switch
     Location coordinate structure.
     
-  - Eta.switch
+  - Eta.swift
     eta value and etaPointer structure.
+    moved in getEtaDistance() from MapUpdate.swift
     
   - MessagesViewController.swift
     Manages the UI implemented in IBACtion functions enable() and poll().
