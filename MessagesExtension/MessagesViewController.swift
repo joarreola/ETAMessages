@@ -333,16 +333,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         //var pointAnnotation: MKPointAnnotation
         poll_entered += 1
 
-        // init etaPointer just once
-        /*
-        if poll_entered == 1 {
-            print("-- poll -- pre -- self.eta.initializeMemory()")
-            self.eta.initializeMemory()
-            print("-- poll -- post -- self.eta.initializeMemory()")
-        }
-        */
-
-        // start RemoteUser polling
+        // start RemoteUser polling on 2nd tap... for now
         //  eta and distance checked at 1 sec interval
         if poll_entered > 1 {
             print("\n=============================================================\n")
@@ -354,7 +345,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
             print("-- Poll -- pollRemote -- self.eta.loadPointer(): \(x)")
     
             poll.pollRemote(packet: locPacket, mapView: mapView,
-                            mapUpdate: mapUpdate, display: display,
+                            mapUpdate: mapUpdate, eta: eta, display: display,
                             etaPointer: self.eta.etaPointer)
             
             print("-- poll -- poll(): return\n")
@@ -419,16 +410,16 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         let remove: Bool = false
         mapUpdate.addPin(packet: locPacket, mapView: mapView, remove)
 
-        // get ETA and distance
+        // get ETA and distance, [and refresh mapview from eta.getEtaDistance: FIX]
         print("\n=================================================================\n")
-        print("-- poll -- mapUpdate.getEtaDistance...")
+        print("-- poll -- eta.getEtaDistance...")
         print("\n=================================================================\n")
        
-        mapUpdate.getEtaDistance (packet: locPacket, mapView: mapView, display: display,
-                                  etaPointer: self.eta.etaPointer)
+        eta.getEtaDistance (packet: locPacket, mapView: mapView, display: display,
+                                  etaPointer: self.eta.etaPointer, mapUpdate: mapUpdate)
 
         // this allows for uploading of coordinates on location changes
-        enabled_uploading = true
+        //enabled_uploading = true // WHY HERE?
 
         print("-- poll -- return\n")
 
@@ -494,10 +485,10 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         //print("-- check_remote -- self.etaPointer.initializeMemory()")
         //self.etaPointer.initializeMemory(as: TimeInterval.self, count: 64, to: 0.0)
 
-        print("-- check_remote -- mapUpdate.getEtaDistance()")
+        print("-- check_remote -- eta.getEtaDistance()")
     
-        mapUpdate.getEtaDistance(packet: locPacket, mapView: mapView, display: display,
-                                  etaPointer: self.eta.etaPointer)
+        eta.getEtaDistance(packet: locPacket, mapView: mapView, display: display,
+                                  etaPointer: self.eta.etaPointer, mapUpdate: mapUpdate)
         
         return true
     }

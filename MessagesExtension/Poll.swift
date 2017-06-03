@@ -80,7 +80,7 @@ class Poll {
         return(self.latitude, self.longitude)
     }
     
-    func pollRemote(packet: Location, mapView: MKMapView, mapUpdate: MapUpdate,
+    func pollRemote(packet: Location, mapView: MKMapView, mapUpdate: MapUpdate, eta: Eta,
                     display: UILabel, etaPointer: UnsafeMutableRawPointer) {
         
         var rlat: CLLocationDegrees?
@@ -139,7 +139,7 @@ class Poll {
                         let remove = false
                         mapUpdate.addPin(packet: self.myPacket, mapView: mapView, remove)
                 
-                        mapUpdate.getEtaDistance(packet: self.myPacket, mapView: mapView, display: display, etaPointer: etaPointer)
+                        eta.getEtaDistance(packet: self.myPacket, mapView: mapView, display: display, etaPointer: etaPointer, mapUpdate: mapUpdate)
     
                     }
                     
