@@ -11,6 +11,8 @@ Class project
     
     - Instantiate MapUpdate vs. passing. Call mapUpdate.displaUpdate() for
       display/console updates.
+    - Remove etaPointer parameter from pollRemote() and as arg to
+      eta.getEtaDistance() call.
     
   - MapUpdate.swift
     Manage mapView updates (addPin) and getting ETA and distance between
@@ -30,6 +32,8 @@ Class project
     
     - Remove display parameter. Instantiate MapUpdate. Call mapUpdate.
       displayUpdate().
+    - Add set/getDistance(). Remove eta and etaPointer from params list.
+      Use setEta(), setDistance(), self.loadPointer() in getEtaDistance().
     
   - MessagesViewController.swift
     Manages the UI implemented in IBACtion functions enable() and poll().
@@ -41,6 +45,8 @@ Class project
     info. At times it reports specific app state, sort of like a console.
     
     - Call mapUpdate.refreshMapView(). Call mapUpdate.displayUpdate().
+    - Remove etaPointer parameter. Use eta.loadPointer(). Remove etaPointer
+      to eta.getEtaDistance() calls.
  
 - What is the project supposed to do?
   In an environment consiting of two mobile devices, the ETAMessages app
