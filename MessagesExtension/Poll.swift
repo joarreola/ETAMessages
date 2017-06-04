@@ -80,12 +80,13 @@ class Poll {
         return(self.latitude, self.longitude)
     }
     
-    func pollRemote(packet: Location, mapView: MKMapView, mapUpdate: MapUpdate, eta: Eta,
-                    display: UILabel, etaPointer: UnsafeMutableRawPointer) {
+    func pollRemote(packet: Location, mapView: MKMapView, eta: Eta, etaPointer: UnsafeMutableRawPointer,
+                    display: UILabel) {
         
         var rlat: CLLocationDegrees?
         var rlong: CLLocationDegrees?
         self.myPacket = packet
+        let mapUpdate = MapUpdate();
         
         // below code runs in a separate thread
         let queque = OperationQueue()
@@ -137,9 +138,10 @@ class Poll {
                     OperationQueue.main.addOperation() {
                     
                         let remove = false
-                        mapUpdate.addPin(packet: self.myPacket, mapView: mapView, remove)
+                        mapUpdate.addPin(packet: self.myPacket, mapView: mapView, remove: remove)
                 
-                        eta.getEtaDistance(packet: self.myPacket, mapView: mapView, display: display, etaPointer: etaPointer, mapUpdate: mapUpdate)
+                        eta.getEtaDistance(packet: self.myPacket, mapView: mapView,
+                                           etaPointer: etaPointer, display: display)
     
                     }
                     
@@ -152,8 +154,7 @@ class Poll {
                 }
                 
                 if  self.myEta != self.etaOriginal {
-                    self.etaNotification(etaOriginal: self.etaOriginal, myEta: self.myEta!,
-                                         display: display)
+                    self.etaNotification(etaOriginal: self.etaOriginal, myEta: self.myEta!, display: display)
                 }
                 
                 // ETA == have-arrived
@@ -177,6 +178,8 @@ class Poll {
     func etaNotification(etaOriginal: TimeInterval, myEta: TimeInterval, display: UILabel) {
         print("Poll - etaNotification -- etaOriginal: \(etaOriginal) myEta: \(myEta)")
         
+        let mapUpdate = MapUpdate()
+
         switch myEta {
         case etaOriginal:
             
@@ -207,12 +210,14 @@ class Poll {
             OperationQueue.main.addOperation() {
                 
                 print("Poll - etaNotification -- myEta == 0")
-                display.text = ""
-                display.text =
-                    "local:\t\t( \(self.myPacket.latitude),\n\t\t\t\(self.myPacket.longitude) )\n" +
-                    "remote:\t( \(self.myPacket.remoteLatitude),\n\t\t\t\(self.myPacket.remoteLongitude) )\n" +
-                    "eta:\t\t\((myEta)) sec\n" +
-                    "Oscar Has arrived"
+                var string = [String]()
+                string.append("local:\t\t( \(self.myPacket.latitude),\n\t\t\t\(self.myPacket.longitude) )\n")
+                string.append("remote:\t( \(self.myPacket.remoteLatitude),\n\t\t\t\(self.myPacket.remoteLongitude) )\n")
+                string.append("eta:\t\t\((myEta)) sec\n")
+                string.append("Oscar Has arrived")
+                
+                mapUpdate.displayUpdate(display: display, stringArray: string)
+    
             }
             
         default:
