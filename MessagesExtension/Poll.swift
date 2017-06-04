@@ -45,7 +45,8 @@ class Poll {
     }
     
     func fetchRemote() -> (latitude: CLLocationDegrees?, longitude: CLLocationDegrees?) {
-        
+        print("-- Poll -- fetchRemote")
+
         // start semaphore block to synchronize completion handler
         let sem = DispatchSemaphore(value: 0)
 
@@ -80,13 +81,14 @@ class Poll {
         return(self.latitude, self.longitude)
     }
     
-    func pollRemote(packet: Location, mapView: MKMapView, eta: Eta, etaPointer: UnsafeMutableRawPointer,
-                    display: UILabel) {
-        
+    func pollRemote(packet: Location, mapView: MKMapView, eta: Eta, display: UILabel) {
+        print("-- Poll -- pollRemote")
+
         var rlat: CLLocationDegrees?
         var rlong: CLLocationDegrees?
         self.myPacket = packet
         let mapUpdate = MapUpdate();
+        //let eta = Eta();
         
         // below code runs in a separate thread
         let queque = OperationQueue()
@@ -95,24 +97,25 @@ class Poll {
             print("\n===============================================================\n")
             print("-- Poll -- pollRemote -- in queque.addOperation()")
             print("\n===============================================================\n")
-            
-            print("-- Poll -- pollRemote -- into while{}")
-            
+    
             // etaOriginal
-            self.etaOriginal = etaPointer.load(as: TimeInterval.self)
+            self.etaOriginal = eta.loadPointer()
             print("-- Poll -- pollRemote -- self.etaOriginal: \(self.etaOriginal)")
     
             // MARK:
                 // FIXME: Add loop-terminating code
+            print("-- Poll -- pollRemote -- into while{}")
             while true {
     
                 // check pointer
-                self.myEta = etaPointer.load(as: TimeInterval.self)
+                self.myEta = eta.loadPointer()
                 print("-- Poll -- pollRemote -- self.myEta: \(self.myEta!)")
     
                 // fetchRemote()
                 print("-- Poll -- pollRemote -- pre self.fetchRemote()")
+    
                 (rlat, rlong) = self.fetchRemote()
+
                 if self.remoteFound {
                     print("-- Poll -- pollRemote -- self.fetchRemote() -- rlat: \(String(describing: rlat))")
                     print("-- Poll -- pollRemote -- self.fetchRemote() -- rlong: \(String(describing: rlong))")
@@ -140,8 +143,7 @@ class Poll {
                         let remove = false
                         mapUpdate.addPin(packet: self.myPacket, mapView: mapView, remove: remove)
                 
-                        eta.getEtaDistance(packet: self.myPacket, mapView: mapView,
-                                           etaPointer: etaPointer, display: display)
+                        eta.getEtaDistance(packet: self.myPacket, mapView: mapView, display: display)
     
                     }
                     
@@ -157,7 +159,7 @@ class Poll {
                     self.etaNotification(etaOriginal: self.etaOriginal, myEta: self.myEta!, display: display)
                 }
                 
-                // ETA == have-arrived
+                // ETA == has-arrived
                 if Double(self.myEta!) < 50.0 {
                     print("-- Poll -- pollRemote -- stopping pollRemote")
 
@@ -168,12 +170,13 @@ class Poll {
                 print("-- Poll -- pollRemote -- sleep 2...")
                 sleep(2)
     
-            }
+            } // end of while{}
             // MARK:-
 
-        }
+        } // end of queque.addOperation{}
 
-    }
+    } // end of pollRemote()
+
 
     func etaNotification(etaOriginal: TimeInterval, myEta: TimeInterval, display: UILabel) {
         print("Poll - etaNotification -- etaOriginal: \(etaOriginal) myEta: \(myEta)")
