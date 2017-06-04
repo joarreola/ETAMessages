@@ -14,10 +14,14 @@ import CloudKit
 
 struct PointAnnotations {
     var pointAnnotation: MKPointAnnotation?
+    
+    init() {
+        self.pointAnnotation = nil
+    }
 }
 
 class MapUpdate {
-    public var pointAnnotationStruct = PointAnnotations()
+    static var pointAnnotationStruct: PointAnnotations = PointAnnotations()
 
     //func addPin (packet: Location, mapView: MKMapView, _ remove: Bool) -> MKPointAnnotation {
     func addPin (packet: Location, mapView: MKMapView, remove: Bool) {
@@ -28,15 +32,17 @@ class MapUpdate {
         
         pointAnnotation = MKPointAnnotation()
         
-        if pointAnnotationStruct.pointAnnotation != nil {
-            mapView.removeAnnotation(pointAnnotationStruct.pointAnnotation!)
-            print("-- MapUpdate -- addPin -- removed pointAnnotation: \(String(describing: pointAnnotationStruct.pointAnnotation))")
+        if MapUpdate.pointAnnotationStruct.pointAnnotation != nil {
+            print("-- MapUpdate -- addPin -- removing pointAnnotation: \(String(describing: MapUpdate.pointAnnotationStruct.pointAnnotation))")
+            
+            mapView.removeAnnotation(MapUpdate.pointAnnotationStruct.pointAnnotation!)
+
         }
             
         pointAnnotation.coordinate = CLLocationCoordinate2D(latitude: packet.remoteLatitude,
                                                             longitude: packet.remoteLongitude)
-            
-        pointAnnotationStruct.pointAnnotation = pointAnnotation
+        
+        MapUpdate.pointAnnotationStruct.pointAnnotation = pointAnnotation
 
         if remove {
             print("-- MapUpdate -- addPin -- removed pointAnnotation: \(pointAnnotation)")
