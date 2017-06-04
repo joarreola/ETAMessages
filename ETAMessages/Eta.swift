@@ -47,12 +47,14 @@ class Eta {
         return self.eta!
     }
     
-    func getEtaDistance (packet: Location, mapView: MKMapView, display: UILabel,
-                         etaPointer: UnsafeMutableRawPointer, mapUpdate: MapUpdate) {
+    func getEtaDistance (packet: Location, mapView: MKMapView, etaPointer: UnsafeMutableRawPointer,
+                         display: UILabel) {
         
         print("-- Eta -- getEtaDistance: get eta from local to remote device," +
             " and travel distance between devices")
         
+        let mapUpdate = MapUpdate()
+
         let mkDirReq: MKDirectionsRequest = MKDirectionsRequest()
         
         mkDirReq.source = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: packet.latitude, longitude: packet.longitude), addressDictionary: nil))
@@ -159,6 +161,10 @@ class Eta {
                 
                     // FIXME: move out to mapUpdate.refreshMapView()
                 
+                // for now continute to refresh mapView here
+                mapUpdate.refreshMapView(packet: packet, mapView: mapView, delta: Double(delta))
+
+                /*
                 let center = mapUpdate.centerView(packet: packet, mapView: mapView)
                 
                 let span: MKCoordinateSpan = MKCoordinateSpan(latitudeDelta: CLLocationDegrees(delta),
@@ -169,15 +175,16 @@ class Eta {
                 print("-- Eta -- mkDirections.calculate -- closure -- re-span mapView...")
                 
                 mapView.setRegion(region, animated: true)
+                */
                 
-                // display locPacket
-                display.text = ""
-                display.text =
-                    "local:\t\t( \(packet.latitude),\n\t\t\t\(packet.longitude) )\n" +
-                    "remote:\t( \(packet.remoteLatitude),\n\t\t\t\(packet.remoteLongitude) )\n" +
-                    "eta:\t\t\((self.eta!)) sec\n" +
-                "distance:\t\((self.distance)) ft"
-                    //
+                print("Poll - etaNotification -- myEta == 0")
+                var string = [String]()
+                string.append("local:\t\t( \(packet.latitude),\n\t\t\t\(packet.longitude) )\n")
+                string.append("remote:\t( \(packet.remoteLatitude),\n\t\t\t\(packet.remoteLongitude) )\n")
+                string.append("eta:\t\t\((self.eta!)) sec\n")
+                string.append("distance:\t\((self.distance)) ft")
+                
+                mapUpdate.displayUpdate(display: display, stringArray: string)
 
                 // check etaPointer
                 var x = etaPointer.load(as: TimeInterval.self)
