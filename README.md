@@ -9,12 +9,17 @@ Class project
   - Poll.swift
     Poll iCloud repo for content changes in remote-User's location record.
     
+    - Instantiate MapUpdate vs. passing. Call mapUpdate.displaUpdate() for
+      display/console updates.
+    
   - MapUpdate.swift
     Manage mapView updates (addPin) and getting ETA and distance between
     local and remote devices/users.
     
-    Moved getEtaDistance() to Eta.swift.
-    Fixed centerView for when remote location is under local location.
+    - Moved getEtaDistance() to Eta.swift.
+    - Fixed centerView for when remote location is under local location.
+    - Remove unused var declarations. Update centerView() logic. create
+      refreshMapView() method. Create displayUpdate() method.
   
   - Location.switch
     Location coordinate structure.
@@ -22,6 +27,9 @@ Class project
   - Eta.swift
     eta value and etaPointer structure.
     moved in getEtaDistance() from MapUpdate.swift
+    
+    - Remove display parameter. Instantiate MapUpdate. Call mapUpdate.
+      displayUpdate().
     
   - MessagesViewController.swift
     Manages the UI implemented in IBACtion functions enable() and poll().
@@ -31,6 +39,8 @@ Class project
     
     A UILabel notes local and remote coordinate data, and eta/distance
     info. At times it reports specific app state, sort of like a console.
+    
+    - Call mapUpdate.refreshMapView(). Call mapUpdate.displayUpdate().
  
 - What is the project supposed to do?
   In an environment consiting of two mobile devices, the ETAMessages app
@@ -77,5 +87,15 @@ Class project
   
   
 - TODO:
+
+	- Move map refreshing code out of getEtaDistance() closure. Focus just
+	  on eta and distance data.
+	- Convert poll-loop to GrandCentralStation per class slides.
+	- Implement thread synchronization with conditional-vars/mutexes.
+	- Implement local notifications. Or possibly just note if enabled/disabled
+	  by changing the button item background? :-)
+	- Consider pop-up menu to enable/disable stationary and mobile modes.
+	  Removing the Disable button.
+	- Add directions overlay to mapView.
   - Implement the Notifications.
   
