@@ -22,6 +22,7 @@ Class project
     - Fixed centerView for when remote location is under local location.
     - Remove unused var declarations. Update centerView() logic. create
       refreshMapView() method. Create displayUpdate() method.
+    - Fix multiple pointAnnotations bug after previous commit.
   
   - Location.switch
     Location coordinate structure.
