@@ -19,14 +19,13 @@ class Eta {
         self.eta = 0.0
         self.etaPointer = UnsafeMutableRawPointer.allocate(bytes: 64, alignedTo: 1)
         self.etaPointer.bindMemory(to: TimeInterval.self, capacity: 64)
-        //self.etaPointer.initializeMemory(as: TimeInterval.self, count: 64, to: 0.0)
         self.etaPointer.storeBytes(of: 0.0, as: TimeInterval.self)
         self.distance = 0.0
 
     }
     
-    func loadPointer(data: TimeInterval) {
-        self.etaPointer.storeBytes(of: data, as: TimeInterval.self)
+    func storePointer(eta: TimeInterval) {
+        self.etaPointer.storeBytes(of: eta, as: TimeInterval.self)
     }
     
     func deallocatePointer() {
@@ -47,8 +46,15 @@ class Eta {
         return self.eta!
     }
     
-    func getEtaDistance (packet: Location, mapView: MKMapView, etaPointer: UnsafeMutableRawPointer,
-                         display: UILabel) {
+    func setDistance(distance: Double) {
+        self.distance = distance
+    }
+    
+    func getDistance() -> Double {
+        return self.distance
+    }
+    
+    func getEtaDistance (packet: Location, mapView: MKMapView, display: UILabel) {
         
         print("-- Eta -- getEtaDistance: get eta from local to remote device," +
             " and travel distance between devices")
@@ -86,8 +92,9 @@ class Eta {
                 print("-- Eta -- mkDirections.calculate -- closure -- Distance: \(route.distance) meters")
                 print("-- Eta -- mkDirections.calculate -- closure -- ETA: \(route.expectedTravelTime) sec")
                 
-                self.eta = route.expectedTravelTime
-                self.distance = route.distance * 3.2808
+                self.setEta(eta: route.expectedTravelTime)
+                self.setDistance(distance: route.distance * 3.2808)
+
                 print("-- Eta -- mkDirections.calculate -- closure -- self.distance: \(self.distance) feet")
                 print("-- Eta -- mkDirections.calculate -- closure -- self.eta: \(self.eta!)) sec")
                 
@@ -159,45 +166,34 @@ class Eta {
                 }
                 print("-- Eta -- mkDirections.calculate -- closure -- delta: \(delta)")
                 
-                    // FIXME: move out to mapUpdate.refreshMapView()
-                
+                    // FIXME: move refreshMapView() and displayUpdate() out
                 // for now continute to refresh mapView here
+                print("-- Eta -- mkDirections.calculate -- closure -- call mapUpdate.refreshMapView...")
+                
                 mapUpdate.refreshMapView(packet: packet, mapView: mapView, delta: Double(delta))
 
-                /*
-                let center = mapUpdate.centerView(packet: packet, mapView: mapView)
-                
-                let span: MKCoordinateSpan = MKCoordinateSpan(latitudeDelta: CLLocationDegrees(delta),
-                                                              longitudeDelta: CLLocationDegrees(delta))
-                
-                let region = MKCoordinateRegion(center: center, span: span)
-                
-                print("-- Eta -- mkDirections.calculate -- closure -- re-span mapView...")
-                
-                mapView.setRegion(region, animated: true)
-                */
-                
-                print("Poll - etaNotification -- myEta == 0")
+
                 var string = [String]()
                 string.append("local:\t\t( \(packet.latitude),\n\t\t\t\(packet.longitude) )\n")
                 string.append("remote:\t( \(packet.remoteLatitude),\n\t\t\t\(packet.remoteLongitude) )\n")
                 string.append("eta:\t\t\((self.eta!)) sec\n")
                 string.append("distance:\t\((self.distance)) ft")
                 
+                print("-- Eta -- mkDirections.calculate -- closure -- call mapUpdate.displayUpdate...")
+                
                 mapUpdate.displayUpdate(display: display, stringArray: string)
 
                 // check etaPointer
-                var x = etaPointer.load(as: TimeInterval.self)
+                var x = self.loadPointer()
                 print("-- Eta -- mkDirections.calculate -- closure -- etaPointer: \(x)")
                 
                 // set
                 if self.eta != nil {
-                    let etaValue = self.eta!
-                    etaPointer.storeBytes(of: etaValue, as: TimeInterval.self)
+                    self.storePointer(eta: self.eta!)
                     print("-- Eta -- mkDirections.calculate -- closure -- updated etaPointer")
                 }
                 
-                x = etaPointer.load(as: TimeInterval.self)
+                x = self.loadPointer()
                 print("-- Eta -- mkDirections.calculate -- closure -- etaPointer: \(x)")
                 
                 
