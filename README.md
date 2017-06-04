@@ -43,18 +43,20 @@ Class project
   updated to zoom in. Mobile device location coordinates are updated to
   iCloud repo. ETA and distance data extraction is working. The polling
   for remore-location code is in, but needs some refinements. A while loop
-  is launched in a separate thread, but need to add loop termination code.
-  The etaNotifications() method exits but need refinement. Need to create
+  is launched in a separate thread, will switch to GCS.
+  The etaNotifications() method exits but needs refinement. Need to create
   an appropriate function to translate distance to mapView span.
   
 - What is not?
   Getting random app crashes, likely assocciated with the use of an
   UnsafeMutableRawPointer (for eta data storage in completionhandled
   closures). Getting better, but not yet cleared.
-  
+   
   The latest commit looks much better. No crashes yet on devs or
   simulator. Converted Eta from struct to class, and fully inited
   pointer in Eta's init().
+  
+  The random crashes are gone.
   
 - What should a reviewer do in order to test your project?
   Location coordinates can be updated in the simulator via Debug->Location.
@@ -68,6 +70,12 @@ Class project
   simulator. Converted Eta from struct to class, and fully inited
   pointer in Eta's init().
   
+  The random crashes are gone.
+  
 - Are there any areas where you would like help?
   Not yet. Got good input/suggestions from Michael in 1st code submittion, will work on them.
+  
+  
+- TODO:
+  - Implement the Notifications.
   
