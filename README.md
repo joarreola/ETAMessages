@@ -104,5 +104,10 @@ Class project
 	- Consider pop-up menu to enable/disable stationary and mobile modes.
 	  Removing the Disable button.
 	- Add directions overlay to mapView.
-  - Implement the Notifications.
+	- Instantiate pe-user Location instances
+  	- Implement Class Diagram classes:
+  		- EtaNotifications
+  		- Uploading
+  		- GpsLocation
+  		- Users
   
