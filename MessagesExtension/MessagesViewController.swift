@@ -12,7 +12,8 @@ import MapKit
 import CoreLocation
 
 
-class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CLLocationManagerDelegate {
+class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
+                                                    CLLocationManagerDelegate {
     
     @IBOutlet weak var mapView: MKMapView!
     
@@ -41,7 +42,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        print("-- viewDidLoad ------------------------------------------------------")
+        print("-- viewDidLoad -----------------------------------------------------")
         
         self.locationManager.delegate = self
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -49,13 +50,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         self.locationManager.startUpdatingLocation()
         self.mapView.showsUserLocation = true
         self.mapView.delegate = self
-        /*
-        func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-            let renderer = MKPolylineRenderer(polyline: overlay as! MKPolyline)
-            renderer.strokeColor = UIColor.blue
-            return renderer
-        }
-        */
+
     }
     
     override func didReceiveMemoryWarning() {
@@ -70,7 +65,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         // This will happen when the extension is about to present UI.
         
         // Use this method to configure the extension and restore previously stored state.
-        print("-- willBecomeActive -------------------------------------------------")
+        print("-- willBecomeActive ------------------------------------------------")
 
     }
     
@@ -82,7 +77,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         // Use this method to release shared resources, save user data, invalidate timers,
         // and store enough state information to restore your extension to its current state
         // in case it is terminated later.
-        print("-- didResignActive --------------------------------------------------")
+        print("-- didResignActive -------------------------------------------------")
     }
    
     override func didReceive(_ message: MSMessage, conversation: MSConversation) {
@@ -90,33 +85,33 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         // extension on a remote device.
         
         // Use this method to trigger UI updates in response to the message.
-        print("-- didReceive -------------------------------------------------------")
+        print("-- didReceive ------------------------------------------------------")
     }
     
     override func didStartSending(_ message: MSMessage, conversation: MSConversation) {
         // Called when the user taps the send button.
-        print("-- didStartSending --------------------------------------------------")
+        print("-- didStartSending -------------------------------------------------")
     }
     
     override func didCancelSending(_ message: MSMessage, conversation: MSConversation) {
         // Called when the user deletes the message without sending it.
     
         // Use this to clean up state related to the deleted message.
-        print("-- didCancelSending -------------------------------------------------")
+        print("-- didCancelSending ------------------------------------------------")
     }
     
     override func willTransition(to presentationStyle: MSMessagesAppPresentationStyle) {
         // Called before the extension transitions to a new presentation style.
     
         // Use this method to prepare for the change in presentation style.
-        print("-- willTransition ---------------------------------------------------")
+        print("-- willTransition --------------------------------------------------")
     }
     
     override func didTransition(to presentationStyle: MSMessagesAppPresentationStyle) {
         // Called after the extension transitions to a new presentation style.
     
         // Use this method to finalize any behaviors associated with the change in presentation style.
-        print("-- didTransition ----------------------------------------------------")
+        print("-- didTransition ---------------------------------------------------")
     }
     
     func locationManager(_ manager: CLLocationManager,
@@ -131,7 +126,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         // refresh mapView from locationManager just once
         if !locPacket_updated {
             
-            self.mapUpdate.refreshMapView(packet: lmPacket, mapView: mapView, delta: 0.05)
+            self.mapUpdate.refreshMapView(packet: lmPacket, mapView: mapView,
+                                          delta: 0.05)
 
             var string = [String]()
             string.append("locationManager...")
@@ -140,7 +136,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         }
 
         // stuff Location structure if a new location
-        if lmPacket.latitude != locPacket.latitude || lmPacket.longitude != locPacket.longitude {
+        if lmPacket.latitude != locPacket.latitude ||
+            lmPacket.longitude != locPacket.longitude {
 
             print("-- locationManager -- location: '\(location!)'")
 
@@ -151,7 +148,6 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
             locPacket_updated = true
 
             //upload to iCloud if enabled_uploading set in IBAction enable()
-            //if enabled_uploading || poll_entered > 0
             if enabled_uploading
             {
                 // refresh mapView
@@ -178,7 +174,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                         string.append("local:\t( \(locPacket.latitude),\n")
                         string.append("\t\t\(locPacket.longitude) )")
                         
-                        mapUpdate.displayUpdate(display: display, stringArray: string)
+                        mapUpdate.displayUpdate(display: display,
+                                                stringArray: string)
 
                     }
                     else
@@ -198,7 +195,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                             string.append("- REMOTE USER LOCATION NOT FOUND\n")
                             string.append("- TAP Poll TO RESTART SESSION...")
                             
-                            mapUpdate.displayUpdate(display: display, stringArray: string)
+                            mapUpdate.displayUpdate(display: display,
+                                                    stringArray: string)
                             
                         }
                         
@@ -210,14 +208,14 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                         string.append("eta:\t\t\(String(describing: self.eta.getEta())) sec\n")
                         string.append("distance:\t\(String(describing: self.distance)) ft")
                         
-                        mapUpdate.displayUpdate(display: display, stringArray: string)
+                        mapUpdate.displayUpdate(display: display,
+                                                stringArray: string)
                         
                     }
-                }
-            }
-
-        }
-    }
+                } // cloud update succeeded
+            } // do if enabled_uploading set
+        } // do if location coordinates changed
+    } // end of locationManager function/callback
     
     @nonobjc func locationManager(manager: CLLocationManager!,
                                   didFailWithError error: NSError!) {
@@ -235,9 +233,9 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     @IBAction func enable(_ sender: UIBarButtonItem) {
         // Entry point to start uploading the current location to iCloud repository
 
-        print("\n=================================================================\n")
-        print("@IBAction func enable()\n")
-        print("\n=================================================================\n")
+        print("\n=================================================================")
+        print("@IBAction func enable()")
+        print("===================================================================")
 
         // vars
         let latitude: CLLocationDegrees
@@ -252,10 +250,10 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         // Hardcode localuser for now
         let cloudRet = cloud.upload(packet: locPacket)
         if (cloudRet == false) {
-            print("\n=============================================================\n")
+            print("\n==============================================================")
             print("-- enable -- cloud.upload(locPacket) returned nil." +
-                " Exiting enable\n")
-            print("\n=============================================================\n")
+                " Exiting enable")
+            print("================================================================")
             
             // display locPacket
             var string = [String]()
@@ -271,9 +269,9 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         let fetchRet = cloud.fetchRecord()
 
         if (fetchRet.latitude == nil) {
-            print("\n=============================================================\n")
+            print("\n==============================================================")
             print("-- enable -- cloud.fetchRecord() returned nil: Exiting enable")
-            print("\n=============================================================\n")
+            print("================================================================")
             
             // display locPacket
             var string = [String]()
@@ -303,9 +301,9 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     @IBAction func poll(_ sender: UIBarButtonItem) {
         // check for remoteUser record
 
-        print("\n=================================================================\n")
+        print("\n==================================================================")
         print("@IBAction func poll()")
-        print("\n=================================================================\n")
+        print("====================================================================")
 
         // stop location updates as this path is for the stationary user
         self.locationManager.stopUpdatingLocation()
@@ -319,16 +317,16 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         // start RemoteUser polling on 2nd tap... for now
         //  eta and distance checked at 1 sec interval
         if poll_entered > 1 {
-            print("\n=============================================================\n")
+            print("\n==============================================================")
             print("-- poll -- calling poll.pollRemote()")
-            print("\n=============================================================\n")
+            print("================================================================")
     
             let x = self.eta.loadPointer()
             
             print("-- Poll -- pollRemote -- self.eta.loadPointer(): \(x)")
     
             poll.pollRemote(packet: locPacket, mapView: mapView, eta: eta,
-                            etaPointer: self.eta.etaPointer, display: display)
+                            display: display)
             
             print("-- poll -- poll(): return\n")
             
@@ -337,11 +335,15 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         
         // Upload locPacket to Cloud repository
         // Hardcode localuser for now
+        print("\n==================================================================")
+        print("-- poll --  upload local record once...")
+        print("====================================================================")
         let cloudRet = cloud.upload(packet: locPacket)
+
         if cloudRet == false {
-            print("\n=============================================================\n")
+            print("\n==============================================================")
             print("-- poll -- cloud.upload(locPacket) returned nil. Exiting poll()")
-            print("\n=============================================================\n")
+            print("================================================================")
             
             // display locPacket
             var string = [String]()
@@ -357,16 +359,16 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
             return
         }
 
-        print("\n=================================================================\n")
-        print("-- poll --  check for remote location record...")
-        print("\n=================================================================\n")
+        print("\n==================================================================")
+        print("-- poll --  poll.fetchRemote for remote location record...")
+        print("====================================================================")
 
         let fetchRet = poll.fetchRemote()
         
         if fetchRet.latitude == nil {
-            print("\n=============================================================\n")
+            print("\n==============================================================")
             print("-- poll -- poll.fetchRemote() returned nil. Exiting poll()")
-            print("\n=============================================================\n")
+            print("================================================================")
             
             // display locPacket
             var string = [String]()
@@ -391,15 +393,18 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         locPacket.setRemoteLongitude(longitude: longitude)
 
         // add pin on mapView for remoteUser, re-center mapView, update span
+        print("\n==================================================================")
+        print("-- poll -- mapUpdate.addPin...")
+        print("====================================================================")
+        
         mapUpdate.addPin(packet: locPacket, mapView: mapView, remove: false)
 
         // get ETA and distance, [and refresh mapview from eta.getEtaDistance: FIX]
-        print("\n=================================================================\n")
+        print("\n==================================================================")
         print("-- poll -- eta.getEtaDistance...")
-        print("\n=================================================================\n")
+        print("====================================================================")
        
-        eta.getEtaDistance (packet: locPacket, mapView: mapView,
-                            etaPointer: self.eta.etaPointer, display: display)
+        eta.getEtaDistance (packet: locPacket, mapView: mapView, display: display)
 
         // this allows for uploading of coordinates on location changes
         //enabled_uploading = true // WHY HERE?
@@ -413,9 +418,9 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     @IBAction func disable(_ sender: UIBarButtonItem) {
         // Remove location record from iCloud repository.
 
-        print("\n===============================================================\n")
-        print("@IBAction func disable()\n")
-        print("\n===============================================================\n")
+        print("\n==================================================================")
+        print("@IBAction func disable()")
+        print("====================================================================")
 
         // clear display
         let string = [String]()
@@ -427,7 +432,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         mapUpdate.addPin(packet: locPacket, mapView: mapView, remove: true)
         
         // refresh mapView for possible poll use
-        self.mapUpdate.refreshMapView(packet: locPacket, mapView: mapView, delta: 0.1)
+        self.mapUpdate.refreshMapView(packet: locPacket, mapView: mapView,
+                                      delta: 0.1)
         
         // stop location updates as this path is for the stationary user
         self.locationManager.stopUpdatingLocation()
@@ -437,9 +443,9 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     }
     
     func check_remote() -> Bool {
-        print("\n===============================================================\n")
+        print("\n=================================================================")
         print("func check_remote()")
-        print("\n===============================================================\n")
+        print("===================================================================")
 
         var latitude: CLLocationDegrees
         var longitude: CLLocationDegrees
@@ -462,7 +468,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
         print("-- check_remote -- eta.getEtaDistance()")
     
-        eta.getEtaDistance(packet: locPacket, mapView: mapView, etaPointer: self.eta.etaPointer, display: display)
+        eta.getEtaDistance(packet: locPacket, mapView: mapView, display: display)
         
         return true
     }
