@@ -16,7 +16,7 @@ class Uploading {
     var longitude: CLLocationDegrees = 0.0
     var mapUdate: MapUpdate
     var cloud: Cloud
-    static var enabled_uploading: Bool = false
+    static var enabledUploading: Bool = false
 
     init(name: String) {
         self.mapUdate = MapUpdate()
@@ -48,14 +48,14 @@ class Uploading {
         print("--Uploading -- enableUploading")
 
         // this allows for uploading of coordinates on LocalUser location changes
-        Uploading.enabled_uploading = true
+        Uploading.enabledUploading = true
     }
     
     func disableUploading() {
         print("--Uploading -- disableUploading")
         
         // this allows for uploading of coordinates on LocalUser location changes
-        Uploading.enabled_uploading = false
+        Uploading.enabledUploading = false
     }
 
 }
