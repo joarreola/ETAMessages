@@ -11,16 +11,16 @@ import CoreLocation
 import CloudKit
 import UIKit
 
-class Uploading {
+class UploadingManager {
     var latitude: CLLocationDegrees = 0.0
     var longitude: CLLocationDegrees = 0.0
     var mapUdate: MapUpdate
-    var cloud: Cloud
+    var cloud: CloudAdapter
     static var enabledUploading: Bool = false
 
     init(name: String) {
         self.mapUdate = MapUpdate()
-        self.cloud  = Cloud(userName: name)
+        self.cloud  = CloudAdapter(userName: name)
     }
 
     func uploadLocation(packet: Location) -> Bool {
@@ -48,14 +48,14 @@ class Uploading {
         print("--Uploading -- enableUploading")
 
         // this allows for uploading of coordinates on LocalUser location changes
-        Uploading.enabledUploading = true
+        UploadingManager.enabledUploading = true
     }
     
     func disableUploading() {
         print("--Uploading -- disableUploading")
         
         // this allows for uploading of coordinates on LocalUser location changes
-        Uploading.enabledUploading = false
+        UploadingManager.enabledUploading = false
     }
 
 }
