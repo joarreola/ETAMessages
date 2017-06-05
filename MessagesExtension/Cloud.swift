@@ -20,8 +20,8 @@ class Cloud {
     private var longitude: CLLocationDegrees?
     
     
-    init(localUser: String) {
-        self.localUser = localUser
+    init(userName: String) {
+        self.localUser = userName
         
         self.locationRecordID = CKRecordID(recordName: self.localUser)
         print("-- Cloud -- init -- locationRecordID: \(locationRecordID)")
