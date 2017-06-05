@@ -13,6 +13,9 @@ Class project
       display/console updates.
     - Remove etaPointer parameter from pollRemote() and as arg to
       eta.getEtaDistance() call.
+    - Create my Distance property. Populate eta from eta.getEta() v.s
+      from pointer. Call eta.getEtaDistance() in background v.s man thread.
+      Make UI updating calls in main thread.
     
   - MapUpdate.swift
     Manage mapView updates (addPin) and getting ETA and distance between
@@ -23,6 +26,7 @@ Class project
     - Remove unused var declarations. Update centerView() logic. create
       refreshMapView() method. Create displayUpdate() method.
     - Fix multiple pointAnnotations bug after previous commit.
+    -  Replace delta param with eta instance. Add delta-computing switch.
   
   - Location.switch
     Location coordinate structure.
@@ -35,6 +39,7 @@ Class project
       displayUpdate().
     - Add set/getDistance(). Remove eta and etaPointer from params list.
       Use setEta(), setDistance(), self.loadPointer() in getEtaDistance().
+    - Initialize eta and distance to nil.
     
   - MessagesViewController.swift
     Manages the UI implemented in IBACtion functions enable() and poll().
@@ -48,6 +53,8 @@ Class project
     - Call mapUpdate.refreshMapView(). Call mapUpdate.displayUpdate().
     - Remove etaPointer parameter. Use eta.loadPointer(). Remove etaPointer
       to eta.getEtaDistance() calls.
+    - Update all mapUpdate.refreshMapView() calls to pass eta instance
+      vs. delta value.
  
 - What is the project supposed to do?
   In an environment consiting of two mobile devices, the ETAMessages app
@@ -96,7 +103,7 @@ Class project
 - TODO:
 
 	- Move map refreshing code out of getEtaDistance() closure. Focus just
-	  on eta and distance data.
+	  on eta and distance data. -- DONE --
 	- Convert poll-loop to GrandCentralStation per class slides.
 	- Implement thread synchronization with conditional-vars/mutexes.
 	- Implement local notifications. Or possibly just note if enabled/disabled
