@@ -6,6 +6,8 @@ Class project
   - Cloud.swift
     Upload, fetch, save, delete a record to/from iCloud repo.
     
+    - Update semaphore.wait() from distantFuture to 5 sec.
+    
   - Poll.swift
     Poll iCloud repo for content changes in remote-User's location record.
     
@@ -17,6 +19,7 @@ Class project
       from pointer. Call eta.getEtaDistance() in background v.s man thread.
       Make UI updating calls in main thread.
     - Convert pollRemote() to GrandCentralStation per class slides.
+    - Update semaphore.wait() from distantFuture to 5 sec.
     
   - MapUpdate.swift
     Manage mapView updates (addPin) and getting ETA and distance between
@@ -106,6 +109,7 @@ Class project
 	- Move map refreshing code out of getEtaDistance() closure. Focus just
 	  on eta and distance data. -- DONE
 	- Convert poll-loop to GrandCentralStation per class slides. -- DONE
+	- update all semaphores to 5 seconds
 	- sleep -> NStimmer
 	- Implement thread synchronization with conditional-vars/mutexes.
 	- Implement local notifications. Or possibly just note if enabled/disabled
