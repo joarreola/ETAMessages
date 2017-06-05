@@ -126,9 +126,9 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         // refresh mapView from locationManager just once
         if !locPacket_updated {
             
-            self.mapUpdate.refreshMapView(packet: lmPacket, mapView: mapView,
-                                          delta: 0.05)
-
+            //self.mapUpdate.refreshMapView(packet: lmPacket, mapView: mapView, delta: 0.05)
+            self.mapUpdate.refreshMapView(packet: lmPacket, mapView: mapView, eta: eta)
+                                          
             var string = [String]()
             string.append("locationManager...")
             mapUpdate.displayUpdate(display: display, stringArray: string)
@@ -152,9 +152,9 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
             {
                 // refresh mapView
                 print("-- locationManager -- refresh mapView")
-                self.mapUpdate.refreshMapView(packet: locPacket, mapView: mapView,
-                                              delta: 0.01)
-
+                //self.mapUpdate.refreshMapView(packet: locPacket, mapView: mapView, delta: 0.01)
+                self.mapUpdate.refreshMapView(packet: locPacket, mapView: mapView, eta: eta)
+    
                 // upload coordinates
                 let cloudRet = cloud.upload(packet: locPacket)
 
@@ -257,14 +257,14 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
             
             // display locPacket
             var string = [String]()
-            string.append("local: \t( \(locPacket.latitude),\n \t\t\(locPacket.longitude) )\n")
+            string.append("local: \t( \(locPacket.latitude),\n \t\t\(locPacket.longitude) )")
             string.append("- upload to cloud failed")
 
             mapUpdate.displayUpdate(display: display, stringArray: string)
 
             return
         }
-        
+
         // recheck
         let fetchRet = cloud.fetchRecord()
 
@@ -289,8 +289,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         print("-- enable -- longitude: \(longitude)")
 
         // refresh mapView
-        self.mapUpdate.refreshMapView(packet: locPacket, mapView: mapView, delta: 0.1)
-
+        self.mapUpdate.refreshMapView(packet: locPacket, mapView: mapView, eta: eta)
+    
         // this allows for uploading of coordinates on LocalUser location changes
         enabled_uploading = true
 
@@ -311,19 +311,40 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         // vars
         var latitude: CLLocationDegrees
         var longitude: CLLocationDegrees
-        //var pointAnnotation: MKPointAnnotation
         poll_entered += 1
 
         // start RemoteUser polling on 2nd tap... for now
         //  eta and distance checked at 1 sec interval
         if poll_entered > 1 {
+    
+
+            print("-- Poll -- eta: \(String(describing: self.eta.getEta())) -- distance: \(String(describing: self.eta.getDistance()))")
+    
+            // add pin on mapView for remoteUser, re-center mapView, update span
+            print("\n==================================================================")
+            print("-- poll -- mapUpdate.addPin...")
+            print("====================================================================")
+            
+            self.mapUpdate.addPin(packet: locPacket, mapView: mapView, remove: false)
+
+            print("\n==================================================================")
+            print("-- poll -- mapUpdate.refreshMapView...")
+            print("====================================================================")
+            
+            self.mapUpdate.refreshMapView(packet: locPacket, mapView: mapView, eta: eta)
+
+            // note coordinates set, eta and distance on display
+            var string = [String]()
+            string.append("local:\t\t( \(locPacket.latitude),\n\t\t\t\(locPacket.longitude) )\n")
+            string.append("remote:\t( \(locPacket.remoteLatitude),\n\t\t\t\(locPacket.remoteLongitude) )\n")
+            string.append("eta:\t\t\(eta.eta!) sec\n")
+            string.append("distance:\t\(eta.distance!) ft")
+            
+            mapUpdate.displayUpdate(display: display, stringArray: string)
+
             print("\n==============================================================")
             print("-- poll -- calling poll.pollRemote()")
             print("================================================================")
-    
-            let x = self.eta.loadPointer()
-            
-            print("-- Poll -- pollRemote -- self.eta.loadPointer(): \(x)")
     
             poll.pollRemote(packet: locPacket, mapView: mapView, eta: eta,
                             display: display)
@@ -357,7 +378,15 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
             print("-- poll -- poll(): return\n")
 
             return
+    
         }
+        
+        // display locPacket
+        var string = [String]()
+        string.append("local:\t( \(locPacket.latitude),\n\t\t\(locPacket.longitude) )")
+        
+        mapUpdate.displayUpdate(display: display, stringArray: string)
+
 
         print("\n==================================================================")
         print("-- poll --  poll.fetchRemote for remote location record...")
@@ -372,7 +401,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
             
             // display locPacket
             var string = [String]()
-            string.append("local:\t( \(locPacket.latitude),\n\t\t\(locPacket.longitude) )\n")
+            string.append("local:\t( \(locPacket.latitude),\n\t\t\(locPacket.longitude) )")
             string.append("- fetchRemote failed")
             
             mapUpdate.displayUpdate(display: display, stringArray: string)
@@ -382,15 +411,25 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
             print("-- poll -- poll(): return\n")
     
             return
+            
         }
         
         (latitude, longitude) = fetchRet as! (CLLocationDegrees, CLLocationDegrees)
         print("-- poll -- remote latitude: \(latitude)")
         print("-- poll -- remote longitude: \(longitude)")
-        
+
         // stuff Location structure
         locPacket.setRemoteLatitude(latitude: latitude)
         locPacket.setRemoteLongitude(longitude: longitude)
+        
+        // note coordinates set on display
+        var stringNew = [String]()
+        print("-- poll -- string size: \(string.count)")
+        stringNew.append("local:\t\t( \(locPacket.latitude),\n\t\t\t\(locPacket.longitude) )\n")
+        stringNew.append("remote:\t( \(locPacket.remoteLatitude),\n\t\t\t\(locPacket.remoteLongitude) )")
+        
+        mapUpdate.displayUpdate(display: display, stringArray: stringNew)
+        
 
         // add pin on mapView for remoteUser, re-center mapView, update span
         print("\n==================================================================")
@@ -404,10 +443,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         print("-- poll -- eta.getEtaDistance...")
         print("====================================================================")
        
-        eta.getEtaDistance (packet: locPacket, mapView: mapView, display: display)
-
-        // this allows for uploading of coordinates on location changes
-        //enabled_uploading = true // WHY HERE?
+        //eta.getEtaDistance (packet: locPacket, mapView: mapView, display: display)
+        eta.getEtaDistance (packet: locPacket)
 
         print("-- poll -- return\n")
 
@@ -424,6 +461,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
 
         // clear display
         let string = [String]()
+        print("-- disable -- string size: \(string.count)")
 
         mapUpdate.displayUpdate(display: display, stringArray: string)
         
@@ -432,8 +470,10 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         mapUpdate.addPin(packet: locPacket, mapView: mapView, remove: true)
         
         // refresh mapView for possible poll use
-        self.mapUpdate.refreshMapView(packet: locPacket, mapView: mapView,
-                                      delta: 0.1)
+        locPacket.remoteLatitude = 0.0
+        locPacket.remoteLongitude = 0.0
+        self.mapUpdate.refreshMapView(packet: locPacket, mapView: mapView, eta: eta)
+        
         
         // stop location updates as this path is for the stationary user
         self.locationManager.stopUpdatingLocation()
@@ -462,14 +502,12 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
 
         print("-- check_remote -- mapUpdate.addPin()")
         mapUpdate.addPin(packet: locPacket, mapView: mapView, remove: false)
-        
-        //print("-- check_remote -- self.etaPointer.initializeMemory()")
-        //self.etaPointer.initializeMemory(as: TimeInterval.self, count: 64, to: 0.0)
-
-        print("-- check_remote -- eta.getEtaDistance()")
     
-        eta.getEtaDistance(packet: locPacket, mapView: mapView, display: display)
+        //eta.getEtaDistance(packet: locPacket, mapView: mapView, display: display)
+        print("-- check_remote -- eta.getEtaDistance()")
         
+        eta.getEtaDistance(packet: locPacket)
+
         return true
     }
 
