@@ -104,8 +104,8 @@ Class project
 - TODO:
 
 	- Move map refreshing code out of getEtaDistance() closure. Focus just
-	  on eta and distance data. -- DONE --
-	- Convert poll-loop to GrandCentralStation per class slides.
+	  on eta and distance data. -- DONE
+	- Convert poll-loop to GrandCentralStation per class slides. -- DONE
 	- sleep -> NStimmer
 	- Implement thread synchronization with conditional-vars/mutexes.
 	- Implement local notifications. Or possibly just note if enabled/disabled
