@@ -19,7 +19,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
     
     var locationManager = CLLocationManager()
     
-    var eta = Eta()
+    var eta = EtaAdapter()
 
     @IBOutlet weak var display: UILabel!
 
@@ -27,10 +27,10 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
     let localUser: Users = Users(name: "Oscar-iphone")
     let remoteUser: Users = Users(name: "Oscar-ipad")
     
-    var cloud = Cloud(userName: "Oscar-iphone")
+    var cloud = CloudAdapter(userName: "Oscar-iphone")
     var poll = Poll(remoteUser: "Oscar-ipad")
     var mapUpdate = MapUpdate()
-    var uploading: Uploading = Uploading(name: "Oscar-iphone")
+    var uploading: UploadingManager = UploadingManager(name: "Oscar-iphone")
     
     //var eta: TimeInterval? = nil
     var etaOriginal: TimeInterval = 0.0
@@ -146,7 +146,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
             locPacket_updated = true
 
             //upload to iCloud if enabled_uploading set in IBAction enable()
-            if Uploading.enabledUploading
+            if UploadingManager.enabledUploading
             {
                 // refresh mapView
                 print("-- locationManager -- refresh mapView")
