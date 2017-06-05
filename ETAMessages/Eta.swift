@@ -12,15 +12,15 @@ import MapKit
 class Eta {
     var etaPointer: UnsafeMutableRawPointer
     var eta: TimeInterval?
-    var distance: Double
+    var distance: Double?
     
     init() {
         print("-- Eta -- init")
-        self.eta = 0.0
+        self.eta = nil
         self.etaPointer = UnsafeMutableRawPointer.allocate(bytes: 64, alignedTo: 1)
         self.etaPointer.bindMemory(to: TimeInterval.self, capacity: 64)
         self.etaPointer.storeBytes(of: 0.0, as: TimeInterval.self)
-        self.distance = 0.0
+        self.distance = nil
 
     }
     
@@ -42,24 +42,24 @@ class Eta {
         self.eta = eta
     }
     
-    func getEta() -> TimeInterval {
-        return self.eta!
+    func getEta() -> TimeInterval? {
+        return self.eta
     }
     
     func setDistance(distance: Double) {
         self.distance = distance
     }
     
-    func getDistance() -> Double {
+    func getDistance() -> Double? {
         return self.distance
     }
     
-    func getEtaDistance (packet: Location, mapView: MKMapView, display: UILabel) {
-        
+    //func getEtaDistance (packet: Location, mapView: MKMapView, display: UILabel) {
+    func getEtaDistance (packet: Location) {
         print("-- Eta -- getEtaDistance: get eta from local to remote device," +
             " and travel distance between devices")
         
-        let mapUpdate = MapUpdate()
+        //let mapUpdate = MapUpdate()
 
         let mkDirReq: MKDirectionsRequest = MKDirectionsRequest()
         
@@ -81,6 +81,7 @@ class Eta {
                 print("-- Eta -- mkDirections.calculate -- Error: \(String(describing: error))")
                 
                 self.eta = nil
+                self.distance = nil
                 
                 return
             }
@@ -95,93 +96,12 @@ class Eta {
                 self.setEta(eta: route.expectedTravelTime)
                 self.setDistance(distance: route.distance * 3.2808)
 
-                print("-- Eta -- mkDirections.calculate -- closure -- self.distance: \(self.distance) feet")
+                print("-- Eta -- mkDirections.calculate -- closure -- self.distance: \(String(describing: self.distance!)) feet")
                 print("-- Eta -- mkDirections.calculate -- closure -- self.eta: \(self.eta!)) sec")
                 
                 for step in route.steps {
                     print(step.instructions)
                 }
-                // MARK:
-                    // FIXME: Do linear-regression
-                    // FIXME: Move to mapUpdate
-                // compute a delta to reset the span. Use switch for now
-                let delta: Float
-                switch self.distance {
-                    
-                case 0..<10:
-                    
-                    delta = 0.0001
-                    
-                case 10..<50:
-                    
-                    delta = 0.0001
-                    
-                case 50..<250:
-                    
-                    delta = 0.0001
-                    
-                case 250..<500:
-                    
-                    delta = 0.0005
-                    
-                case 500..<1000:
-                    
-                    delta = 0.005
-                    
-                case 1000..<2500:
-                    
-                    delta = 0.007
-                    
-                case 2500..<5000:
-                    
-                    delta = 0.01
-                    
-                case 5000..<10000:
-                    
-                    delta = 0.05
-                    
-                case 10000..<20000:
-                    
-                    delta = 0.1
-                    
-                case 20000..<40000:
-                    
-                    delta = 0.13
-                    
-                case 40000..<50000:
-                    
-                    delta = 0.2
-                    
-                case 50000..<100000:
-                    
-                    delta = 0.3
-                    
-                case 100000..<200000:
-                    
-                    delta = 0.4
-                    
-                default:
-                    
-                    delta = 0.1
-                }
-                print("-- Eta -- mkDirections.calculate -- closure -- delta: \(delta)")
-                
-                    // FIXME: move refreshMapView() and displayUpdate() out
-                // for now continute to refresh mapView here
-                print("-- Eta -- mkDirections.calculate -- closure -- call mapUpdate.refreshMapView...")
-                
-                mapUpdate.refreshMapView(packet: packet, mapView: mapView, delta: Double(delta))
-
-
-                var string = [String]()
-                string.append("local:\t\t( \(packet.latitude),\n\t\t\t\(packet.longitude) )\n")
-                string.append("remote:\t( \(packet.remoteLatitude),\n\t\t\t\(packet.remoteLongitude) )\n")
-                string.append("eta:\t\t\((self.eta!)) sec\n")
-                string.append("distance:\t\((self.distance)) ft")
-                
-                print("-- Eta -- mkDirections.calculate -- closure -- call mapUpdate.displayUpdate...")
-                
-                mapUpdate.displayUpdate(display: display, stringArray: string)
 
                 // check etaPointer
                 var x = self.loadPointer()
@@ -196,8 +116,6 @@ class Eta {
                 x = self.loadPointer()
                 print("-- Eta -- mkDirections.calculate -- closure -- etaPointer: \(x)")
                 
-                
-                // MARK:-
             }
             
             return
