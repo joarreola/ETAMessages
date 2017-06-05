@@ -23,7 +23,6 @@ struct PointAnnotations {
 class MapUpdate {
     static var pointAnnotationStruct: PointAnnotations = PointAnnotations()
 
-    //func addPin (packet: Location, mapView: MKMapView, _ remove: Bool) -> MKPointAnnotation {
     func addPin (packet: Location, mapView: MKMapView, remove: Bool) {
     
         print("-- MapUpdate -- addPin: add pin for remoteUser")
@@ -39,8 +38,8 @@ class MapUpdate {
 
         }
             
-        pointAnnotation.coordinate = CLLocationCoordinate2D(latitude: packet.remoteLatitude,
-                                                            longitude: packet.remoteLongitude)
+        pointAnnotation.coordinate = CLLocationCoordinate2D(latitude: packet.latitude,
+                                                            longitude: packet.longitude)
         
         MapUpdate.pointAnnotationStruct.pointAnnotation = pointAnnotation
 
@@ -55,7 +54,25 @@ class MapUpdate {
         return
     }
 
-    func centerView (packet: Location, mapView: MKMapView) -> CLLocationCoordinate2D {
+    func centerView (localpacket: Location, mapView: MKMapView) -> CLLocationCoordinate2D {
+        print("-- MapUpdate -- centerView: center mapView on local user")
+        
+        var center: CLLocationCoordinate2D
+        
+        print("-- MapUpdate -- centerView -- lLat: \(localpacket.latitude)  lLong: \(localpacket.longitude)")
+        
+        print("-- MapUpdate -- centerView -- centerLatitude: \(localpacket.latitude) centerLongitude: \(localpacket.longitude)")
+            
+        center = CLLocationCoordinate2D(latitude: localpacket.latitude,
+                                            longitude: localpacket.longitude)
+            
+        mapView.setCenter(center, animated: true)
+            
+        return center
+            
+    }
+    
+    func centerView (localpacket: Location, remotePacket: Location, mapView: MKMapView) -> CLLocationCoordinate2D {
         print("-- MapUpdate -- centerView: center mapView between local and remote users")
     
         var centerLatitude: CLLocationDegrees
@@ -64,13 +81,13 @@ class MapUpdate {
         let latDistTo: CLLocationDegrees
         let lngDistTo: CLLocationDegrees
 
-        print("-- MapUpdate -- centerView -- lLat: \(packet.latitude)  lLong: \(packet.longitude) rLat: \(packet.remoteLatitude) rLong: \(packet.remoteLongitude)")
+        print("-- MapUpdate -- centerView -- lLat: \(localpacket.latitude)  lLong: \(localpacket.longitude) rLat: \(remotePacket.latitude) rLong: \(remotePacket.longitude)")
 
-        if packet.remoteLatitude == 0.0 {
-            print("-- MapUpdate -- centerView -- centerLatitude: \(packet.latitude) centerLongitude: \(packet.longitude)")
+        if remotePacket.latitude == 0.0 {
+            print("-- MapUpdate -- centerView -- centerLatitude: \(localpacket.latitude) centerLongitude: \(localpacket.longitude)")
             
-            center = CLLocationCoordinate2D(latitude: packet.latitude,
-                                            longitude: packet.longitude)
+            center = CLLocationCoordinate2D(latitude: localpacket.latitude,
+                                            longitude: localpacket.longitude)
 
             mapView.setCenter(center, animated: true)
 
@@ -79,24 +96,24 @@ class MapUpdate {
         }
         
         // for local and remote location pairs
-        (packet.latitude < packet.remoteLatitude) ?
-                (latDistTo = packet.latitude.distance(to: packet.remoteLatitude) / 2) :
-                (latDistTo = packet.remoteLatitude.distance(to: packet.latitude) / 2)
+        (localpacket.latitude < remotePacket.latitude) ?
+                (latDistTo = localpacket.latitude.distance(to: remotePacket.latitude) / 2) :
+                (latDistTo = remotePacket.latitude.distance(to: localpacket.latitude) / 2)
 
-        (packet.longitude < packet.remoteLongitude) ?
-                (lngDistTo = packet.longitude.distance(to: packet.remoteLongitude) / 2) :
-                (lngDistTo = packet.remoteLongitude.distance(to: packet.longitude) / 2)
+        (localpacket.longitude < remotePacket.longitude) ?
+                (lngDistTo = localpacket.longitude.distance(to: remotePacket.longitude) / 2) :
+                (lngDistTo = remotePacket.longitude.distance(to: localpacket.longitude) / 2)
         
         print("-- MapUpdate -- centerView -- latDistTo: \(latDistTo) lngDistTo: \(lngDistTo)")
         
-        (packet.latitude > packet.remoteLatitude) ?
-            (centerLatitude = packet.remoteLatitude + latDistTo) :
-            (centerLatitude = packet.latitude + latDistTo)
+        (localpacket.latitude > remotePacket.latitude) ?
+            (centerLatitude = remotePacket.latitude + latDistTo) :
+            (centerLatitude = localpacket.latitude + latDistTo)
 
         // negative longitudes
-        (packet.longitude > packet.remoteLongitude) ?
-            (centerLongitude = packet.remoteLongitude + lngDistTo) :
-            (centerLongitude = packet.longitude + lngDistTo)
+        (localpacket.longitude > remotePacket.longitude) ?
+            (centerLongitude = remotePacket.longitude + lngDistTo) :
+            (centerLongitude = localpacket.longitude + lngDistTo)
         
         print("-- MapUpdate -- centerView -- centerLatitude: \(centerLatitude) centerLongitude: \(centerLongitude)")
 
@@ -110,22 +127,42 @@ class MapUpdate {
     }
     
     func refreshMapView(packet: Location, mapView: MKMapView, eta: Eta) {
-        print("-- MapUpdate -- refreshMapView: refresh mapView")
+        print("-- MapUpdate -- refreshMapView: refresh mapView for local coordinates")
+        
+        let delta: Float = 0.1
+        
+        // center mapView on single, local coordinates
+        let center = self.centerView(localpacket: packet, mapView: mapView)
+        
+        let span: MKCoordinateSpan = MKCoordinateSpan(latitudeDelta: CLLocationDegrees(delta),
+                                                      longitudeDelta: CLLocationDegrees(delta))
+        
+        let region = MKCoordinateRegion(center: center, span: span)
+        
+        mapView.setRegion(region, animated: true)
+        
+    }
+    
+    func refreshMapView(localPacket: Location, remotePacket: Location,
+                        mapView: MKMapView, eta: Eta) {
+        print("-- MapUpdate -- refreshMapView: refresh mapView for local and remote coordinates")
 
-        // vars
         let delta: Float
         
         // center coordinates between devices or single local coordinates
-        let center = self.centerView(packet: packet, mapView: mapView)
-
+        let center = self.centerView(localpacket: localPacket, remotePacket: remotePacket,
+                                     mapView: mapView)
+// MARK:
+        // FIXME: center mapView without eta.distance data
         // compute delta based on distance
-        if eta.distance == nil || packet.remoteLatitude == 0.0 {
+        if eta.distance == nil || remotePacket.latitude == 0.0 {
 
+            print("-- MapUpdate -- refreshMapView -- hardcoding delta to 0.1")
+    
             delta = 0.1
             
         } else {
-        // MARK:
-            // FIXME: Do linear-regression
+        // FIXME: Do linear-regression
             // compute a delta to reset the span. Use switch for now
             let distance = eta.distance!
 
@@ -203,7 +240,7 @@ class MapUpdate {
             }
             print("-- MapUpdate -- refreshMapView -- delta: \(delta)")
         }
-        // MARK:-
+// MARK:-
 
         // span
         let span: MKCoordinateSpan = MKCoordinateSpan(latitudeDelta: CLLocationDegrees(delta),
