@@ -86,7 +86,7 @@ class Poll {
     }
     
     func pollRemote(localPacket: Location, remotePacket: Location, mapView: MKMapView,
-                    eta: Eta, display: UILabel) {
+                    eta: EtaAdapter, display: UILabel) {
         print("-- Poll -- pollRemote")
 
         var rlat: CLLocationDegrees?
