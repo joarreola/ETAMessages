@@ -92,9 +92,9 @@ class Poll {
         let mapUpdate = MapUpdate();
         
         // below code runs in a separate thread
-        let queque = OperationQueue()
 
-        queque.addOperation {
+        DispatchQueue.global(qos: .background).async {
+    
             print("\n===============================================================\n")
             print("-- Poll -- pollRemote -- in queque.addOperation()")
             print("\n===============================================================\n")
@@ -157,23 +157,28 @@ class Poll {
                 
                 if self.myEta !=  initialEta {
                     // do UI updates in the main thread
-                    OperationQueue.main.addOperation() {
-                        
-                        // refreshMapView here vs. in eta.getEtaDistance()
-                        print("-- Poll -- pollRemote -- call mapUpdate.refreshMapView()")
                     
-                        mapUpdate.addPin(packet: self.myPacket, mapView: mapView, remove: false)
+                    DispatchQueue.main.async { [weak self ] in
+                        
+                        if self != nil {
+                            
+                            // refreshMapView here vs. in eta.getEtaDistance()
+                            print("-- Poll -- pollRemote -- call mapUpdate.refreshMapView()")
+                    
+                            mapUpdate.addPin(packet: (self?.myPacket)!, mapView: mapView, remove: false)
 
-                        mapUpdate.refreshMapView(packet: self.myPacket, mapView: mapView, eta: eta)
+                            mapUpdate.refreshMapView(packet: (self?.myPacket)!, mapView: mapView, eta: eta)
                         
-                        var string = [String]()
-                        print("-- Poll -- pollRemote -- string size: \(string.count)")
-                        string.append("local:\t\t( \(self.myPacket.latitude),\n\t\t\(self.myPacket.longitude) )\n")
-                        string.append("remote:\t( \(self.myPacket.remoteLatitude),\n\t\t\(self.myPacket.remoteLongitude) )\n")
-                        string.append("eta:\t\t\((self.myEta!)) sec\n")
-                        string.append("distance:\t\((self.myDistance!)) ft")
+                            var string = [String]()
+                            print("-- Poll -- pollRemote -- string size: \(string.count)")
+                            string.append("local:\t\t( \(String(describing: self?.myPacket.latitude)),\n\t\t\(String(describing: self?.myPacket.longitude)) )\n")
+                            string.append("remote:\t( \(String(describing: self?.myPacket.remoteLatitude)),\n\t\t\(String(describing: self?.myPacket.remoteLongitude)) )\n")
+                            string.append("eta:\t\t\(String(describing: (self?.myEta!))) sec\n")
+                            string.append("distance:\t\(String(describing: (self?.myDistance!))) ft")
                         
-                        mapUpdate.displayUpdate(display: display, stringArray: string)
+                            mapUpdate.displayUpdate(display: display, stringArray: string)
+                        }
+
                     }
                     
                     initialEta = self.myEta!
@@ -198,7 +203,7 @@ class Poll {
             } // end of while{}
             // MARK:-
 
-        } // end of queque.addOperation{}
+        } // end of DispatchQueue.global(qos: .background).async
 
     } // end of pollRemote()
 
