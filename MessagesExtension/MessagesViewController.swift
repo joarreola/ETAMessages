@@ -146,7 +146,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
             locPacket_updated = true
 
             //upload to iCloud if enabled_uploading set in IBAction enable()
-            if Uploading.enabled_uploading
+            if Uploading.enabledUploading
             {
                 // refresh mapView
                 print("-- locationManager -- refresh mapView")
