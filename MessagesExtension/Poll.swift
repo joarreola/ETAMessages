@@ -74,7 +74,7 @@ class Poll {
                 return
             }
         }
-        _ = sem.wait(timeout: DispatchTime.distantFuture)
+        _ = sem.wait(timeout: DispatchTime.now() + 5)
         
         if(!self.remoteFound) {
             return (nil, nil)
@@ -259,6 +259,7 @@ class Poll {
         }
 
     }
+
 
 }
 
