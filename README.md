@@ -16,6 +16,7 @@ Class project
     - Create my Distance property. Populate eta from eta.getEta() v.s
       from pointer. Call eta.getEtaDistance() in background v.s man thread.
       Make UI updating calls in main thread.
+    - Convert pollRemote() to GrandCentralStation per class slides.
     
   - MapUpdate.swift
     Manage mapView updates (addPin) and getting ETA and distance between
@@ -105,6 +106,7 @@ Class project
 	- Move map refreshing code out of getEtaDistance() closure. Focus just
 	  on eta and distance data. -- DONE --
 	- Convert poll-loop to GrandCentralStation per class slides.
+	- sleep -> NStimmer
 	- Implement thread synchronization with conditional-vars/mutexes.
 	- Implement local notifications. Or possibly just note if enabled/disabled
 	  by changing the button item background? :-)
