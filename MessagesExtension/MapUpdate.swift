@@ -126,7 +126,7 @@ class MapUpdate {
         
     }
     
-    func refreshMapView(packet: Location, mapView: MKMapView, eta: Eta) {
+    func refreshMapView(packet: Location, mapView: MKMapView, eta: EtaAdapter) {
         print("-- MapUpdate -- refreshMapView: refresh mapView for local coordinates")
         
         let delta: Float = 0.1
@@ -144,7 +144,7 @@ class MapUpdate {
     }
     
     func refreshMapView(localPacket: Location, remotePacket: Location,
-                        mapView: MKMapView, eta: Eta) {
+                        mapView: MKMapView, eta: EtaAdapter) {
         print("-- MapUpdate -- refreshMapView: refresh mapView for local and remote coordinates")
 
         let delta: Float
