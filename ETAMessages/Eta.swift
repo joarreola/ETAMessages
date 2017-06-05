@@ -54,8 +54,7 @@ class Eta {
         return self.distance
     }
     
-    //func getEtaDistance (packet: Location, mapView: MKMapView, display: UILabel) {
-    func getEtaDistance (packet: Location) {
+    func getEtaDistance (localPacket: Location, remotePacket: Location) {
         print("-- Eta -- getEtaDistance: get eta from local to remote device," +
             " and travel distance between devices")
         
@@ -63,9 +62,9 @@ class Eta {
 
         let mkDirReq: MKDirectionsRequest = MKDirectionsRequest()
         
-        mkDirReq.source = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: packet.latitude, longitude: packet.longitude), addressDictionary: nil))
+        mkDirReq.source = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: localPacket.latitude, longitude: localPacket.longitude), addressDictionary: nil))
         
-        mkDirReq.destination = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: packet.remoteLatitude, longitude: packet.remoteLongitude), addressDictionary: nil))
+        mkDirReq.destination = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: remotePacket.latitude, longitude: remotePacket.longitude), addressDictionary: nil))
         
         mkDirReq.requestsAlternateRoutes = false
         //mkDirReq.transportType = .automobile
