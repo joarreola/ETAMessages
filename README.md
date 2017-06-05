@@ -8,6 +8,14 @@ Class project
     
     - Update semaphore.wait() from distantFuture to 5 sec.
     
+  - Uploading.swift - New
+  	Manage mobile mode behavior, with localUser and single packet
+  
+  
+  - Users.switf - New
+  	Knows user name and location info
+  	
+  
   - Poll.swift
     Poll iCloud repo for content changes in remote-User's location record.
     
@@ -20,6 +28,8 @@ Class project
       Make UI updating calls in main thread.
     - Convert pollRemote() to GrandCentralStation per class slides.
     - Update semaphore.wait() from distantFuture to 5 sec.
+    - Update to user Users and Uploading classes
+    
     
   - MapUpdate.swift
     Manage mapView updates (addPin) and getting ETA and distance between
@@ -31,9 +41,14 @@ Class project
       refreshMapView() method. Create displayUpdate() method.
     - Fix multiple pointAnnotations bug after previous commit.
     -  Replace delta param with eta instance. Add delta-computing switch.
+    - Update to user Users and Uploading classes
+  
   
   - Location.switch
     Location coordinate structure.
+    
+    - remove remote location properties.
+    
     
   - Eta.swift
     eta value and etaPointer structure.
@@ -44,7 +59,10 @@ Class project
     - Add set/getDistance(). Remove eta and etaPointer from params list.
       Use setEta(), setDistance(), self.loadPointer() in getEtaDistance().
     - Initialize eta and distance to nil.
-    
+    - Add user location instance
+
+
+ 
   - MessagesViewController.swift
     Manages the UI implemented in IBACtion functions enable() and poll().
     The mobile user enters the app via the Enable button, the stationary
@@ -59,6 +77,7 @@ Class project
       to eta.getEtaDistance() calls.
     - Update all mapUpdate.refreshMapView() calls to pass eta instance
       vs. delta value.
+    - Update to user Users and Uploading classes
  
 - What is the project supposed to do?
   In an environment consiting of two mobile devices, the ETAMessages app
@@ -109,18 +128,19 @@ Class project
 	- Move map refreshing code out of getEtaDistance() closure. Focus just
 	  on eta and distance data. -- DONE
 	- Convert poll-loop to GrandCentralStation per class slides. -- DONE
-	- update all semaphores to 5 seconds
-	- sleep -> NStimmer
+	- update all semaphores to 5 seconds -- DONE
+	- sleep -> NStimer: wait for next class
 	- Implement thread synchronization with conditional-vars/mutexes.
-	- Implement local notifications. Or possibly just note if enabled/disabled
-	  by changing the button item background? :-)
+	- Implement local notifications.
 	- Consider pop-up menu to enable/disable stationary and mobile modes.
-	  Removing the Disable button.
+	  Or possibly just note if enabled/disabled
+	  by changing the button item background? :-)
+	  Then Remove the Disable button.
 	- Add directions overlay to mapView.
-	- Instantiate pe-user Location instances
+	- Instantiate pe-user Location instances -- DONE
   	- Implement Class Diagram classes:
   		- EtaNotifications
-  		- Uploading
+  		- Uploading -- DONE
   		- GpsLocation
-  		- Users
+  		- Users -- DONE
   
