@@ -20,6 +20,7 @@ class Poll {
     private let myContainer: CKContainer
     private var myPacket: Location
     private var myEta: TimeInterval?
+    private var myDistance: Double?
     private var etaOriginal: TimeInterval
     
     init(remoteUser: String) {
@@ -28,6 +29,7 @@ class Poll {
         self.remoteUser = remoteUser
         self.myEta = 0.0
         self.etaOriginal = 0.0
+        self.myDistance = 0.0
         
         self.locationRecordID = CKRecordID(recordName: remoteUser)
         print("-- Poll -- init -- set CKRecordID: \(locationRecordID)")
@@ -88,7 +90,6 @@ class Poll {
         var rlong: CLLocationDegrees?
         self.myPacket = packet
         let mapUpdate = MapUpdate();
-        //let eta = Eta();
         
         // below code runs in a separate thread
         let queque = OperationQueue()
@@ -99,17 +100,21 @@ class Poll {
             print("\n===============================================================\n")
     
             // etaOriginal
-            self.etaOriginal = eta.loadPointer()
+            self.etaOriginal = eta.getEta()!
             print("-- Poll -- pollRemote -- self.etaOriginal: \(self.etaOriginal)")
     
             // MARK:
                 // FIXME: Add loop-terminating code
             print("-- Poll -- pollRemote -- into while{}")
+            var initialEta = eta.getEta()
+
             while true {
     
                 // check pointer
                 self.myEta = eta.loadPointer()
-                print("-- Poll -- pollRemote -- self.myEta: \(self.myEta!)")
+                self.myDistance = eta.getDistance()
+                
+                print("-- Poll -- pollRemote -- self.myEta: \(self.myEta!) self.myDistance: \(String(describing: self.myDistance!))")
     
                 // fetchRemote()
                 print("-- Poll -- pollRemote -- pre self.fetchRemote()")
@@ -137,25 +142,45 @@ class Poll {
                     self.myPacket.setRemoteLatitude(latitude: rlat!)
                     self.myPacket.setRemoteLongitude(longitude: rlong!)
                 
-                    // do UI updates in the main thread
-                    OperationQueue.main.addOperation() {
-                    
-                        let remove = false
-                        mapUpdate.addPin(packet: self.myPacket, mapView: mapView, remove: remove)
                 
-                        eta.getEtaDistance(packet: self.myPacket, mapView: mapView, display: display)
-    
-                    }
+                    // get eta and distance. Returns immediately, closure returns later
+                    eta.getEtaDistance(packet: self.myPacket)
                     
                     if packet.latitude != self.myPacket.latitude ||
                         packet.longitude != self.myPacket.longitude
                     {
                         self.myPacket.setLatitude(latitude: packet.latitude)
                         self.myPacket.setLongitude(longitude: packet.longitude)
+
                     }
                 }
                 
+                if self.myEta !=  initialEta {
+                    // do UI updates in the main thread
+                    OperationQueue.main.addOperation() {
+                        
+                        // refreshMapView here vs. in eta.getEtaDistance()
+                        print("-- Poll -- pollRemote -- call mapUpdate.refreshMapView()")
+                    
+                        mapUpdate.addPin(packet: self.myPacket, mapView: mapView, remove: false)
+
+                        mapUpdate.refreshMapView(packet: self.myPacket, mapView: mapView, eta: eta)
+                        
+                        var string = [String]()
+                        print("-- Poll -- pollRemote -- string size: \(string.count)")
+                        string.append("local:\t\t( \(self.myPacket.latitude),\n\t\t\(self.myPacket.longitude) )\n")
+                        string.append("remote:\t( \(self.myPacket.remoteLatitude),\n\t\t\(self.myPacket.remoteLongitude) )\n")
+                        string.append("eta:\t\t\((self.myEta!)) sec\n")
+                        string.append("distance:\t\((self.myDistance!)) ft")
+                        
+                        mapUpdate.displayUpdate(display: display, stringArray: string)
+                    }
+                    
+                    initialEta = self.myEta!
+                }
+                
                 if  self.myEta != self.etaOriginal {
+                    
                     self.etaNotification(etaOriginal: self.etaOriginal, myEta: self.myEta!, display: display)
                 }
                 
