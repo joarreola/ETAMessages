@@ -9,7 +9,7 @@
 import Foundation
 import MapKit
 
-class Eta {
+class EtaAdapter {
     var etaPointer: UnsafeMutableRawPointer
     var eta: TimeInterval?
     var distance: Double?
