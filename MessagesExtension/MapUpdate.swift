@@ -109,14 +109,105 @@ class MapUpdate {
         
     }
     
-    func refreshMapView(packet: Location, mapView: MKMapView, delta: Double) {
-        print("-- MapUpdate -- refreshMapView: refresh mapView -- delta: \(delta)")
+    func refreshMapView(packet: Location, mapView: MKMapView, eta: Eta) {
+        print("-- MapUpdate -- refreshMapView: refresh mapView")
 
-            
+        // vars
+        let delta: Float
+        
+        // center coordinates between devices or single local coordinates
         let center = self.centerView(packet: packet, mapView: mapView)
 
-        let span: MKCoordinateSpan = MKCoordinateSpan(latitudeDelta: delta,
-                                                      longitudeDelta: delta)
+        // compute delta based on distance
+        if eta.distance == nil || packet.remoteLatitude == 0.0 {
+
+            delta = 0.1
+            
+        } else {
+        // MARK:
+            // FIXME: Do linear-regression
+            // compute a delta to reset the span. Use switch for now
+            let distance = eta.distance!
+
+            print("-- MapUpdate -- refreshMapView -- distance: \(distance)")
+
+            switch distance {
+                
+            case 0..<10:
+                
+                delta = 0.0001
+                
+            case 10..<50:
+                
+                delta = 0.0001
+                
+            case 50..<250:
+                
+                delta = 0.0001
+                
+            case 250..<500:
+                
+                delta = 0.0005
+                
+            case 500..<1000:
+                
+                delta = 0.005
+                
+            case 1000..<2000:
+                
+                delta = 0.006
+            
+            case 2000..<3000:
+                
+                delta = 0.007
+                
+            case 3000..<4000:
+                
+                delta = 0.009
+    
+            case 4000..<5000:
+                
+                delta = 0.01
+                
+            case 5000..<7000:
+                
+                delta = 0.01
+                
+            case 7000..<10000:
+                
+                delta = 0.05
+                
+            case 10000..<20000:
+                
+                delta = 0.1
+                
+            case 20000..<40000:
+                
+                delta = 0.13
+                
+            case 40000..<50000:
+                
+                delta = 0.2
+                
+            case 50000..<100000:
+                
+                delta = 0.3
+                
+            case 100000..<200000:
+                
+                delta = 0.4
+                
+            default:
+                
+                delta = 0.1
+            }
+            print("-- MapUpdate -- refreshMapView -- delta: \(delta)")
+        }
+        // MARK:-
+
+        // span
+        let span: MKCoordinateSpan = MKCoordinateSpan(latitudeDelta: CLLocationDegrees(delta),
+                                                      longitudeDelta: CLLocationDegrees(delta))
 
         let region = MKCoordinateRegion(center: center, span: span)
 
