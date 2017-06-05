@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DF2A598F1EE4F7CF00244566 /* Uploading.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF2A598E1EE4F7CF00244566 /* Uploading.swift */; };
+		DF2A59911EE4FCBA00244566 /* Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF2A59901EE4FCBA00244566 /* Users.swift */; };
 		DF2A9F921EDFC45D00485BD1 /* Eta.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF2A9F911EDFC45D00485BD1 /* Eta.swift */; };
 		DFC5DD6B1ED3920900FF8D97 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DFC5DD6A1ED3920900FF8D97 /* Assets.xcassets */; };
 		DFC5DD721ED3920900FF8D97 /* MessagesExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = DFC5DD711ED3920900FF8D97 /* MessagesExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -47,6 +49,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		DF2A598E1EE4F7CF00244566 /* Uploading.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Uploading.swift; sourceTree = "<group>"; };
+		DF2A59901EE4FCBA00244566 /* Users.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Users.swift; sourceTree = "<group>"; };
 		DF2A9F911EDFC45D00485BD1 /* Eta.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Eta.swift; sourceTree = "<group>"; };
 		DFC5DD671ED3920900FF8D97 /* ETAMessages.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ETAMessages.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFC5DD6A1ED3920900FF8D97 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -106,6 +110,7 @@
 				DFC5DD6C1ED3920900FF8D97 /* Info.plist */,
 				DFC5DD8F1ED3A30100FF8D97 /* Location.swift */,
 				DF2A9F911EDFC45D00485BD1 /* Eta.swift */,
+				DF2A59901EE4FCBA00244566 /* Users.swift */,
 			);
 			path = ETAMessages;
 			sourceTree = "<group>";
@@ -131,6 +136,7 @@
 				DFC5DD911ED3AEC700FF8D97 /* Cloud.swift */,
 				DFC5DD931ED3D7C500FF8D97 /* Poll.swift */,
 				DFD07B7F1ED4A94700C559BF /* MapUpdate.swift */,
+				DF2A598E1EE4F7CF00244566 /* Uploading.swift */,
 			);
 			path = MessagesExtension;
 			sourceTree = "<group>";
@@ -249,9 +255,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF2A59911EE4FCBA00244566 /* Users.swift in Sources */,
 				DFC5DD941ED3D7C500FF8D97 /* Poll.swift in Sources */,
 				DFC5DD901ED3A30100FF8D97 /* Location.swift in Sources */,
 				DF2A9F921EDFC45D00485BD1 /* Eta.swift in Sources */,
+				DF2A598F1EE4F7CF00244566 /* Uploading.swift in Sources */,
 				DFC5DD921ED3AEC700FF8D97 /* Cloud.swift in Sources */,
 				DFC5DD7A1ED3920900FF8D97 /* MessagesViewController.swift in Sources */,
 				DFD07B801ED4A94700C559BF /* MapUpdate.swift in Sources */,
