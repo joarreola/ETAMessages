@@ -89,7 +89,7 @@ class Cloud {
                 return
             }
         }
-        _ = sem.wait(timeout: DispatchTime.distantFuture)
+        _ = sem.wait(timeout: DispatchTime.now() + 5)
     
         print("-- Cloud -- upload: end: self.recordSaved: \(self.recordSaved)")
     
@@ -131,7 +131,7 @@ class Cloud {
             return
     
         }
-        _ = sem.wait(timeout: DispatchTime.distantFuture)
+        _ = sem.wait(timeout: DispatchTime.now() + 5)
         
         if(!self.recordFound) {
             return (nil, nil)
@@ -169,7 +169,7 @@ class Cloud {
             
             sem.signal()
         }
-        _ = sem.wait(timeout: DispatchTime.distantFuture)
+        _ = sem.wait(timeout: DispatchTime.now() + 5)
     }
     
     func deleteRecord() {
@@ -194,7 +194,7 @@ class Cloud {
             
             sem.signal()
         }
-        _ = sem.wait(timeout: DispatchTime.distantFuture)
+        _ = sem.wait(timeout: DispatchTime.now() + 5)
     }
     
 }
