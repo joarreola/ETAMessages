@@ -9,7 +9,7 @@
 import Foundation
 import CloudKit
 
-class Cloud {
+class CloudAdapter {
     private var locationRecordID: CKRecordID
     private var locationRecord: CKRecord
     private var myContainer: CKContainer
