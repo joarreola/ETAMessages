@@ -18,7 +18,8 @@ class Poll {
     private let locationRecordID: CKRecordID
     private let locationRecord: CKRecord
     private let myContainer: CKContainer
-    private var myPacket: Location
+    private var myLocalPacket: Location
+    private var myRemotePacket: Location
     private var myEta: TimeInterval?
     private var myDistance: Double?
     private var etaOriginal: TimeInterval
@@ -42,7 +43,8 @@ class Poll {
         self.myContainer = CKContainer(identifier: "iCloud.edu.ucsc.ETAMessages")
         print("-- Poll -- init -- set CKContainer: iCloud.edu.ucsc.ETAMessages")
         
-        myPacket = Location()
+        self.myLocalPacket = Location()
+        self.myRemotePacket = Location()
         
     }
     
@@ -83,12 +85,14 @@ class Poll {
         return(self.latitude, self.longitude)
     }
     
-    func pollRemote(packet: Location, mapView: MKMapView, eta: Eta, display: UILabel) {
+    func pollRemote(localPacket: Location, remotePacket: Location, mapView: MKMapView,
+                    eta: Eta, display: UILabel) {
         print("-- Poll -- pollRemote")
 
         var rlat: CLLocationDegrees?
         var rlong: CLLocationDegrees?
-        self.myPacket = packet
+        self.myLocalPacket = localPacket
+        self.myRemotePacket = remotePacket
         let mapUpdate = MapUpdate();
         
         // below code runs in a separate thread
@@ -132,25 +136,26 @@ class Poll {
                 //print("-- Poll -- pollRemote -- packet.longitude: \(packet.longitude)")
 
                 if self.remoteFound &&
-                    (rlat != self.myPacket.remoteLatitude ||
-                     rlong != self.myPacket.remoteLongitude
+                    (rlat != self.myRemotePacket.latitude ||
+                     rlong != self.myRemotePacket.longitude
                      //packet.latitude != self.myPacket.latitude ||
                      //packet.longitude != self.myPacket.longitude
                     )
                 {
                     // update myPacket
-                    self.myPacket.setRemoteLatitude(latitude: rlat!)
-                    self.myPacket.setRemoteLongitude(longitude: rlong!)
+                    self.myRemotePacket.setLatitude(latitude: rlat!)
+                    self.myRemotePacket.setLongitude(longitude: rlong!)
                 
                 
                     // get eta and distance. Returns immediately, closure returns later
-                    eta.getEtaDistance(packet: self.myPacket)
+                    eta.getEtaDistance(localPacket: self.myLocalPacket,
+                                       remotePacket: self.myRemotePacket)
                     
-                    if packet.latitude != self.myPacket.latitude ||
-                        packet.longitude != self.myPacket.longitude
+                    if localPacket.latitude != self.myLocalPacket.latitude ||
+                        localPacket.longitude != self.myLocalPacket.longitude
                     {
-                        self.myPacket.setLatitude(latitude: packet.latitude)
-                        self.myPacket.setLongitude(longitude: packet.longitude)
+                        self.myLocalPacket.setLatitude(latitude: localPacket.latitude)
+                        self.myLocalPacket.setLongitude(longitude: localPacket.longitude)
 
                     }
                 }
@@ -165,16 +170,19 @@ class Poll {
                             // refreshMapView here vs. in eta.getEtaDistance()
                             print("-- Poll -- pollRemote -- call mapUpdate.refreshMapView()")
                     
-                            mapUpdate.addPin(packet: (self?.myPacket)!, mapView: mapView, remove: false)
+                            mapUpdate.addPin(packet: (self?.myRemotePacket)!,
+                                             mapView: mapView, remove: false)
 
-                            mapUpdate.refreshMapView(packet: (self?.myPacket)!, mapView: mapView, eta: eta)
+                            mapUpdate.refreshMapView(localPacket: (self?.myLocalPacket)!,
+                                                     remotePacket: (self?.myRemotePacket)!,
+                                                     mapView: mapView, eta: eta)
                         
                             var string = [String]()
                             print("-- Poll -- pollRemote -- string size: \(string.count)")
-                            string.append("local:\t\t( \(String(describing: self?.myPacket.latitude)),\n\t\t\(String(describing: self?.myPacket.longitude)) )\n")
-                            string.append("remote:\t( \(String(describing: self?.myPacket.remoteLatitude)),\n\t\t\(String(describing: self?.myPacket.remoteLongitude)) )\n")
-                            string.append("eta:\t\t\(String(describing: (self?.myEta!))) sec\n")
-                            string.append("distance:\t\(String(describing: (self?.myDistance!))) ft")
+                            string.append("local:\t\t( \(self!.myLocalPacket.latitude),\n\t\t\t\(self!.myLocalPacket.longitude) )\n")
+                            string.append("remote:\t( \(String(describing: self!.myRemotePacket.latitude)),\n\t\t\t\(String(describing: self!.myRemotePacket.longitude)) )\n")
+                            string.append("eta:\t\t\(String(describing: (self!.myEta!))) sec\n")
+                            string.append("distance:\t\(String(describing: (self!.myDistance!))) ft")
                         
                             mapUpdate.displayUpdate(display: display, stringArray: string)
                         }
@@ -244,8 +252,8 @@ class Poll {
                 
                 print("Poll - etaNotification -- myEta == 0")
                 var string = [String]()
-                string.append("local:\t\t( \(self.myPacket.latitude),\n\t\t\t\(self.myPacket.longitude) )\n")
-                string.append("remote:\t( \(self.myPacket.remoteLatitude),\n\t\t\t\(self.myPacket.remoteLongitude) )\n")
+                string.append("local:\t\t( \(self.myLocalPacket.latitude),\n\t\t\t\(self.myLocalPacket.longitude) )\n")
+                string.append("remote:\t( \(self.myRemotePacket.latitude),\n\t\t\t\(self.myRemotePacket.longitude) )\n")
                 string.append("eta:\t\t\((myEta)) sec\n")
                 string.append("Oscar Has arrived")
                 
