@@ -10,7 +10,7 @@ import Foundation
 import CloudKit
 import MapKit
 
-class Poll {
+class PollManager {
     private var latitude: CLLocationDegrees?
     private var longitude: CLLocationDegrees?
     private var remoteFound: Bool = false

@@ -29,10 +29,11 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
     let remoteUser = Users(name: "Oscar-ipad")
     
     var cloud = CloudAdapter(userName: "Oscar-iphone")
-    var poll = Poll(remoteUser: "Oscar-ipad")
+    var poll = PollManager(remoteUser: "Oscar-ipad")
     var mapUpdate = MapUpdate()
     var uploading = UploadingManager(name: "Oscar-iphone")
     
+    // move these two to the respective class, Poll or GpsLocationAdapter
     var locPacket_updated: Bool = false
     var poll_entered: Int = 0
 
@@ -299,6 +300,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
             return
         }
 // MARK:-
+
         // Upload localUserPacket to Cloud repository
         // Hardcode localuser for now
         print("-- poll --  upload local record once...")
