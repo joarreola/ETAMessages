@@ -108,7 +108,14 @@ Class project
 - What should a reviewer do in order to test your project?
   Location coordinates can be updated in the simulator via Debug->Location.
   Depending on the app mode (mobile/stationary) Debug->Location will move
-  the blue dot or the red pin.
+  the blue dot or the red pin. We'll see if I can have the app behave
+  correctly if the blue dot moves toward the red pin in poll mode.
+  
+  Actually, the red pin can only be moved by updating the location record
+  manually in the iCloud repo. Was able to do that last week, but can't
+  after Apple's update to the developers/CloudKit Dashboard. Also, can't
+  run the app on a device due to new code signing requirements. This
+  appears to be a recent Apple regression.
   
 - Are there any problems that you know you need to fix?
   Yes, the random crashes mentioned above.
@@ -143,4 +150,7 @@ Class project
   		- Uploading -- DONE
   		- GpsLocation
   		- Users -- DONE
+  	- Have app run properly when both Uploading and Polling modes are
+  	  enabled. Need this to test polling without manually updating
+  	  the record in CloudKit Dashboard.
   
