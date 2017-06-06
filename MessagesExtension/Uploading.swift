@@ -35,15 +35,23 @@ class UploadingManager {
 
         return cloudRet
     }
-    
-    func updateMap(display: UILabel, stringArray: [String]) {
-        print("--Uploading -- updateMap")
+
+    func updateMap(display: UILabel, packet: Location) {
+        print("--Uploading -- updateMap(display: UILabel, packet: Location)")
 
         // display locPacket
-        mapUdate.displayUpdate(display: display, stringArray: stringArray)
+        mapUdate.displayUpdate(display: display, packet: packet)
 
     }
     
+    func updateMap(display: UILabel, packet: Location, string: String) {
+        print("--Uploading -- updateMap(display: UILabel, packet: Location, string; String)")
+        
+        // display locPacket
+        mapUdate.displayUpdate(display: display, packet: packet, string: string)
+        
+    }
+
     func enableUploading() {
         print("--Uploading -- enableUploading")
 

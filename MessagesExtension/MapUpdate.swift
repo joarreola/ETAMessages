@@ -252,14 +252,98 @@ class MapUpdate {
 
     }
     
-    func displayUpdate(display: UILabel, stringArray: [String]) {
-        print("-- MapUpdate -- displayUpdate")
+    func displayUpdate(display: UILabel) {
+        print("-- MapUpdate -- displayUpdate(display: UILabel)")
+        
+        display.text = ""
+
+    }
+    
+    func displayUpdate(display: UILabel, string: String) {
+        print("-- MapUpdate -- displayUpdate(display: UILabel, string: String)")
         
         display.text = ""
         
-        for string in stringArray {
-            display.text =  display.text! + string
-        }
+        display.text =  "- \(string)"
+        
+    }
+
+    func displayUpdate(display: UILabel, packet: Location) {
+        print("-- MapUpdate -- displayUpdate(display: UILabel, packet: Location)")
+        
+        display.text = ""
+        
+        display.text =  "local: \t( \(packet.latitude),\n \t\t\(packet.longitude) )"
+        
+    }
+
+    func displayUpdate(display: UILabel, packet: Location, string: String) {
+        print("-- MapUpdate -- displayUpdate(display: UILabel, packet: Location, string: String)")
+        
+        display.text = ""
+        
+        display.text =  "local: \t( \(packet.latitude),\n \t\t\(packet.longitude) )\n" +
+                        "- \(string)"
+
+    }
+    
+    func displayUpdate(display: UILabel, packet: Location, string: String, secondString: String) {
+        print("-- MapUpdate -- displayUpdate(display: UILabel, packet: Location, string: String, secondString: String)")
+        
+        display.text = ""
+        
+        display.text =  "local: \t( \(packet.latitude),\n \t\t\(packet.longitude) )\n" +
+                        "- \(string)\n" +
+                        "- \(secondString)"
+        
+    }
+    
+    func displayUpdate(display: UILabel, localPacket: Location, remotePacket: Location) {
+        print("-- MapUpdate -- displayUpdate(display: UILabel, localPacket: Location, localPacket: Location)")
+        
+        display.text = ""
+        
+        display.text =  "local: \t\t( \(localPacket.latitude),\n \t\t\t\(localPacket.longitude) )\n" +
+                        "remote: \t( \(remotePacket.latitude),\n \t\t\t\(remotePacket.longitude) )"
+        
+    }
+
+    func displayUpdate(display: UILabel, localPacket: Location, remotePacket: Location,
+                       string: String) {
+        print("-- MapUpdate -- displayUpdate(display: UILabel, localPacket: Location, localPacket: Location, string: String)")
+        
+        display.text = ""
+        
+        display.text =  "local: \t\t( \(localPacket.latitude),\n \t\t\t\(localPacket.longitude) )\n" +
+                        "remote: \t( \(remotePacket.latitude),\n \t\t\(remotePacket.longitude) )\n" +
+                        "- \(string)"
+
+    }
+    
+    func displayUpdate(display: UILabel, localPacket: Location, remotePacket: Location,
+                       string: String, secondString: String) {
+        print("-- MapUpdate -- displayUpdate(display: UILabel, localPacket: Location, localPacket: Location, string: String, secondString: String)")
+        
+        display.text = ""
+        
+        display.text =  "local: \t\t( \(localPacket.latitude),\n \t\t\t\(localPacket.longitude) )\n" +
+                        "remote: \t( \(remotePacket.latitude),\n \t\t\t\(remotePacket.longitude) )\n" +
+                        "- \(string)\n" +
+                        "- \(string)"
+        
+    }
+    
+    func displayUpdate(display: UILabel, localPacket: Location, remotePacket: Location,
+                       eta: EtaAdapter) {
+        print("-- MapUpdate -- displayUpdate(display: UILabel, localPacket: Location, localPacket: Location, eta: EtaAdapter)")
+        
+        display.text = ""
+        
+        display.text =  "local: \t\t( \(localPacket.latitude),\n \t\t\t\(localPacket.longitude) )\n" +
+                        "remote: \t( \(remotePacket.latitude),\n \t\t\t\(remotePacket.longitude) )\n" +
+                        "eta:\t\t\(String(describing: eta.eta!)) sec\n" +
+                        "distance:\t\(String(describing: eta.distance!)) ft"
+    
     }
 
     /*

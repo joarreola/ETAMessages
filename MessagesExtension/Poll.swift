@@ -176,15 +176,9 @@ class Poll {
                             mapUpdate.refreshMapView(localPacket: (self?.myLocalPacket)!,
                                                      remotePacket: (self?.myRemotePacket)!,
                                                      mapView: mapView, eta: eta)
-                        
-                            var string = [String]()
-                            print("-- Poll -- pollRemote -- string size: \(string.count)")
-                            string.append("local:\t\t( \(self!.myLocalPacket.latitude),\n\t\t\t\(self!.myLocalPacket.longitude) )\n")
-                            string.append("remote:\t( \(String(describing: self!.myRemotePacket.latitude)),\n\t\t\t\(String(describing: self!.myRemotePacket.longitude)) )\n")
-                            string.append("eta:\t\t\(String(describing: (self!.myEta!))) sec\n")
-                            string.append("distance:\t\(String(describing: (self!.myDistance!))) ft")
-                        
-                            mapUpdate.displayUpdate(display: display, stringArray: string)
+                            
+                            mapUpdate.displayUpdate(display: display, localPacket: self!.myLocalPacket,
+                                                    remotePacket: self!.myRemotePacket, eta: eta)
                         }
 
                     }
@@ -217,57 +211,71 @@ class Poll {
 
 
     func etaNotification(etaOriginal: TimeInterval, myEta: TimeInterval, display: UILabel) {
-        print("Poll - etaNotification -- etaOriginal: \(etaOriginal) myEta: \(myEta)")
+        print("-- Poll - etaNotification -- etaOriginal: \(etaOriginal) myEta: \(myEta)")
         
         let mapUpdate = MapUpdate()
 
         switch myEta {
-        case etaOriginal:
-            
-            print("Poll - etaNotification -- myEta == etaOriginal")
+        //case etaOriginal:
+        //
+        //    print("Poll - etaNotification -- myEta == etaOriginal")
             
         case (etaOriginal / 4) * 3:
 
-            print("Poll - etaNotification -- myEta == etaOriginal/4 * 3")
-            /*
-            display.text = ""
-            display.text =
-                "local:\t\t( \(myPacket.latitude),\n\t\t\t\(myPacket.longitude) )\n" +
-                "remote:\t( \(myPacket.remoteLatitude),\n\t\t\t\(myPacket.remoteLongitude) )\n" +
-                "eta:\t\t\((myEta)) sec\n" +
-                "3/4's notification"
-            */
-        case (etaOriginal / 4) * 2:
+            print("-- Poll - etaNotification -- myEta == etaOriginal/4 * 3")
             
-            print("Poll - etaNotification -- myEta == etaOriginal/4 * 2")
-            
-        case (etaOriginal / 4) * 1:
-            
-            print("Poll - etaNotification -- myEta == etaOriginal/4 * 1")
-            
-        case 0.0...50.0:
-
             // do UI updates in the main thread
             OperationQueue.main.addOperation() {
                 
-                print("Poll - etaNotification -- myEta == 0")
-                var string = [String]()
-                string.append("local:\t\t( \(self.myLocalPacket.latitude),\n\t\t\t\(self.myLocalPacket.longitude) )\n")
-                string.append("remote:\t( \(self.myRemotePacket.latitude),\n\t\t\t\(self.myRemotePacket.longitude) )\n")
-                string.append("eta:\t\t\((myEta)) sec\n")
-                string.append("Oscar Has arrived")
-                
-                mapUpdate.displayUpdate(display: display, stringArray: string)
+                mapUpdate.displayUpdate(display: display, localPacket: self.myLocalPacket,
+                                    remotePacket: self.myRemotePacket,
+                                    string: "eta:\t\t\((myEta)) sec",
+                                    secondString: "3/4ths there")
+            }
     
+        case (etaOriginal / 4) * 2:
+            
+            print("-- Poll - etaNotification -- myEta == etaOriginal/4 * 2")
+            
+            // do UI updates in the main thread
+            OperationQueue.main.addOperation() {
+                
+                mapUpdate.displayUpdate(display: display, localPacket: self.myLocalPacket,
+                                    remotePacket: self.myRemotePacket,
+                                    string: "eta:\t\t\((myEta)) sec",
+                                    secondString: "Half-way there")
+            }
+            
+        case (etaOriginal / 4) * 1:
+            
+            print("-- Poll - etaNotification -- myEta == etaOriginal/4 * 1")
+            
+            // do UI updates in the main thread
+            OperationQueue.main.addOperation() {
+                mapUpdate.displayUpdate(display: display, localPacket: self.myLocalPacket,
+                                    remotePacket: self.myRemotePacket,
+                                    string: "eta:\t\t\((myEta)) sec",
+                                    secondString: "1/4th there")
+            }
+            
+        case 0.0...50.0:
+
+            print("-- Poll - etaNotification -- myEta == 0")
+            
+            // do UI updates in the main thread
+            OperationQueue.main.addOperation() {
+                
+                mapUpdate.displayUpdate(display: display, localPacket: self.myLocalPacket,
+                                        remotePacket: self.myRemotePacket,
+                                        string: "eta:\t\t\((myEta)) sec",
+                                        secondString: "Oscar Has arrived")
             }
             
         default:
             
             print("Poll - etaNotification -- default")
         }
-
     }
-
 
 }
 
