@@ -17,11 +17,11 @@ class Users {
         self.name = name
     }
     
-    func setname(name: String) {
+    func setName(name: String) {
         self.name = name
     }
     
-    func getname() -> String {
+    func getName() -> String {
         return self.name
     }
     
