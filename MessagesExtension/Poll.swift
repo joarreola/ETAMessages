@@ -14,7 +14,7 @@ class PollManager {
     private var latitude: CLLocationDegrees?
     private var longitude: CLLocationDegrees?
     private var remoteFound: Bool = false
-    private let remoteUser: String
+    private let remoteUserName: String
     private let locationRecordID: CKRecordID
     private let locationRecord: CKRecord
     private let myContainer: CKContainer
@@ -24,15 +24,15 @@ class PollManager {
     private var myDistance: Double?
     private var etaOriginal: TimeInterval
     
-    init(remoteUser: String) {
+    init(remoteUserName: String) {
         self.latitude = 0.0
         self.longitude = 0.0
-        self.remoteUser = remoteUser
+        self.remoteUserName = remoteUserName
         self.myEta = 0.0
         self.etaOriginal = 0.0
         self.myDistance = 0.0
         
-        self.locationRecordID = CKRecordID(recordName: remoteUser)
+        self.locationRecordID = CKRecordID(recordName: remoteUserName)
         print("-- Poll -- init -- set CKRecordID: \(locationRecordID)")
         
         self.locationRecord = CKRecord(recordType: "Location",
@@ -212,7 +212,7 @@ class PollManager {
                 
                 if  self.myEta != self.etaOriginal {
                     
-                    self.etaNotification(etaOriginal: self.etaOriginal, myEta: self.myEta!, display: display)
+                    self.etaNotification(display: display)
                 }
                 
                 // ETA == has-arrived
@@ -234,17 +234,17 @@ class PollManager {
     } // end of pollRemote()
 
 
-    func etaNotification(etaOriginal: TimeInterval, myEta: TimeInterval, display: UILabel) {
-        print("-- Poll - etaNotification -- etaOriginal: \(etaOriginal) myEta: \(myEta)")
+    func etaNotification(display: UILabel) {
+        print("-- Poll - etaNotification -- etaOriginal: \(self.etaOriginal) myEta: \(self.myEta!)")
         
         let mapUpdate = MapUpdate()
 
-        switch myEta {
+        switch self.myEta! {
         //case etaOriginal:
         //
         //    print("Poll - etaNotification -- myEta == etaOriginal")
             
-        case (etaOriginal / 4) * 3:
+        case (self.etaOriginal / 4) * 3:
 
             print("/n=====================================================================/n")
             print("-- Poll - etaNotification -- myEta == etaOriginal/4 * 3")
@@ -255,11 +255,11 @@ class PollManager {
                 
                 mapUpdate.displayUpdate(display: display, localPacket: self.myLocalPacket,
                                     remotePacket: self.myRemotePacket,
-                                    string: "eta:\t\t\((myEta)) sec",
+                                    string: "eta:\t\t\((self.myEta!)) sec",
                                     secondString: "3/4ths there")
             }
     
-        case (etaOriginal / 4) * 2:
+        case (self.etaOriginal / 4) * 2:
             
             print("/n=====================================================================/n")
             print("-- Poll - etaNotification -- myEta == etaOriginal/4 * 2")
@@ -270,11 +270,11 @@ class PollManager {
                 
                 mapUpdate.displayUpdate(display: display, localPacket: self.myLocalPacket,
                                     remotePacket: self.myRemotePacket,
-                                    string: "eta:\t\t\((myEta)) sec",
+                                    string: "eta:\t\t\((self.myEta!)) sec",
                                     secondString: "Half-way there")
             }
             
-        case (etaOriginal / 4) * 1:
+        case (self.etaOriginal / 4) * 1:
             
             print("/n=====================================================================/n")
             print("-- Poll - etaNotification -- myEta == etaOriginal/4 * 1")
@@ -284,7 +284,7 @@ class PollManager {
             OperationQueue.main.addOperation() {
                 mapUpdate.displayUpdate(display: display, localPacket: self.myLocalPacket,
                                     remotePacket: self.myRemotePacket,
-                                    string: "eta:\t\t\((myEta)) sec",
+                                    string: "eta:\t\t\((self.myEta!)) sec",
                                     secondString: "1/4th there")
             }
             
@@ -299,8 +299,8 @@ class PollManager {
                 
                 mapUpdate.displayUpdate(display: display, localPacket: self.myLocalPacket,
                                         remotePacket: self.myRemotePacket,
-                                        string: "eta:\t\t\((myEta)) sec",
-                                        secondString: "Oscar Has arrived")
+                                        string: "eta:\t\t\((self.myEta!)) sec",
+                                        secondString: "\(self.remoteUserName) Has arrived")
             }
             
         default:
