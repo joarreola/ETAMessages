@@ -28,10 +28,13 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
     let localUser  = Users(name: "Oscar-iphone")
     let remoteUser = Users(name: "Oscar-ipad")
     
+    // can't pass above object to CloudAdapter(), PollManager(), or UploadingManager()
+    // thus String literals
     var cloud = CloudAdapter(userName: "Oscar-iphone")
-    var poll = PollManager(remoteUser: "Oscar-ipad")
+    var poll = PollManager(remoteUserName: "Oscar-ipad")
     var mapUpdate = MapUpdate()
     var uploading = UploadingManager(name: "Oscar-iphone")
+    var gpsLocation = GPSLocation()
     
     // move these two to the respective class, Poll or GpsLocationAdapter
     var locPacket_updated: Bool = false
@@ -111,10 +114,14 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         // Use this method to finalize any behaviors associated with the change in presentation style.
         print("-- didTransition ---------------------------------------------------")
     }
-    
+
+    /**
+     *
+     * Called by the CLLocation Framework on GPS location changes
+     *
+     */
     func locationManager(_ manager: CLLocationManager,
                          didUpdateLocations locations: [CLLocation]) {
-        // Called by CLLocation framework on device location changes
         
         let location = locations.last
         var lmPacket = Location()
@@ -122,87 +129,87 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         lmPacket.setLongitude(longitude: location!.coordinate.longitude)
         
         // refresh mapView from locationManager just once
-        if !locPacket_updated {
+        if !locPacket_updated
+        {
             
-            self.mapUpdate.refreshMapView(packet: lmPacket, mapView: mapView, eta: eta)
+            gpsLocation.updateUserCoordinates(localUser: localUser, lmPacket: lmPacket)
+            
+            self.mapUpdate.refreshMapView(packet: lmPacket, mapView: mapView)
 
             mapUpdate.displayUpdate(display: display, string: "locationManager...")
-
-        }
-
-        // stuff Location structure if a new location
-        if lmPacket.latitude != localUser.location.latitude ||
-            lmPacket.longitude != localUser.location.longitude {
-
-            print("-- locationManager -- location: '\(location!)'")
-
-            localUser.location.setLatitude(latitude: lmPacket.latitude)
-    
-            localUser.location.setLongitude(longitude: lmPacket.longitude)
             
             locPacket_updated = true
 
-            //upload to iCloud if enabled_uploading set in IBAction enable()
-            if UploadingManager.enabledUploading
-            {
-                // refresh mapView
-                print("-- locationManager -- refresh mapView")
+        }
+        
+        // check if same location
+        if lmPacket.latitude == localUser.location.latitude &&
+            lmPacket.longitude == localUser.location.longitude
+        {
+            // nothing to update
+            
+            return
+        }
+        
+        // A new location: update User's Location object
+        print("-- locationManager -- location: '\(location!)'")
+            
+        gpsLocation.updateUserCoordinates(localUser: localUser, lmPacket: lmPacket)
+
+        // refresh mapView
+        print("-- locationManager -- refresh mapView")
+            
+        self.mapUpdate.refreshMapView(packet: localUser.location, mapView: mapView)
+
+
+        //upload iCloud record
+        if !gpsLocation.uploadToIcloud(localUser: localUser)
+        {
+            print("-- locationManager -- gpsLocation.uploadToIcloud() -- Failed")
+            
+            mapUpdate.displayUpdate(display: display, packet: localUser.location,
+                                    string: "upload to iCloud failed")
+            return
+
+        }
+            
+        print("-- locationManager -- gpsLocation.uploadToIcloud() -- succeeded")
+
+        // poll_entered is 0 if Poll button not yet tapped
+        if poll_entered == 0
+        {
+            mapUpdate.displayUpdate(display: display, packet: localUser.location)
                 
-                self.mapUpdate.refreshMapView(packet: localUser.location, mapView: mapView, eta: eta)
-    
-                // upload coordinates
-                let cloudRet = cloud.upload(packet: localUser.location)
+            return
+                
+        }
 
-                if cloudRet == false
-                {
-                    print("-- locationManager -- cloud.upload() -- Failed")
-                }
-                else
-                {
-                    print("-- locationManager -- cloud.upload() -- succeeded")
-     // MARK:
-                    // poll_entered is 0 if Poll button not yet tapped
-                    if poll_entered == 0
-                    {
-                        mapUpdate.displayUpdate(display: display, packet: localUser.location)
+        // here because Poll button was tapped, need to check remote location
 
-                    }
-                    else
-                    {
-                        // here because Poll button was tapped
+        print("-- locationManager -- call check_remote()")
+                
+        if !gpsLocation.checkRemote(pollRemoteUser: poll, localUser: localUser,
+                                    remoteUser: remoteUser,
+                                    mapView: mapView, eta: eta) {
 
-        // FIXME: This path would update the local location, but only
-        //          if Enable had also been tapped. Need to revisit the
-        //          rquirement.
-                        
-                        // check for current RemoteUser's location - may get to here after 1st tap
-                        print("-- locationManager -- call check_remote()")
+            // failed to fetch RemoteUser's location.
+            // Assumed due to Disabled by RemoteUser
+            //  - reset poll_entered to 0
+            //  - update display
+            mapUpdate.displayUpdate(display: display, packet: localUser.location,
+                                            string: "remote user location not found",
+                                            secondString: "tap Poll to restart session")
+                    
+            self.poll_entered = 0
+                    
+        } else {
+            // update display to include remotePacket and eta data
+            mapUpdate.displayUpdate(display: display, localPacket: localUser.location,
+                                            remotePacket: remoteUser.location,
+                                            eta: self.eta)
+        }
+    }
 
-                        if !check_remote() {
-                            // failed to fetch RemoteUser's location.
-                            // Assumed due to Disabled by RemoteUser
-                            //  - reset poll_entered to 0
-                            //  - update display
-                            mapUpdate.displayUpdate(display: display, packet: localUser.location,
-                                                    string: "remote user location not found",
-                                                    secondString: "tap Poll to restart session")
-                            
-                            self.poll_entered = 0
-
-                        } else {
-
-                            mapUpdate.displayUpdate(display: display,
-                                                    localPacket: localUser.location,
-                                                    remotePacket: remoteUser.location,
-                                                    eta: self.eta)
-                        }
-                        
-                    }
-                } // cloud update succeeded
-    // MARK: -
-            } // do if enabled_uploading set
-        } // do if location coordinates changed
-    } // end of locationManager function/callback
     
     @nonobjc func locationManager(manager: CLLocationManager!,
                                   didFailWithError error: NSError!) {
@@ -238,7 +245,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         }
         
         // refresh mapView
-        self.mapUpdate.refreshMapView(packet: localUser.location, mapView: mapView, eta: eta)
+        self.mapUpdate.refreshMapView(packet: localUser.location, mapView: mapView)
         
         // this allows for uploading of coordinates on LocalUser location changes
         // in locationManager()
@@ -247,7 +254,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         print("-- enable -- end\n")
     
     }
-    
+
+
     @IBAction func poll(_ sender: UIBarButtonItem) {
         // check for remoteUser record
 
@@ -398,43 +406,13 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         mapUpdate.addPin(packet: localUser.location, mapView: mapView, remove: true)
         
         // refresh mapView for possible poll use
-        self.mapUpdate.refreshMapView(packet: localUser.location, mapView: mapView, eta: eta)
+        self.mapUpdate.refreshMapView(packet: localUser.location, mapView: mapView)
         
         // stop location updates as this path is for the stationary user
         self.locationManager.stopUpdatingLocation()
 
         uploading.disableUploading()
         
-    }
-    
-    func check_remote() -> Bool {
-        print("\n=================================================================")
-        print("func check_remote()")
-        print("===================================================================")
-
-        var latitude: CLLocationDegrees
-        var longitude: CLLocationDegrees
-
-        let fetchRet = poll.fetchRemote()
-        
-        if (fetchRet.latitude == nil) {
-
-            return false
-        }
-        (latitude, longitude) = fetchRet as! (CLLocationDegrees, CLLocationDegrees)
-        
-        remoteUser.location.setLatitude(latitude: latitude)
-        remoteUser.location.setLongitude(longitude: longitude)
-
-        print("-- check_remote -- mapUpdate.addPin()")
-        
-        mapUpdate.addPin(packet: remoteUser.location, mapView: mapView, remove: false)
-    
-        print("-- check_remote -- eta.getEtaDistance()")
-        
-        eta.getEtaDistance(localPacket: localUser.location, remotePacket: remoteUser.location)
-
-        return true
     }
 
 }
