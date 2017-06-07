@@ -187,5 +187,5 @@ Class project
   		- Users -- DONE
   	- Have app run properly when both Uploading and Polling modes are
   	  enabled. Need this to test polling without manually updating
-  	  the record in CloudKit Dashboard.
+  	  the record in CloudKit Dashboard. -- DONE
   
