@@ -206,11 +206,19 @@ class MapUpdate {
                 
                 delta = 0.01
                 
-            case 5000..<7000:
+            case 5000..<6000:
                 
-                delta = 0.01
+                delta = 0.02
+            
+            case 6000..<7000:
                 
-            case 7000..<10000:
+                delta = 0.03
+
+            case 7000..<8000:
+                
+                delta = 0.04
+
+            case 8000..<10000:
                 
                 delta = 0.05
                 
@@ -329,7 +337,7 @@ class MapUpdate {
         display.text =  "local: \t\t( \(localPacket.latitude),\n \t\t\t\(localPacket.longitude) )\n" +
                         "remote: \t( \(remotePacket.latitude),\n \t\t\t\(remotePacket.longitude) )\n" +
                         "- \(string)\n" +
-                        "- \(string)"
+                        "- \(secondString)"
         
     }
     

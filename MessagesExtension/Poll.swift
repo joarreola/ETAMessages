@@ -85,18 +85,31 @@ class PollManager {
         return(self.latitude, self.longitude)
     }
     
-    func pollRemote(localPacket: Location, remotePacket: Location, mapView: MKMapView,
+    func pollRemote(localUser: Users, remotePacket: Location, mapView: MKMapView,
                     eta: EtaAdapter, display: UILabel) {
         print("-- Poll -- pollRemote")
 
         var rlat: CLLocationDegrees?
         var rlong: CLLocationDegrees?
-        self.myLocalPacket = localPacket
-        self.myRemotePacket = remotePacket
+        
+        // initialize to current local and remote postions
+        //self.myLocalPacket = localPacket
+        //self.myRemotePacket = remotePacket
+        self.myLocalPacket = Location()
+        self.myLocalPacket.setLatitude(latitude: localUser.location.latitude)
+        self.myLocalPacket.setLongitude(longitude: localUser.location.longitude)
+
+        self.myRemotePacket = Location()
+        self.myRemotePacket.setLatitude(latitude: remotePacket.latitude)
+        self.myRemotePacket.setLongitude(longitude: remotePacket.longitude)
+
         let mapUpdate = MapUpdate();
         
-        // below code runs in a separate thread
-
+        /**
+         *
+         * Below code runs in a separate thread
+         *
+         */
         DispatchQueue.global(qos: .background).async {
     
             print("\n===============================================================\n")
@@ -112,6 +125,11 @@ class PollManager {
             print("-- Poll -- pollRemote -- into while{}")
             var initialEta = eta.getEta()
 
+            /**
+             *
+             * While loop terminated when Double(self.myEta!) < 50.0
+             *
+             */
             while true {
     
                 // check pointer
@@ -126,36 +144,42 @@ class PollManager {
                 (rlat, rlong) = self.fetchRemote()
 
                 if self.remoteFound {
-                    print("-- Poll -- pollRemote -- self.fetchRemote() -- rlat: \(String(describing: rlat))")
-                    print("-- Poll -- pollRemote -- self.fetchRemote() -- rlong: \(String(describing: rlong))")
+                    print("-- Poll -- pollRemote -- self.fetchRemote() -- rlat: \(String(describing: rlat!))")
+                    print("-- Poll -- pollRemote -- self.fetchRemote() -- rlong: \(String(describing: rlong!))")
                 } else {
                     print("-- Poll -- pollRemote -- self.remoteFound: \(self.remoteFound)")
                 }
             
-                //print("-- Poll -- pollRemote -- packet.latitude: \(packet.latitude)")
-                //print("-- Poll -- pollRemote -- packet.longitude: \(packet.longitude)")
+                print("-- Poll -- pollRemote -- localUser.location.latitude: \(localUser.location.latitude)")
+                print("-- Poll -- pollRemote -- localUser.location.longitude: \(localUser.location.longitude)")
 
                 if self.remoteFound &&
                     (rlat != self.myRemotePacket.latitude ||
-                     rlong != self.myRemotePacket.longitude
-                     //packet.latitude != self.myPacket.latitude ||
-                     //packet.longitude != self.myPacket.longitude
+                     rlong != self.myRemotePacket.longitude ||
+                     localUser.location.latitude != self.myLocalPacket.latitude ||
+                     localUser.location.longitude != self.myLocalPacket.longitude
                     )
                 {
-                    // update myPacket
+                    // update myRemotePacket and myLocalPacket
                     self.myRemotePacket.setLatitude(latitude: rlat!)
                     self.myRemotePacket.setLongitude(longitude: rlong!)
+                    
+                    // do here?
+                    self.myLocalPacket.setLatitude(latitude: localUser.location.latitude)
+                    self.myLocalPacket.setLongitude(longitude: localUser.location.longitude)
                 
                 
                     // get eta and distance. Returns immediately, closure returns later
                     eta.getEtaDistance(localPacket: self.myLocalPacket,
                                        remotePacket: self.myRemotePacket)
                     
-                    if localPacket.latitude != self.myLocalPacket.latitude ||
-                        localPacket.longitude != self.myLocalPacket.longitude
+                    
+                    // or do here?
+                    if localUser.location.latitude != self.myLocalPacket.latitude ||
+                        localUser.location.longitude != self.myLocalPacket.longitude
                     {
-                        self.myLocalPacket.setLatitude(latitude: localPacket.latitude)
-                        self.myLocalPacket.setLongitude(longitude: localPacket.longitude)
+                        self.myLocalPacket.setLatitude(latitude: localUser.location.latitude)
+                        self.myLocalPacket.setLongitude(longitude: localUser.location.longitude)
 
                     }
                 }
@@ -222,7 +246,9 @@ class PollManager {
             
         case (etaOriginal / 4) * 3:
 
+            print("/n=====================================================================/n")
             print("-- Poll - etaNotification -- myEta == etaOriginal/4 * 3")
+            print("/n=====================================================================/n")
             
             // do UI updates in the main thread
             OperationQueue.main.addOperation() {
@@ -235,7 +261,9 @@ class PollManager {
     
         case (etaOriginal / 4) * 2:
             
+            print("/n=====================================================================/n")
             print("-- Poll - etaNotification -- myEta == etaOriginal/4 * 2")
+            print("/n=====================================================================/n")
             
             // do UI updates in the main thread
             OperationQueue.main.addOperation() {
@@ -248,7 +276,9 @@ class PollManager {
             
         case (etaOriginal / 4) * 1:
             
+            print("/n=====================================================================/n")
             print("-- Poll - etaNotification -- myEta == etaOriginal/4 * 1")
+            print("/n=====================================================================/n")
             
             // do UI updates in the main thread
             OperationQueue.main.addOperation() {
@@ -260,7 +290,9 @@ class PollManager {
             
         case 0.0...50.0:
 
+            print("/n=====================================================================/n")
             print("-- Poll - etaNotification -- myEta == 0")
+            print("/n=====================================================================/n")
             
             // do UI updates in the main thread
             OperationQueue.main.addOperation() {

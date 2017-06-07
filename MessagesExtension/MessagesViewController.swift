@@ -267,10 +267,15 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         // start RemoteUser polling on 2nd tap... for now
         //  eta and distance checked at 1 sec interval
         if poll_entered > 1 {
-    
+/**
+ * need local coordinates for test purposes via simulator location changes
+ * - update README.md test instructions.
+ *
             // moved to poll_entered = 2 => send tap of Poll button, to test
             //  locationmanager path
             self.locationManager.stopUpdatingLocation()
+ *
+ */
 
             print("-- Poll -- eta: \(String(describing: self.eta.getEta())) -- distance: \(String(describing: self.eta.getDistance()))")
     
@@ -292,7 +297,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
 
             print("-- poll -- calling poll.pollRemote()")
     
-            poll.pollRemote(localPacket: localUser.location, remotePacket: remoteUser.location,
+            poll.pollRemote(localUser: localUser, remotePacket: remoteUser.location,
                             mapView: mapView, eta: eta, display: display)
             
             print("-- poll -- poll(): return\n")
