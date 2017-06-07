@@ -4,22 +4,29 @@ Class project
 - How to test (recommend to do in extended View: ^)
 
 	Mobile Mode:
+
 		- Tap Enable button:
 		  Display changes from "- locationManager..." to local coordinates.
+
 		- Update location via simulator menu:
 		  Debug -> Location -> CustomLocation:
 		  Blue dot will move to new location, mapView will be centered.
+
 		- Tap Disable button:
 		  Display is cleared. Local coordinates removed.
-		  	
+
+
 	Stationary Mode:
+
 		- Tap Poll button: (this is for test purposes only, will removed)
 		  local and remote coordinates are displayed. Remote user is noted
 		  with a pointAnnotation (red pin), local user noted with blue dot.
+
 		- Tap Poll button again:
 		  eta and distance data is appended to the display. mapView is
 		  refreshed, center between users, span'ed appropriately to cover
 		  most of mapView.
+
 		- Move local user closer to remote user (backwards but works to
 		  test eta notification trigger code) via Simulator:
 		  Debug -> Location -> CustomLocation. Changing the 3rd and 4th
@@ -27,6 +34,7 @@ Class project
 		  ETA==0 condition (<50 sec):
 		  Local user blue dot moves to red pin. Polling stops. Display
 		  notes "Oscar has arrived"
+
 		- Tap Disable button:
 		  MapView is refresh showing just the blue dot, and re-spanned.
 		
