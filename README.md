@@ -58,6 +58,8 @@ Class project
   - Users.switf - New
   	Knows user name and location info
   	
+  	- replace set/getname() with set/getName().
+  	
   
   - Poll.swift
     Poll iCloud repo for content changes in remote-User's location record.
@@ -72,6 +74,8 @@ Class project
     - Convert pollRemote() to GrandCentralStation per class slides.
     - Update semaphore.wait() from distantFuture to 5 sec.
     - Update to user Users and Uploading classes
+    - Replace remoteUser with remoteUserName. No need to pass self.etaOriginal
+      nor self.myEta to etaNotification().
     
     
   - MapUpdate.swift
@@ -85,6 +89,7 @@ Class project
     - Fix multiple pointAnnotations bug after previous commit.
     -  Replace delta param with eta instance. Add delta-computing switch.
     - Update to user Users and Uploading classes
+    - Fix refreshMapView() parameter list for single-packet case.
   
   
   - Location.switch
@@ -105,6 +110,11 @@ Class project
     - Add user location instance
 
 
+  - GPSsLocation.swift
+  	Manages local and remote location updates when CLLocation Framework
+  	calls locationManager()
+  	
+  	- Added.
  
   - MessagesViewController.swift
     Manages the UI implemented in IBACtion functions enable() and poll().
@@ -121,6 +131,7 @@ Class project
     - Update all mapUpdate.refreshMapView() calls to pass eta instance
       vs. delta value.
     - Update to user Users and Uploading classes
+    - Update to use GPSLocation class. Remove check_remote()
  
 - What is the project supposed to do?
   In an environment consiting of two mobile devices, the ETAMessages app
@@ -191,7 +202,7 @@ Class project
   	- Implement Class Diagram classes:
   		- EtaNotifications
   		- Uploading -- DONE
-  		- GpsLocation
+  		- GPSsLocation -- DONE
   		- Users -- DONE
   	- Have app run properly when both Uploading and Polling modes are
   	  enabled. Need this to test polling without manually updating
