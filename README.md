@@ -29,8 +29,7 @@ Class project
 		  notes "Oscar has arrived"
 		- Tap Disable button:
 		  MapView is refresh showing just the blue dot, and re-spanned.
-		  
-		  
+		
 	Known Issues:
 		- Can't restart polling after Disable or Has-Arrived notification.
 		- Reloading the app via the txt-msgs app-store produces strange
