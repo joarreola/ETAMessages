@@ -59,8 +59,7 @@ Class project
   	Knows user name and location info
   	
   	- replace set/getname() with set/getName().
-  	
-  
+  	  
   - Poll.swift
     Poll iCloud repo for content changes in remote-User's location record.
     
@@ -76,6 +75,8 @@ Class project
     - Update to user Users and Uploading classes
     - Replace remoteUser with remoteUserName. No need to pass self.etaOriginal
       nor self.myEta to etaNotification().
+    - Remove fetchRemote() code duplication, instead use Cloud instance and
+      call fetchRecord().
     
     
   - MapUpdate.swift
@@ -132,6 +133,7 @@ Class project
       vs. delta value.
     - Update to user Users and Uploading classes
     - Update to use GPSLocation class. Remove check_remote()
+    - Rename "poll" to "pollManager"
  
 - What is the project supposed to do?
   In an environment consiting of two mobile devices, the ETAMessages app
