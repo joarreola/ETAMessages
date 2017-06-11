@@ -2,7 +2,7 @@
 //  Users.swift
 //  ETAMessages
 //
-//  Created by taiyo on 6/4/17.
+//  Created by Oscar Arreola on 6/4/17.
 //  Copyright © 2017 Oscar Arreola. All rights reserved.
 //
 
