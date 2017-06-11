@@ -2,7 +2,7 @@
 //  Uploading.swift
 //  ETAMessages
 //
-//  Created by taiyo on 6/4/17.
+//  Created by Oscar Arreola on 6/4/17.
 //  Copyright © 2017 Oscar Arreola. All rights reserved.
 //
 
@@ -12,10 +12,10 @@ import CloudKit
 import UIKit
 
 class UploadingManager {
-    var latitude: CLLocationDegrees = 0.0
-    var longitude: CLLocationDegrees = 0.0
-    var mapUdate: MapUpdate
-    var cloud: CloudAdapter
+    private var latitude: CLLocationDegrees = 0.0
+    private var longitude: CLLocationDegrees = 0.0
+    private var mapUdate: MapUpdate
+    private var cloud: CloudAdapter
     static var enabledUploading: Bool = false
 
     init(name: String) {
