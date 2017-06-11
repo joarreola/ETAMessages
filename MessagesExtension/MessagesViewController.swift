@@ -2,7 +2,7 @@
 //  MessagesViewController.swift
 //  MessagesExtension
 //
-//  Created by taiyo on 5/22/17.
+//  Created by Oscar Arreola on 5/22/17.
 //  Copyright © 2017 Oscar Arreola. All rights reserved.
 //
 
@@ -31,7 +31,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
     // can't pass above object to CloudAdapter(), PollManager(), or UploadingManager()
     // thus String literals
     var cloud = CloudAdapter(userName: "Oscar-iphone")
-    var poll = PollManager(remoteUserName: "Oscar-ipad")
+    var pollManager = PollManager(remoteUserName: "Oscar-ipad")
     var mapUpdate = MapUpdate()
     var uploading = UploadingManager(name: "Oscar-iphone")
     var gpsLocation = GPSLocation()
@@ -188,7 +188,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
 
         print("-- locationManager -- call check_remote()")
                 
-        if !gpsLocation.checkRemote(pollRemoteUser: poll, localUser: localUser,
+        if !gpsLocation.checkRemote(pollRemoteUser: pollManager, localUser: localUser,
                                     remoteUser: remoteUser,
                                     mapView: mapView, eta: eta) {
 
@@ -271,7 +271,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         var longitude: CLLocationDegrees
         poll_entered += 1
 // MARK:
-        // FIXME: temporary. will call poll.pollRemote() directly, removing all other code
+        // FIXME: temporary. will call pollManager.pollRemote() directly, removing all other code
         // start RemoteUser polling on 2nd tap... for now
         //  eta and distance checked at 1 sec interval
         if poll_entered > 1 {
@@ -303,9 +303,9 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
             mapUpdate.displayUpdate(display: display, localPacket: localUser.location,
                                     remotePacket: remoteUser.location, eta: eta)
 
-            print("-- poll -- calling poll.pollRemote()")
+            print("-- poll -- calling pollManager.pollRemote()")
     
-            poll.pollRemote(localUser: localUser, remotePacket: remoteUser.location,
+            pollManager.pollRemote(localUser: localUser, remotePacket: remoteUser.location,
                             mapView: mapView, eta: eta, display: display)
             
             print("-- poll -- poll(): return\n")
@@ -339,12 +339,12 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         mapUpdate.displayUpdate(display: display, packet: localUser.location)
 
 
-        print("-- poll --  poll.fetchRemote for remote location record...")
+        print("-- poll --  pollManager.fetchRemote for remote location record...")
 
-        let fetchRet = poll.fetchRemote()
+        let fetchRet = pollManager.fetchRemote()
         
         if fetchRet.latitude == nil {
-            print("-- poll -- poll.fetchRemote() returned nil. Exiting poll()")
+            print("-- poll -- pollManager.fetchRemote() returned nil. Exiting poll()")
             
             // display localUserPacket
             mapUpdate.displayUpdate(display: display, packet: localUser.location,
