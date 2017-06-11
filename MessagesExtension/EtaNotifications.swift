@@ -2,7 +2,7 @@
 //  EtaNotifications.swift
 //  ETAMessages
 //
-//  Created by taiyo on 6/5/17.
+//  Created by Oscar Arreola on 6/5/17.
 //  Copyright © 2017 Oscar Arreola. All rights reserved.
 //
 
