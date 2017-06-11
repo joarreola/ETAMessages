@@ -9,6 +9,12 @@
 import Foundation
 import MapKit
 
+/// Adapter to ETA server for eta and distance data
+///
+/// eta { get set }
+/// distance { get set }
+/// getEtaDistance(Location, Location)
+
 class EtaAdapter {
     var etaPointer: UnsafeMutableRawPointer
     var eta: TimeInterval?
@@ -54,12 +60,15 @@ class EtaAdapter {
         return self.distance
     }
     
+    /// Makes mkDirections.calculate() call for eta and distance data
+    /// - Parameters:
+    ///     - localPacket: location coordinates for local user
+    ///     - remotePacket: location coordintates for remote user
+
     func getEtaDistance (localPacket: Location, remotePacket: Location) {
         print("-- Eta -- getEtaDistance: get eta from local to remote device," +
             " and travel distance between devices")
-        
-        //let mapUpdate = MapUpdate()
-
+    
         let mkDirReq: MKDirectionsRequest = MKDirectionsRequest()
         
         mkDirReq.source = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: localPacket.latitude, longitude: localPacket.longitude), addressDictionary: nil))

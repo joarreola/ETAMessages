@@ -12,6 +12,13 @@ import MapKit
 import CoreLocation
 import UserNotifications
 
+/// Messages Extension View Controller
+///
+/// locationManager(CLLocationManager, [CLLocation])
+/// locationManager(CLLocationManager, NSError)
+/// @IBAction func enable(UIBarButtonItem)
+/// @IBAction func poll(UIBarButtonItem)
+/// @IBAction func disable(UIBarButtonItem)
 
 class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
                                                     CLLocationManagerDelegate {
@@ -223,7 +230,11 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         
     }
 
-
+    /**
+     *
+     * Called on tap of Enable button
+     *
+     */
     @IBAction func enable(_ sender: UIBarButtonItem) {
         // Entry point to start uploading the current location to iCloud repository
 
@@ -255,7 +266,11 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
     
     }
 
-
+    /**
+     *
+     * Called on tap of Poll button
+     *
+     */
     @IBAction func poll(_ sender: UIBarButtonItem) {
         // check for remoteUser record
 
@@ -390,7 +405,11 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         return
     }
   
-
+    /**
+     *
+     * Called on tap of Disable button
+     *
+     */
     @IBAction func disable(_ sender: UIBarButtonItem) {
         // Remove location record from iCloud repository.
 

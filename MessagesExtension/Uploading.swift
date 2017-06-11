@@ -11,6 +11,15 @@ import CoreLocation
 import CloudKit
 import UIKit
 
+/// Manage uploading of location packets.
+/// Update display to provide status to user.
+///
+/// uploadLocation(Location)
+/// updateMap(UILabel, Location)
+/// updateMap(UILabel, Location, String)
+/// enableUploading()
+/// disableUploading()
+
 class UploadingManager {
     private var latitude: CLLocationDegrees = 0.0
     private var longitude: CLLocationDegrees = 0.0
@@ -22,6 +31,11 @@ class UploadingManager {
         self.mapUdate = MapUpdate()
         self.cloud  = CloudAdapter(userName: name)
     }
+
+    /// Upload location packet to iCloud
+    /// - Parameters:
+    ///     - packet: location packet to upload to iCloud
+    /// - Returns: upload outcome: true or false
 
     func uploadLocation(packet: Location) -> Bool {
         print("--Uploading -- uploadLocation")
@@ -36,6 +50,11 @@ class UploadingManager {
         return cloudRet
     }
 
+    /// Update display with local location coordinates
+    /// - Parameters:
+    ///     - display: UILabel instance display
+    ///     - packet: location coordinates to display
+
     func updateMap(display: UILabel, packet: Location) {
         print("--Uploading -- updateMap(display: UILabel, packet: Location)")
 
@@ -44,6 +63,12 @@ class UploadingManager {
 
     }
     
+    /// Update display with local location coordinates and a string message
+    /// - Parameters:
+    ///     - display: UILabel instance display
+    ///     - packet: location coordinates to display
+    ///     - string: message to display
+
     func updateMap(display: UILabel, packet: Location, string: String) {
         print("--Uploading -- updateMap(display: UILabel, packet: Location, string; String)")
         
@@ -52,6 +77,8 @@ class UploadingManager {
         
     }
 
+    /// Note that uploading has been enabled after a tap on the Enable button
+
     func enableUploading() {
         print("--Uploading -- enableUploading")
 
@@ -59,6 +86,8 @@ class UploadingManager {
         UploadingManager.enabledUploading = true
     }
     
+    /// Note that uploading has been disabled after a tap on the Disable button
+
     func disableUploading() {
         print("--Uploading -- disableUploading")
         

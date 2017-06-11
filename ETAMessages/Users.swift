@@ -9,6 +9,12 @@
 import Foundation
 import CloudKit
 
+/// User name and location coordinates
+///
+/// name { get set}
+/// longitude { set }
+/// latitude { set }
+
 class Users {
     var name: String
     var location: Location = Location()

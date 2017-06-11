@@ -9,7 +9,12 @@
 import Foundation
 import CoreLocation
 import MapKit
-//import CloudKit
+
+/// Helper for CLLocation framework's locationManager() callback
+///
+/// updateUserCoordinates(Users:, Location)
+/// uploadToIcloud(Users)
+/// checkRemote(PollManager, Users, Users, MKMapView, EtaAdapter) -> Bool
 
 class GPSLocation {
     private var lmPacket: Location
@@ -20,6 +25,10 @@ class GPSLocation {
         self.lmPacket.setLongitude(longitude: 0.0)
     }
 
+    /// Update location data in User instance, and local lmPacket copy
+    /// - Parameters:
+    ///     - localUser:
+    ///     - lmPacket:
     
     func updateUserCoordinates(localUser: Users, lmPacket: Location) {
         // stuff User's Location structure and update lmPacket
@@ -36,6 +45,11 @@ class GPSLocation {
 
     }
     
+    /// Upload a location record to iCloud
+    /// - Parameters:
+    ///     - localUser:
+    /// - Returns: Location packet uploading outcome: true or false
+
     func uploadToIcloud(localUser: Users) -> Bool {
         //upload to iCloud if enabled_uploading set in IBAction enable()
         
@@ -58,6 +72,16 @@ class GPSLocation {
         return cloudRet
     
     }
+
+    /// Attempt to fetch remote-User's record, request eta and distance
+    /// if fetched.
+    /// - Parameters:
+    ///     - pollRemoteUser: A PollManager instance
+    ///     - localUser: Users instance for local location coordinates
+    ///     - remoteUser: Users instance for remote location coordinates
+    ///     - mapView: MKMapView instance for mapView updates
+    ///     - eta: EtaAdapter instance to make the getEtaDistance() call
+    /// - Returns: Location packet fetching outcome: true or false
 
     func checkRemote(pollRemoteUser: PollManager, localUser: Users, remoteUser: Users,
                      mapView: MKMapView, eta: EtaAdapter) -> Bool {

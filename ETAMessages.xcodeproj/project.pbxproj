@@ -12,7 +12,7 @@
 		DF2A59931EE6579500244566 /* EtaNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF2A59921EE6579500244566 /* EtaNotifications.swift */; };
 		DF2A9F921EDFC45D00485BD1 /* Eta.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF2A9F911EDFC45D00485BD1 /* Eta.swift */; };
 		DF85038C1EE88EAC00734D4C /* GPSLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF85038B1EE88EAC00734D4C /* GPSLocation.swift */; };
-		DF85038E1EECA5C500734D4C /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF85038D1EECA5C500734D4C /* CloudKit.framework */; };
+		DF8503901EEDC49A00734D4C /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF85038F1EEDC49A00734D4C /* CloudKit.framework */; };
 		DFC5DD6B1ED3920900FF8D97 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DFC5DD6A1ED3920900FF8D97 /* Assets.xcassets */; };
 		DFC5DD721ED3920900FF8D97 /* MessagesExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = DFC5DD711ED3920900FF8D97 /* MessagesExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		DFC5DD771ED3920900FF8D97 /* Messages.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFC5DD761ED3920900FF8D97 /* Messages.framework */; };
@@ -56,7 +56,7 @@
 		DF2A59921EE6579500244566 /* EtaNotifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EtaNotifications.swift; sourceTree = "<group>"; };
 		DF2A9F911EDFC45D00485BD1 /* Eta.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Eta.swift; sourceTree = "<group>"; };
 		DF85038B1EE88EAC00734D4C /* GPSLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPSLocation.swift; sourceTree = "<group>"; };
-		DF85038D1EECA5C500734D4C /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		DF85038F1EEDC49A00734D4C /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		DFC5DD671ED3920900FF8D97 /* ETAMessages.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ETAMessages.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFC5DD6A1ED3920900FF8D97 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DFC5DD6C1ED3920900FF8D97 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -79,7 +79,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DF85038E1EECA5C500734D4C /* CloudKit.framework in Frameworks */,
+				DF8503901EEDC49A00734D4C /* CloudKit.framework in Frameworks */,
 				DFC5DD771ED3920900FF8D97 /* Messages.framework in Frameworks */,
 				DFC5DD8E1ED3922B00FF8D97 /* MapKit.framework in Frameworks */,
 			);
@@ -122,7 +122,7 @@
 		DFC5DD751ED3920900FF8D97 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				DF85038D1EECA5C500734D4C /* CloudKit.framework */,
+				DF85038F1EEDC49A00734D4C /* CloudKit.framework */,
 				DFC5DD8D1ED3922B00FF8D97 /* MapKit.framework */,
 				DFC5DD761ED3920900FF8D97 /* Messages.framework */,
 			);
@@ -400,7 +400,7 @@
 				DEVELOPMENT_TEAM = J5W47NE3WW;
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = edu.ucsc.ETAMessages.MessagesExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = edu.ucsc.ETAMessages;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
@@ -417,7 +417,7 @@
 				DEVELOPMENT_TEAM = J5W47NE3WW;
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = edu.ucsc.ETAMessages.MessagesExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = edu.ucsc.ETAMessages;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;

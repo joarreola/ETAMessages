@@ -12,6 +12,8 @@ import MapKit
 import CoreLocation
 import CloudKit
 
+/// Use to remove point annotations when request.
+
 struct PointAnnotations {
     var pointAnnotation: MKPointAnnotation?
     
@@ -20,8 +22,33 @@ struct PointAnnotations {
     }
 }
 
+/// Update mapView centering and span.
+/// Update mapVIew display overlay with coordinate and status information
+///
+/// addPin(Location, MKMapView, Bool)
+/// centerView(Location, MKMapView)
+/// centerView(Location, Location, MKMapView)
+/// refreshMapView(Location, MKMapView)
+/// refreshMapView(Location, Location, MKMapView, EtaAdapter)
+/// refreshMapView(Location, MKMapView)
+/// displayUpdate(UILabel)
+/// displayUpdate(UILabel, String)
+/// displayUpdate(UILabel, Location)
+/// displayUpdate(UILabel, Location, String)
+/// displayUpdate(UILabel, Location, String, String)
+/// displayUpdate(UILabel, Location, Location)
+/// displayUpdate(UILabel, Location, Location, String)
+/// displayUpdate(UILabel, Location, Location, String, String)
+/// displayUpdate(UILabel, Location, Location, EtaAdapter)
+
 class MapUpdate {
     static var pointAnnotationStruct: PointAnnotations = PointAnnotations()
+
+    /// Upload location packet to iCloud
+    /// - Parameters:
+    ///     - packet: location packet coordinates to note with a point annotation
+    ///     - mapView: instance of MKMapView to add point annotation (red pin)
+    ///     - remove: remove point annotation if true
 
     func addPin (packet: Location, mapView: MKMapView, remove: Bool) {
     
@@ -54,6 +81,12 @@ class MapUpdate {
         return
     }
 
+    /// Center mapView on localUser's location
+    /// - Parameters:
+    ///     - localpacket: location packet coordinates to center on
+    ///     - mapView: instance of MKMapView to re-center mapView
+    /// - Returns: new center coordinates
+
     func centerView (localpacket: Location, mapView: MKMapView) -> CLLocationCoordinate2D {
         print("-- MapUpdate -- centerView: center mapView on local user")
         
@@ -72,6 +105,13 @@ class MapUpdate {
             
     }
     
+    /// Center mapView between localUser and remoteUser locations.
+    /// - Parameters:
+    ///     - localpacket: localUser's location coordinates
+    ///     - remotepacket: remoteUser's location coordinates
+    ///     - mapView: instance of MKMapView to re-center mapView
+    /// - Returns: new center coordinates
+
     func centerView (localpacket: Location, remotePacket: Location, mapView: MKMapView) -> CLLocationCoordinate2D {
         print("-- MapUpdate -- centerView: center mapView between local and remote users")
     
@@ -126,6 +166,11 @@ class MapUpdate {
         
     }
     
+    /// Refresh mapView to be centered on a single coordinate and a span of 0.1
+    /// - Parameters:
+    ///     - packet: location coordinates
+    ///     - mapView: instance of MKMapView to re-center mapView
+
     func refreshMapView(packet: Location, mapView: MKMapView) {
         print("-- MapUpdate -- refreshMapView: refresh mapView for local coordinates")
         
@@ -142,6 +187,14 @@ class MapUpdate {
         mapView.setRegion(region, animated: true)
         
     }
+    
+    /// Refresh mapView to be centered between two coordinate and a span set to
+    /// contain both coordinate points in the centered mapView.
+    /// - Parameters:
+    ///     - localpacket: localUser's location coordinates
+    ///     - remotepacket: remoteUser's location coordinates
+    ///     - mapView: instance of MKMapView to re-center mapView
+    ///     - eta: EtaAdapter instance with eta and distance properties
     
     func refreshMapView(localPacket: Location, remotePacket: Location,
                         mapView: MKMapView, eta: EtaAdapter) {
@@ -260,6 +313,10 @@ class MapUpdate {
 
     }
     
+    /// Clear display with local location coordinates
+    /// - Parameters:
+    ///     - display: UILabel instance display
+
     func displayUpdate(display: UILabel) {
         print("-- MapUpdate -- displayUpdate(display: UILabel)")
         
@@ -267,6 +324,11 @@ class MapUpdate {
 
     }
     
+    /// Update display with a single string message
+    /// - Parameters:
+    ///     - display: UILabel instance display
+    ///     - string: message to display
+
     func displayUpdate(display: UILabel, string: String) {
         print("-- MapUpdate -- displayUpdate(display: UILabel, string: String)")
         
@@ -276,6 +338,11 @@ class MapUpdate {
         
     }
 
+    /// Update display with local coordinates
+    /// - Parameters:
+    ///     - display: UILabel instance display
+    ///     - packet: location coordinates to display
+
     func displayUpdate(display: UILabel, packet: Location) {
         print("-- MapUpdate -- displayUpdate(display: UILabel, packet: Location)")
         
@@ -284,6 +351,12 @@ class MapUpdate {
         display.text =  "local: \t( \(packet.latitude),\n \t\t\(packet.longitude) )"
         
     }
+
+    /// Update display with local coordinates and a string message
+    /// - Parameters:
+    ///     - display: UILabel instance display
+    ///     - packet: location coordinates to display
+    ///     - string: message to display
 
     func displayUpdate(display: UILabel, packet: Location, string: String) {
         print("-- MapUpdate -- displayUpdate(display: UILabel, packet: Location, string: String)")
@@ -295,6 +368,13 @@ class MapUpdate {
 
     }
     
+    /// Update display with local coordinates and two string messages
+    /// - Parameters:
+    ///     - display: UILabel instance display
+    ///     - packet: location coordinates to display
+    ///     - string: message to display
+    ///     - secondString: a second message to display
+
     func displayUpdate(display: UILabel, packet: Location, string: String, secondString: String) {
         print("-- MapUpdate -- displayUpdate(display: UILabel, packet: Location, string: String, secondString: String)")
         
@@ -306,6 +386,12 @@ class MapUpdate {
         
     }
     
+    /// Update display with a local coordinates and remote coordinates
+    /// - Parameters:
+    ///     - display: UILabel instance display
+    ///     - localPacket: local location coordinates to display
+    ///     - remotePacket: remote location coordinates to display
+
     func displayUpdate(display: UILabel, localPacket: Location, remotePacket: Location) {
         print("-- MapUpdate -- displayUpdate(display: UILabel, localPacket: Location, localPacket: Location)")
         
@@ -315,6 +401,13 @@ class MapUpdate {
                         "remote: \t( \(remotePacket.latitude),\n \t\t\t\(remotePacket.longitude) )"
         
     }
+
+    /// Update display with a local and remote coordinates and a string message
+    /// - Parameters:
+    ///     - display: UILabel instance display
+    ///     - localPacket: local location coordinates to display
+    ///     - remotePacket: remote location coordinates to display
+    ///     - string: message to display
 
     func displayUpdate(display: UILabel, localPacket: Location, remotePacket: Location,
                        string: String) {
@@ -328,6 +421,14 @@ class MapUpdate {
 
     }
     
+    /// Update display with a local and remote coordinates and two string messages
+    /// - Parameters:
+    ///     - display: UILabel instance display
+    ///     - localPacket: local location coordinates to display
+    ///     - remotePacket: remote location coordinates to display
+    ///     - string: message to display
+    ///     - secondString: a second message to display
+
     func displayUpdate(display: UILabel, localPacket: Location, remotePacket: Location,
                        string: String, secondString: String) {
         print("-- MapUpdate -- displayUpdate(display: UILabel, localPacket: Location, localPacket: Location, string: String, secondString: String)")
@@ -341,6 +442,13 @@ class MapUpdate {
         
     }
     
+    /// Update display with a local and remote coordinates and two string messages
+    /// - Parameters:
+    ///     - display: UILabel instance display
+    ///     - localPacket: local location coordinates to display
+    ///     - remotePacket: remote location coordinates to display
+    ///     - eta: EtaAdapter instance with eta and distance properties
+
     func displayUpdate(display: UILabel, localPacket: Location, remotePacket: Location,
                        eta: EtaAdapter) {
         print("-- MapUpdate -- displayUpdate(display: UILabel, localPacket: Location, localPacket: Location, eta: EtaAdapter)")

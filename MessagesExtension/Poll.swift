@@ -10,6 +10,13 @@ import Foundation
 import CloudKit
 import MapKit
 
+/// Poll iCloud for remote User's location record.
+/// Request local notifications based on ETA data
+///
+/// fetchRemote(CLLocationDegrees?, CLLocationDegrees?)
+/// pollRemote(Users, Location, MKMapView, EtaAdapter, UILabel)
+/// etaNotification(UILabel)
+
 class PollManager {
     private var latitude: CLLocationDegrees?
     private var longitude: CLLocationDegrees?
@@ -36,6 +43,9 @@ class PollManager {
         
     }
 
+    /// Fetch remoteUser's location record from iCloud
+    /// - Returns: A tuple of latitude and longitude coordinates
+
     func fetchRemote() -> (latitude: CLLocationDegrees?, longitude: CLLocationDegrees?) {
         print("-- Poll -- fetchRemote")
         
@@ -43,6 +53,18 @@ class PollManager {
         
     }
 
+    /// Poll iCloud for remote User's location record.
+    /// while-loop runs in a background DispatchQueue.global thread.
+    /// MapView updates are done in the DispatchQueue.main thread.
+    /// Call etaNotification() to make local notifications posting
+    ///     requests based on ETA data.
+    /// - Parameters:
+    ///     - localUser: local User instance
+    ///     - remotePacket: remote location coordinates
+    ///     - mapView: instance of MKMapView to re-center mapView
+    ///     - eta: EtaAdapter instance with eta and distance properties
+    ///     - display: UILabel instance display
+    
     func pollRemote(localUser: Users, remotePacket: Location, mapView: MKMapView,
                     eta: EtaAdapter, display: UILabel) {
         print("-- Poll -- pollRemote")
@@ -192,6 +214,10 @@ class PollManager {
 
     } // end of pollRemote()
 
+
+    /// Request local notifications based on ETA data
+    /// - Parameters:
+    ///     - display: UILabel instance display
 
     func etaNotification(display: UILabel) {
         print("-- Poll - etaNotification -- etaOriginal: \(self.etaOriginal) myEta: \(self.myEta!)")

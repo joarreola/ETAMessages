@@ -9,6 +9,13 @@
 import Foundation
 import CloudKit
 
+/// Manage iCloud record accesses.
+///
+/// upload(Location)
+/// fetchRecord(CLLocationDegrees?, CLLocationDegrees?)
+/// saveRecord()
+/// deleteRecord()
+
 class CloudAdapter {
     private var locationRecordID: CKRecordID
     private var locationRecord: CKRecord
@@ -35,6 +42,11 @@ class CloudAdapter {
 
     }
     
+    /// Upload location record to iCloud. Delete if found, then save.
+    /// - Parameters:
+    ///     - packet: location packet to upload
+    /// - Returns: Upload success outcome: true or false
+
     func upload(packet: Location) -> Bool {
         // Called by enable() and poll() @IBAction functions
         print("-- Cloud -- in upload()")
@@ -99,6 +111,11 @@ class CloudAdapter {
 
     }
     
+    /// Fetach location record from iCloud
+    /// - Parameters:
+    ///     - latitude: record latitude field
+    ///     - longitude: record longitude field
+
     func fetchRecord() -> (latitude: CLLocationDegrees?, longitude: CLLocationDegrees?) {
         // fetch a record
         
@@ -141,6 +158,8 @@ class CloudAdapter {
         
     }
     
+    /// Save location record to iCloud
+
     func saveRecord() {
         // save a record
         
@@ -172,6 +191,8 @@ class CloudAdapter {
         _ = sem.wait(timeout: DispatchTime.now() + 5)
     }
     
+    /// Delete location record from iCloud
+
     func deleteRecord() {
         // delete a record
         

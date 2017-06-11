@@ -9,17 +9,18 @@
 import Foundation
 import CloudKit
 
+/// latitude and longitude location coordinates
+///
+/// latitude { set }
+/// longitude { set }
+
 struct Location {
     var latitude: CLLocationDegrees
     var longitude: CLLocationDegrees
-    //var remoteLatitude: CLLocationDegrees
-    //var remoteLongitude: CLLocationDegrees
 
     init() {
         self.latitude = 0.0
         self.longitude = 0.0
-        //self.remoteLatitude = 0.0
-        //self.remoteLongitude = 0.0
     }
 
     mutating func setLatitude(latitude: CLLocationDegrees) {
@@ -29,13 +30,4 @@ struct Location {
     mutating func setLongitude(longitude: CLLocationDegrees) {
         self.longitude = longitude
     }
-    /*
-    mutating func setRemoteLatitude(latitude: CLLocationDegrees) {
-        self.remoteLatitude = latitude
-    }
-    
-    mutating func setRemoteLongitude(longitude: CLLocationDegrees) {
-        self.remoteLongitude = longitude
-    }
-    */
 }
