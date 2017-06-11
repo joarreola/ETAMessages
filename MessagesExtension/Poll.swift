@@ -2,7 +2,7 @@
 //  Poll.swift
 //  ETAMessages
 //
-//  Created by taiyo on 5/22/17.
+//  Created by Oscar Arreola on 5/22/17.
 //  Copyright © 2017 Oscar Arreola. All rights reserved.
 //
 
@@ -15,14 +15,12 @@ class PollManager {
     private var longitude: CLLocationDegrees?
     private var remoteFound: Bool = false
     private let remoteUserName: String
-    private let locationRecordID: CKRecordID
-    private let locationRecord: CKRecord
-    private let myContainer: CKContainer
     private var myLocalPacket: Location
     private var myRemotePacket: Location
     private var myEta: TimeInterval?
     private var myDistance: Double?
     private var etaOriginal: TimeInterval
+    private let cloudRemote: CloudAdapter
     
     init(remoteUserName: String) {
         self.latitude = 0.0
@@ -32,59 +30,19 @@ class PollManager {
         self.etaOriginal = 0.0
         self.myDistance = 0.0
         
-        self.locationRecordID = CKRecordID(recordName: remoteUserName)
-        print("-- Poll -- init -- set CKRecordID: \(locationRecordID)")
-        
-        self.locationRecord = CKRecord(recordType: "Location",
-                                       recordID: locationRecordID)
-        print("-- Poll -- init -- locationRecord: \(locationRecord)")
-
-        // private container
-        self.myContainer = CKContainer(identifier: "iCloud.edu.ucsc.ETAMessages")
-        print("-- Poll -- init -- set CKContainer: iCloud.edu.ucsc.ETAMessages")
-        
+        self.cloudRemote  = CloudAdapter(userName: remoteUserName)
         self.myLocalPacket = Location()
         self.myRemotePacket = Location()
         
     }
-    
+
     func fetchRemote() -> (latitude: CLLocationDegrees?, longitude: CLLocationDegrees?) {
         print("-- Poll -- fetchRemote")
-
-        // start semaphore block to synchronize completion handler
-        let sem = DispatchSemaphore(value: 0)
-
-        self.myContainer.privateCloudDatabase.fetch(withRecordID: self.locationRecordID) {
-            (record, error) in
-            if let error = error {
-                print("-- Poll -- fetchRemote -- Error: \(self.locationRecordID): \(error)")
-            
-                self.remoteFound = false
         
-                sem.signal()
-    
-                return
-                
-            } else {
-                self.latitude = record?["latitude"] as? CLLocationDegrees
-                self.longitude = record?["longitude"] as? CLLocationDegrees
-
-                self.remoteFound = true
-                
-                sem.signal()
-
-                return
-            }
-        }
-        _ = sem.wait(timeout: DispatchTime.now() + 5)
+        return cloudRemote.fetchRecord()
         
-        if(!self.remoteFound) {
-            return (nil, nil)
-        }
-        
-        return(self.latitude, self.longitude)
     }
-    
+
     func pollRemote(localUser: Users, remotePacket: Location, mapView: MKMapView,
                     eta: EtaAdapter, display: UILabel) {
         print("-- Poll -- pollRemote")
@@ -93,8 +51,6 @@ class PollManager {
         var rlong: CLLocationDegrees?
         
         // initialize to current local and remote postions
-        //self.myLocalPacket = localPacket
-        //self.myRemotePacket = remotePacket
         self.myLocalPacket = Location()
         self.myLocalPacket.setLatitude(latitude: localUser.location.latitude)
         self.myLocalPacket.setLongitude(longitude: localUser.location.longitude)
@@ -138,14 +94,15 @@ class PollManager {
                 
                 print("-- Poll -- pollRemote -- self.myEta: \(self.myEta!) self.myDistance: \(String(describing: self.myDistance!))")
     
-                // fetchRemote()
+                // selffetchRemote()
                 print("-- Poll -- pollRemote -- pre self.fetchRemote()")
     
                 (rlat, rlong) = self.fetchRemote()
 
+
                 if self.remoteFound {
-                    print("-- Poll -- pollRemote -- self.fetchRemote() -- rlat: \(String(describing: rlat!))")
-                    print("-- Poll -- pollRemote -- self.fetchRemote() -- rlong: \(String(describing: rlong!))")
+                    print("-- Poll -- pollRemote -- self.cloudRemote.fetchRecord() -- rlat: \(String(describing: rlat!))")
+                    print("-- Poll -- pollRemote -- self.cloudRemote.fetchRecord() -- rlong: \(String(describing: rlong!))")
                 } else {
                     print("-- Poll -- pollRemote -- self.remoteFound: \(self.remoteFound)")
                 }
@@ -198,11 +155,13 @@ class PollManager {
                                              mapView: mapView, remove: false)
 
                             mapUpdate.refreshMapView(localPacket: (self?.myLocalPacket)!,
-                                                     remotePacket: (self?.myRemotePacket)!,
-                                                     mapView: mapView, eta: eta)
+                                        remotePacket: (self?.myRemotePacket)!,
+                                        mapView: mapView, eta: eta)
                             
-                            mapUpdate.displayUpdate(display: display, localPacket: self!.myLocalPacket,
-                                                    remotePacket: self!.myRemotePacket, eta: eta)
+                            mapUpdate.displayUpdate(display: display,
+                                            localPacket: self!.myLocalPacket,
+                                            remotePacket: self!.myRemotePacket,
+                                            eta: eta)
                         }
 
                     }
