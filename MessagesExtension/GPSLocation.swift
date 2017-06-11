@@ -2,7 +2,7 @@
 //  GPSLocation.swift
 //  ETAMessages
 //
-//  Created by taiyo on 6/7/17.
+//  Created by Oscar Arreola on 6/7/17.
 //  Copyright © 2017 Oscar Arreola. All rights reserved.
 //
 
@@ -12,7 +12,7 @@ import MapKit
 //import CloudKit
 
 class GPSLocation {
-    var lmPacket: Location
+    private var lmPacket: Location
     
     init() {
         self.lmPacket = Location()
