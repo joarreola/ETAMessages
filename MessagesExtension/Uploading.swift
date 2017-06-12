@@ -28,8 +28,11 @@ class UploadingManager {
     static var enabledUploading: Bool = false
 
     init(name: String) {
+        print("-- UploadingManager -- init()")
         self.mapUdate = MapUpdate()
+        print("-- UploadingManager -- init() -- MapUpdate()")
         self.cloud  = CloudAdapter(userName: name)
+        print("-- UploadingManager -- init() -- CloudAdapter()")
     }
 
     /// Upload location packet to iCloud
@@ -91,6 +94,9 @@ class UploadingManager {
     func disableUploading() {
         print("--Uploading -- disableUploading")
         
+        // remove record
+        self.cloud.deleteRecord()
+
         // this allows for uploading of coordinates on LocalUser location changes
         UploadingManager.enabledUploading = false
     }
