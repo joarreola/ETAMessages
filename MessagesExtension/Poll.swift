@@ -28,8 +28,12 @@ class PollManager {
     private var myDistance: Double?
     private var etaOriginal: TimeInterval
     private let cloudRemote: CloudAdapter
+    static  var enabledPolling: Bool = false
+    private let hasArrivedEta: Double = 20.0
     
     init(remoteUserName: String) {
+        print("-- PollManager -- init()")
+
         self.latitude = 0.0
         self.longitude = 0.0
         self.remoteUserName = remoteUserName
@@ -101,14 +105,15 @@ class PollManager {
             // MARK:
                 // FIXME: Add loop-terminating code
             print("-- Poll -- pollRemote -- into while{}")
-            var initialEta = eta.getEta()
+            //var initialEta = eta.getEta()
 
             /**
              *
-             * While loop terminated when Double(self.myEta!) < 50.0
+             * While loop terminated when Double(self.myEta!) < 50.0, or
+             * setting PollManager.enabledPolling to false in @IBAction disable()
              *
              */
-            while true {
+            while PollManager.enabledPolling {
     
                 // check pointer
                 self.myEta = eta.loadPointer()
@@ -156,6 +161,7 @@ class PollManager {
                     
                     
                     // or do here?
+                    /*
                     if localUser.location.latitude != self.myLocalPacket.latitude ||
                         localUser.location.longitude != self.myLocalPacket.longitude
                     {
@@ -163,9 +169,10 @@ class PollManager {
                         self.myLocalPacket.setLongitude(longitude: localUser.location.longitude)
 
                     }
-                }
+                    */
+//                }
                 
-                if self.myEta !=  initialEta {
+                //if self.myEta !=  initialEta {
                     // do UI updates in the main thread
                     
                     DispatchQueue.main.async { [weak self ] in
@@ -190,21 +197,22 @@ class PollManager {
 
                     }
                     
-                    initialEta = self.myEta!
-                }
-                
+                    //initialEta = self.myEta!
+                //}
+                } // include DispatchQueue.main.async in diff check
+
                 if  self.myEta != self.etaOriginal {
                     
                     self.etaNotification(display: display)
                 }
-                
+   
                 // ETA == has-arrived
-                if Double(self.myEta!) < 50.0 {
+                if Double(self.myEta!) <= self.hasArrivedEta {
                     print("-- Poll -- pollRemote -- stopping pollRemote")
 
                     break
                 }
-                
+    
                 // FIXME: switch to NSTime
                 print("-- Poll -- pollRemote -- sleep 2...")
                 sleep(2)
@@ -275,7 +283,7 @@ class PollManager {
                                     secondString: "1/4th there")
             }
             
-        case 0.0...50.0:
+        case 0.0...self.hasArrivedEta:
 
             print("/n=====================================================================/n")
             print("-- Poll - etaNotification -- myEta == 0")
@@ -294,6 +302,22 @@ class PollManager {
             
             print("Poll - etaNotification -- default")
         }
+    }
+    
+    /// Note that polling has been enabled
+    
+    func enablePolling() {
+        print("--Poll -- enablePolling")
+        
+        PollManager.enabledPolling = true
+    }
+
+    /// Note that polling has been disabled
+    
+    func disablePolling() {
+        print("--Poll -- disablePolling")
+        
+        PollManager.enabledPolling = false
     }
 
 }
