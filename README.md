@@ -50,6 +50,7 @@ Class project
     Upload, fetch, save, delete a record to/from iCloud repo.
     
     - Update semaphore.wait() from distantFuture to 5 sec.
+    - Switch to Public database.
     
   - Uploading.swift - New
   	Manage mobile mode behavior, with localUser and single packet
@@ -77,6 +78,7 @@ Class project
       nor self.myEta to etaNotification().
     - Remove fetchRemote() code duplication, instead use Cloud instance and
       call fetchRecord().
+    - set self.rmoteFound based on rlat ==/!= nil
     
     
   - MapUpdate.swift
@@ -134,6 +136,7 @@ Class project
     - Update to user Users and Uploading classes
     - Update to use GPSLocation class. Remove check_remote()
     - Rename "poll" to "pollManager"
+    - Don't upload local coordinates in Poll mode.
  
 - What is the project supposed to do?
   In an environment consiting of two mobile devices, the ETAMessages app
