@@ -25,7 +25,7 @@ class CloudAdapter {
     private let localUser: String
     private var latitude: CLLocationDegrees?
     private var longitude: CLLocationDegrees?
-    
+    private let publicDatabase: CKDatabase
     
     init(userName: String) {
         self.localUser = userName
@@ -37,9 +37,12 @@ class CloudAdapter {
                                        recordID: locationRecordID)
         print("-- Cloud -- init -- locationRecord: \(locationRecord)")
     
-        self.myContainer = CKContainer(identifier: "iCloud.edu.ucsc.ETAMessages")
-        print("-- Cloud -- init -- myContainer: iCloud.edu.ucsc.ETAMessages")
-
+        //self.myContainer = CKContainer(identifier: "iCloud.edu.ucsc.ETAMessages")
+        //print("-- Cloud -- init -- myContainer: iCloud.edu.ucsc.ETAMessages")
+        self.myContainer = CKContainer.default()
+        print("-- Cloud -- init -- myContainer.default()")
+        publicDatabase = self.myContainer.publicCloudDatabase
+        
     }
     
     /// Upload location record to iCloud. Delete if found, then save.
@@ -64,7 +67,9 @@ class CloudAdapter {
         // start semaphore block to synchronize completion handler
         let sem = DispatchSemaphore(value: 0)
 
-        self.myContainer.privateCloudDatabase.fetch(withRecordID: self.locationRecordID) {
+        //self.myContainer.privateCloudDatabase.fetch(withRecordID: self.locationRecordID) {
+        //self.myContainer.publicCloudDatabase.fetch(withRecordID: self.locationRecordID) {
+        self.publicDatabase.fetch(withRecordID: self.locationRecordID) {
             (record, error) in
             if let error = error {
                 // Insert error handling
@@ -123,7 +128,9 @@ class CloudAdapter {
     
         // start semaphore block to synchronize completion handler
         let sem = DispatchSemaphore(value: 0)
-        self.myContainer.privateCloudDatabase.fetch(withRecordID: self.locationRecordID) {
+        //self.myContainer.privateCloudDatabase.fetch(withRecordID: self.locationRecordID) {
+        //self.myContainer.publicCloudDatabase.fetch(withRecordID: self.locationRecordID) {
+        self.publicDatabase.fetch(withRecordID: self.locationRecordID) {
             (record, error) in
             if let error = error {
                 // Insert error handling
@@ -168,7 +175,9 @@ class CloudAdapter {
         // start semaphore block to synchronize completion handler
         let sem = DispatchSemaphore(value: 0)
         
-        self.myContainer.privateCloudDatabase.save(locationRecord) {
+        //self.myContainer.privateCloudDatabase.save(locationRecord) {
+        //self.myContainer.publicCloudDatabase.save(locationRecord) {
+        self.publicDatabase.save(locationRecord) {
             (record, error) in
             if let error = error {
                 // Insert error handling
@@ -200,8 +209,10 @@ class CloudAdapter {
         
         // start semaphore block to synchronize completion handler
         let sem = DispatchSemaphore(value: 0)
-        
-        self.myContainer.privateCloudDatabase.delete(withRecordID: self.locationRecordID) {
+
+        //self.myContainer.privateCloudDatabase.delete(withRecordID: self.locationRecordID) {
+        //self.myContainer.publicCloudDatabase.delete(withRecordID: self.locationRecordID) {
+        self.publicDatabase.delete(withRecordID: self.locationRecordID) {
             (record, error) in
             if let error = error {
                 // Insert error handling
