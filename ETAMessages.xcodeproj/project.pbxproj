@@ -12,14 +12,14 @@
 		DF2A59931EE6579500244566 /* EtaNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF2A59921EE6579500244566 /* EtaNotifications.swift */; };
 		DF2A9F921EDFC45D00485BD1 /* Eta.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF2A9F911EDFC45D00485BD1 /* Eta.swift */; };
 		DF85038C1EE88EAC00734D4C /* GPSLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF85038B1EE88EAC00734D4C /* GPSLocation.swift */; };
-		DF8503901EEDC49A00734D4C /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF85038F1EEDC49A00734D4C /* CloudKit.framework */; };
+		DF8503921EEDE08400734D4C /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF8503911EEDE08400734D4C /* CloudKit.framework */; };
+		DF8503941EEE49F700734D4C /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF8503931EEE49F700734D4C /* MapKit.framework */; };
 		DFC5DD6B1ED3920900FF8D97 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DFC5DD6A1ED3920900FF8D97 /* Assets.xcassets */; };
 		DFC5DD721ED3920900FF8D97 /* MessagesExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = DFC5DD711ED3920900FF8D97 /* MessagesExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		DFC5DD771ED3920900FF8D97 /* Messages.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFC5DD761ED3920900FF8D97 /* Messages.framework */; };
 		DFC5DD7A1ED3920900FF8D97 /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC5DD791ED3920900FF8D97 /* MessagesViewController.swift */; };
 		DFC5DD7D1ED3920900FF8D97 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DFC5DD7B1ED3920900FF8D97 /* MainInterface.storyboard */; };
 		DFC5DD7F1ED3920900FF8D97 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DFC5DD7E1ED3920900FF8D97 /* Assets.xcassets */; };
-		DFC5DD8E1ED3922B00FF8D97 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFC5DD8D1ED3922B00FF8D97 /* MapKit.framework */; };
 		DFC5DD901ED3A30100FF8D97 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC5DD8F1ED3A30100FF8D97 /* Location.swift */; };
 		DFC5DD921ED3AEC700FF8D97 /* Cloud.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC5DD911ED3AEC700FF8D97 /* Cloud.swift */; };
 		DFC5DD941ED3D7C500FF8D97 /* Poll.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC5DD931ED3D7C500FF8D97 /* Poll.swift */; };
@@ -56,7 +56,8 @@
 		DF2A59921EE6579500244566 /* EtaNotifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EtaNotifications.swift; sourceTree = "<group>"; };
 		DF2A9F911EDFC45D00485BD1 /* Eta.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Eta.swift; sourceTree = "<group>"; };
 		DF85038B1EE88EAC00734D4C /* GPSLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPSLocation.swift; sourceTree = "<group>"; };
-		DF85038F1EEDC49A00734D4C /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		DF8503911EEDE08400734D4C /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		DF8503931EEE49F700734D4C /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		DFC5DD671ED3920900FF8D97 /* ETAMessages.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ETAMessages.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFC5DD6A1ED3920900FF8D97 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DFC5DD6C1ED3920900FF8D97 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -67,7 +68,6 @@
 		DFC5DD7E1ED3920900FF8D97 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DFC5DD801ED3920900FF8D97 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DFC5DD8A1ED3921300FF8D97 /* MessagesExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MessagesExtension.entitlements; sourceTree = "<group>"; };
-		DFC5DD8D1ED3922B00FF8D97 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		DFC5DD8F1ED3A30100FF8D97 /* Location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		DFC5DD911ED3AEC700FF8D97 /* Cloud.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cloud.swift; sourceTree = "<group>"; };
 		DFC5DD931ED3D7C500FF8D97 /* Poll.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Poll.swift; sourceTree = "<group>"; };
@@ -79,9 +79,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DF8503901EEDC49A00734D4C /* CloudKit.framework in Frameworks */,
+				DF8503921EEDE08400734D4C /* CloudKit.framework in Frameworks */,
+				DF8503941EEE49F700734D4C /* MapKit.framework in Frameworks */,
 				DFC5DD771ED3920900FF8D97 /* Messages.framework in Frameworks */,
-				DFC5DD8E1ED3922B00FF8D97 /* MapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -122,8 +122,8 @@
 		DFC5DD751ED3920900FF8D97 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				DF85038F1EEDC49A00734D4C /* CloudKit.framework */,
-				DFC5DD8D1ED3922B00FF8D97 /* MapKit.framework */,
+				DF8503931EEE49F700734D4C /* MapKit.framework */,
+				DF8503911EEDE08400734D4C /* CloudKit.framework */,
 				DFC5DD761ED3920900FF8D97 /* Messages.framework */,
 			);
 			name = Frameworks;
@@ -208,7 +208,7 @@
 								enabled = 1;
 							};
 							com.apple.Push = {
-								enabled = 1;
+								enabled = 0;
 							};
 							com.apple.iCloud = {
 								enabled = 1;
@@ -400,8 +400,9 @@
 				DEVELOPMENT_TEAM = J5W47NE3WW;
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = edu.ucsc.ETAMessages;
+				PRODUCT_BUNDLE_IDENTIFIER = edu.ucsc.ETAMessages.MessagesExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
@@ -417,7 +418,7 @@
 				DEVELOPMENT_TEAM = J5W47NE3WW;
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = edu.ucsc.ETAMessages;
+				PRODUCT_BUNDLE_IDENTIFIER = edu.ucsc.ETAMessages.MessagesExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
@@ -430,10 +431,12 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = J5W47NE3WW;
 				INFOPLIST_FILE = ETAMessages/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = edu.ucsc.ETAMessages;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -443,10 +446,12 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = J5W47NE3WW;
 				INFOPLIST_FILE = ETAMessages/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = edu.ucsc.ETAMessages;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
