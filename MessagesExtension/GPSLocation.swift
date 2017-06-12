@@ -17,12 +17,12 @@ import MapKit
 /// checkRemote(PollManager, Users, Users, MKMapView, EtaAdapter) -> Bool
 
 class GPSLocation {
-    private var lmPacket: Location
+    private var packet: Location
     
     init() {
-        self.lmPacket = Location()
-        self.lmPacket.setLatitude(latitude: 0.0)
-        self.lmPacket.setLongitude(longitude: 0.0)
+        self.packet = Location()
+        self.packet.setLatitude(latitude: 0.0)
+        self.packet.setLongitude(longitude: 0.0)
     }
 
     /// Update location data in User instance, and local lmPacket copy
@@ -30,18 +30,18 @@ class GPSLocation {
     ///     - localUser:
     ///     - lmPacket:
     
-    func updateUserCoordinates(localUser: Users, lmPacket: Location) {
+    func updateUserCoordinates(localUser: Users, packet: Location) {
         // stuff User's Location structure and update lmPacket
         
         print("-- GPSLocation -- updateLocalCoordinates() -- User: \(localUser.getName())")
         
-        localUser.location.setLatitude(latitude: lmPacket.latitude)
+        localUser.location.setLatitude(latitude: packet.latitude)
         
-        localUser.location.setLongitude(longitude: lmPacket.longitude)
+        localUser.location.setLongitude(longitude: packet.longitude)
         
-        self.lmPacket.setLatitude(latitude: lmPacket.latitude)
+        self.packet.setLatitude(latitude: packet.latitude)
         
-        self.lmPacket.setLongitude(longitude: lmPacket.longitude)
+        self.packet.setLongitude(longitude: packet.longitude)
 
     }
     
@@ -104,11 +104,11 @@ class GPSLocation {
         remoteUser.location.setLatitude(latitude: latitude)
         remoteUser.location.setLongitude(longitude: longitude)
  
-        print("-- check_remote -- mapUpdate.addPin()")
+        print("-- GPSLocation -- check_remote -- mapUpdate.addPin()")
  
         mapUpdate.addPin(packet: remoteUser.location, mapView: mapView, remove: false)
  
-        print("-- check_remote -- eta.getEtaDistance()")
+        print("-- GPSLocation -- check_remote -- eta.getEtaDistance()")
  
         eta.getEtaDistance(localPacket: localUser.location, remotePacket: remoteUser.location)
  
