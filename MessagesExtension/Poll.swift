@@ -121,6 +121,8 @@ class PollManager {
     
                 (rlat, rlong) = self.fetchRemote()
 
+                (rlat == nil) ? (self.remoteFound = false) : (self.remoteFound = true)
+
 
                 if self.remoteFound {
                     print("-- Poll -- pollRemote -- self.cloudRemote.fetchRecord() -- rlat: \(String(describing: rlat!))")
