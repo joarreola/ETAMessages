@@ -37,9 +37,9 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
     
     // can't pass above object to CloudAdapter(), PollManager(), or UploadingManager()
     // thus String literals
-    var cloud = CloudAdapter(userName: "Oscar-iphone")
+    //var cloud = CloudAdapter(userName: "Oscar-iphone") // done in UploadingManager()
     var pollManager = PollManager(remoteUserName: "Oscar-ipad")
-    var mapUpdate = MapUpdate()
+    var mapUpdate = MapUpdate() // needed here?
     var uploading = UploadingManager(name: "Oscar-iphone")
     var gpsLocation = GPSLocation()
     
@@ -139,7 +139,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         if !locPacket_updated
         {
             
-            gpsLocation.updateUserCoordinates(localUser: localUser, lmPacket: lmPacket)
+            gpsLocation.updateUserCoordinates(localUser: localUser, packet: lmPacket)
             
             self.mapUpdate.refreshMapView(packet: lmPacket, mapView: mapView)
 
@@ -149,11 +149,10 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
 
         }
         
-        // check if same location
+        // nothing to update if same location
         if lmPacket.latitude == localUser.location.latitude &&
             lmPacket.longitude == localUser.location.longitude
         {
-            // nothing to update
             
             return
         }
@@ -161,31 +160,34 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         // A new location: update User's Location object
         print("-- locationManager -- location: '\(location!)'")
             
-        gpsLocation.updateUserCoordinates(localUser: localUser, lmPacket: lmPacket)
+        gpsLocation.updateUserCoordinates(localUser: localUser, packet: lmPacket)
 
-        // refresh mapView
-        print("-- locationManager -- refresh mapView")
+        if (UploadingManager.enabledUploading) {
+            // refresh mapView if enabledUploading
+            print("-- locationManager -- refresh mapView")
             
-        self.mapUpdate.refreshMapView(packet: localUser.location, mapView: mapView)
+            self.mapUpdate.refreshMapView(packet: localUser.location, mapView: mapView)
 
-
-        //upload iCloud record
-        if !gpsLocation.uploadToIcloud(localUser: localUser)
-        {
-            print("-- locationManager -- gpsLocation.uploadToIcloud() -- Failed")
+            //upload iCloud record
+            if !gpsLocation.uploadToIcloud(localUser: localUser)
+            {
+                print("-- locationManager -- gpsLocation.uploadToIcloud() -- Failed")
             
-            mapUpdate.displayUpdate(display: display, packet: localUser.location,
+                mapUpdate.displayUpdate(display: display, packet: localUser.location,
                                     string: "upload to iCloud failed")
-            return
+                return
 
-        }
+            }
             
-        print("-- locationManager -- gpsLocation.uploadToIcloud() -- succeeded")
+            print("-- locationManager -- gpsLocation.uploadToIcloud() -- succeeded")
+            
+            mapUpdate.displayUpdate(display: display, packet: localUser.location)
+        }
 
         // poll_entered is 0 if Poll button not yet tapped
-        if poll_entered == 0
-        {
-            mapUpdate.displayUpdate(display: display, packet: localUser.location)
+        if poll_entered == 0 {
+
+            //mapUpdate.displayUpdate(display: display, packet: localUser.location)
                 
             return
                 
@@ -213,7 +215,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
             // update display to include remotePacket and eta data
             mapUpdate.displayUpdate(display: display, localPacket: localUser.location,
                                             remotePacket: remoteUser.location,
-                                            eta: self.eta)
+                                            eta: eta)
         }
     }
 
@@ -237,6 +239,9 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
      */
     @IBAction func enable(_ sender: UIBarButtonItem) {
         // Entry point to start uploading the current location to iCloud repository
+        
+        // reenable in case disabled
+        self.locationManager.startUpdatingLocation()
 
         print("\n=================================================================")
         print("@IBAction func enable()")
@@ -323,6 +328,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
             pollManager.pollRemote(localUser: localUser, remotePacket: remoteUser.location,
                             mapView: mapView, eta: eta, display: display)
             
+            pollManager.enablePolling()
+    
             print("-- poll -- poll(): return\n")
             
             return
@@ -424,8 +431,6 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         // clear display
         mapUpdate.displayUpdate(display: display)
         
-        cloud.deleteRecord()
-
         mapUpdate.addPin(packet: localUser.location, mapView: mapView, remove: true)
         
         // refresh mapView for possible poll use
@@ -435,6 +440,9 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         self.locationManager.stopUpdatingLocation()
 
         uploading.disableUploading()
+        pollManager.disablePolling()
+        poll_entered = 0;
+        
         
     }
 
