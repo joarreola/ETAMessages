@@ -393,7 +393,7 @@ class MapUpdate {
     ///     - remotePacket: remote location coordinates to display
 
     func displayUpdate(display: UILabel, localPacket: Location, remotePacket: Location) {
-        print("-- MapUpdate -- displayUpdate(display: UILabel, localPacket: Location, localPacket: Location)")
+        print("-- MapUpdate -- displayUpdate(display: UILabel, localPacket: Location, remotePacket: Location)")
         
         display.text = ""
         
@@ -411,7 +411,7 @@ class MapUpdate {
 
     func displayUpdate(display: UILabel, localPacket: Location, remotePacket: Location,
                        string: String) {
-        print("-- MapUpdate -- displayUpdate(display: UILabel, localPacket: Location, localPacket: Location, string: String)")
+        print("-- MapUpdate -- displayUpdate(display: UILabel, localPacket: Location, remotePacket: Location, string: String)")
         
         display.text = ""
         
@@ -431,7 +431,7 @@ class MapUpdate {
 
     func displayUpdate(display: UILabel, localPacket: Location, remotePacket: Location,
                        string: String, secondString: String) {
-        print("-- MapUpdate -- displayUpdate(display: UILabel, localPacket: Location, localPacket: Location, string: String, secondString: String)")
+        print("-- MapUpdate -- displayUpdate(display: UILabel, localPacket: Location, remotePacket: Location, string: String, secondString: String)")
         
         display.text = ""
         
@@ -451,14 +451,29 @@ class MapUpdate {
 
     func displayUpdate(display: UILabel, localPacket: Location, remotePacket: Location,
                        eta: EtaAdapter) {
-        print("-- MapUpdate -- displayUpdate(display: UILabel, localPacket: Location, localPacket: Location, eta: EtaAdapter)")
+        print("-- MapUpdate -- displayUpdate(display: UILabel, localPacket: Location, remotePacket: Location, eta: EtaAdapter)")
+        
+        let etaString: String
+        let distanceString: String
+
+        if eta.distance == nil {
+            distanceString = "nil"
+        } else {
+            distanceString = String(describing: eta.distance!)
+        }
+        
+        if eta.eta == nil {
+            etaString = "nil"
+        } else {
+            etaString = String(describing: eta.eta!)
+        }
         
         display.text = ""
         
         display.text =  "local: \t\t( \(localPacket.latitude),\n \t\t\t\(localPacket.longitude) )\n" +
                         "remote: \t( \(remotePacket.latitude),\n \t\t\t\(remotePacket.longitude) )\n" +
-                        "eta:\t\t\(String(describing: eta.eta!)) sec\n" +
-                        "distance:\t\(String(describing: eta.distance!)) ft"
+                        "eta:\t\t\(etaString) sec\n" +
+                        "distance:\t\(distanceString) ft"
     
     }
 
