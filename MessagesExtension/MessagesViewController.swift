@@ -329,6 +329,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         }
 // MARK:-
 
+// MARK: Does stationary user have a need to upload location to iCloud?
+        /*
         // Upload localUserPacket to Cloud repository
         // Hardcode localuser for now
         print("-- poll --  upload local record once...")
@@ -349,6 +351,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
             return
     
         }
+        */
+// MARK: -
         
         // display localUserPacket
         mapUpdate.displayUpdate(display: display, packet: localUser.location)
