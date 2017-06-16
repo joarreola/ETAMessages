@@ -50,6 +50,8 @@ class GPSLocation {
     ///     - localUser:
     /// - Returns: Location packet uploading outcome: true or false
 
+/// MARK: pre-comments
+    /*
     func uploadToIcloud(localUser: Users) -> Bool {
         //upload to iCloud if enabled_uploading set in IBAction enable()
         
@@ -72,6 +74,22 @@ class GPSLocation {
         return cloudRet
     
     }
+    */
+/// MARK: -
+
+/// MARK: post-comments
+
+    func uploadToIcloud(user: Users, whenDone: @escaping (Bool) -> ()) -> () {
+        
+        let cloud = CloudAdapter(userName: user.getName())
+
+        cloud.upload(user: user) { (result: Bool) in
+            
+            whenDone(result)
+        }
+    }
+
+/// MARK: -
 
     /// Attempt to fetch remote-User's record, request eta and distance
     /// if fetched.
