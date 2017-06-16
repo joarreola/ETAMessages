@@ -49,7 +49,9 @@ class CloudAdapter {
     /// - Parameters:
     ///     - packet: location packet to upload
     /// - Returns: Upload success outcome: true or false
-
+    
+/// MARK: pre-comments
+    /*
     func upload(packet: Location) -> Bool {
         // Called by enable() and poll() @IBAction functions
         print("-- Cloud -- in upload()")
@@ -67,8 +69,6 @@ class CloudAdapter {
         // start semaphore block to synchronize completion handler
         let sem = DispatchSemaphore(value: 0)
 
-        //self.myContainer.privateCloudDatabase.fetch(withRecordID: self.locationRecordID) {
-        //self.myContainer.publicCloudDatabase.fetch(withRecordID: self.locationRecordID) {
         self.publicDatabase.fetch(withRecordID: self.locationRecordID) {
             (record, error) in
             if let error = error {
@@ -115,7 +115,7 @@ class CloudAdapter {
         return ret
 
     }
-    
+    */
     /// Fetach location record from iCloud
     /// - Parameters:
     ///     - latitude: record latitude field
@@ -166,7 +166,7 @@ class CloudAdapter {
     }
     
     /// Save location record to iCloud
-
+    
     func saveRecord() {
         // save a record
         
@@ -228,5 +228,67 @@ class CloudAdapter {
         }
         _ = sem.wait(timeout: DispatchTime.now() + 5)
     }
+    
+/// MARK: -
+    
+/// MARK: post-comment
+
+    func upload(user: Users, whenDone: @escaping (Bool) -> ()) -> () {
+        // Called by enable() @IBAction function
+        print("-- Cloud -- upload(user: Users, whenDone: (Bool) -> ()) -> ()")
+        
+        // Set the record’s fields.
+        print("-- Cloud -- upload(user: Users, whenDone: (Bool) -> ()) -> () -- set coordinates")
+        self.locationRecord["latitude"]  = user.location.latitude as CKRecordValue
+        self.locationRecord["longitude"] = user.location.longitude as CKRecordValue
+        
+        self.publicDatabase.delete(withRecordID: self.locationRecordID) {
+            (record, error) in
+
+            if let error = error {
+                print("-- Cloud -- upload(user: Users, whenDone: (Bool) -> ()) -> () -- self.publicDatabase.delete -- closure -- Error: \(self.locationRecordID): \(error)")
+                
+                self.recordSaved = false
+                
+                // callback to the passed closure
+                print("-- Cloud -- upload(user: Users, whenDone: (Bool) -> ()) -> () -- call: whenDone(self.recordSaved): \(self.recordSaved)")
+                
+                whenDone(self.recordSaved)
+    
+                return
+            }
+            
+            print("-- Cloud -- upload(user: Users, whenDone: (Bool) -> ()) -> () -- self.publicDatabase.delete -- closure -- Record deleted: \(self.locationRecordID)")
+            
+            // call save() method while in the delete closure
+            self.publicDatabase.save(self.locationRecord) {
+                (record, error) in
+
+                if let error = error {
+                    print("-- Cloud -- upload(user: Users, whenDone: (Bool) -> ()) -> () -- self.publicDatabase.delete -- closure -- self.publicDatabase.save -- closure -- Error: \(self.locationRecordID): \(error)")
+                    
+                    self.recordSaved = false
+                    
+                    // callback to the passed closure
+                    print("-- Cloud -- upload(user: Users, whenDone: (Bool) -> ()) -> () -- call: whenDone(self.recordSaved): \(self.recordSaved)")
+                    
+                    whenDone(self.recordSaved)
+
+                    return
+                }
+                print("-- Cloud -- upload(user: Users, whenDone: (Bool) -> ()) -> () -- self.publicDatabase.delete -- closure -- self.publicDatabase.save -- closure --Record saved: \(self.locationRecordID)")
+                
+                self.recordSaved = true
+                
+                // callback to the passed closure
+                print("-- Cloud -- upload(user: Users, whenDone: (Bool) -> ()) -> () -- call: whenDone(self.recordSaved): \(self.recordSaved)")
+                
+                whenDone(self.recordSaved)
+                
+            }
+        }
+    }
+
+/// MARK: -
     
 }
