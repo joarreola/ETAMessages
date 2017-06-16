@@ -40,6 +40,8 @@ class UploadingManager {
     ///     - packet: location packet to upload to iCloud
     /// - Returns: upload outcome: true or false
 
+/// MARK: pre-comments
+    /*
     func uploadLocation(packet: Location) -> Bool {
         print("--Uploading -- uploadLocation")
 
@@ -52,7 +54,21 @@ class UploadingManager {
 
         return cloudRet
     }
+    */
+/// MARK: -
+    
+/// MARK: post-comments
 
+    func uploadLocation(user: Users, whenDone: @escaping (Bool) -> ()) -> () {
+
+        cloud.upload(user: user) { (result: Bool) in
+
+            whenDone(result)
+        }
+    }
+
+/// MARK: -
+    
     /// Update display with local location coordinates
     /// - Parameters:
     ///     - display: UILabel instance display
