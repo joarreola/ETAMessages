@@ -167,7 +167,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
             print("-- locationManager -- refresh mapView")
             
             self.mapUpdate.refreshMapView(packet: localUser.location, mapView: mapView)
-
+/// MARK: pre-comments
+            /*
             //upload iCloud record
             if !gpsLocation.uploadToIcloud(localUser: localUser)
             {
@@ -182,6 +183,44 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
             print("-- locationManager -- gpsLocation.uploadToIcloud() -- succeeded")
             
             mapUpdate.displayUpdate(display: display, packet: localUser.location)
+            */
+/// MARK: -
+
+/// MARK: post-comments
+            self.gpsLocation.uploadToIcloud(user: localUser) {
+                
+                (result) in
+                
+                if !result {
+                    print("-- locationManager -- gpsLocation.uploadToIcloud() -- Failed")
+                    
+                    // UI updates on main thread
+                    DispatchQueue.main.async { [weak self ] in
+                        
+                        if self != nil {
+                            
+                            // display localUserPacket and error message
+                            self?.uploading.updateMap(display: (self?.display)!, packet: (self?.localUser.location)!, string: "upload to iCloud failed")
+                        }
+                    }
+                    
+                    return
+                }
+                
+                print("-- locationManager -- gpsLocation.uploadToIcloud() -- succeeded")
+
+                // UI updates on main thread
+                DispatchQueue.main.async { [weak self ] in
+                    
+                    if self != nil {
+                        // display localUserPacket and error message
+                        self?.uploading.updateMap(display: (self?.display)!, packet: (self?.localUser.location)!, string: "uploaded to iCloud")
+                    }
+                }
+            }
+
+/// MARK: -
+
         }
 
         // poll_entered is 0 if Poll button not yet tapped
@@ -248,8 +287,10 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         print("===================================================================")
 
         // display packet
-        uploading.updateMap(display: display, packet: localUser.location)
-        
+        self.uploading.updateMap(display: self.display, packet: self.localUser.location)
+
+/// MARK: pre-comments
+        /*
         // Upload localUserPacket to Cloud repository
         if !uploading.uploadLocation(packet: localUser.location) {
             
@@ -259,14 +300,52 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
 
             return
         }
+        */
+/// MARK: -
+
+/// MARK: post-comments
+
+        // Upload localUserPacket to Cloud repository
+        //func uploadLocation(user: Users) -> Bool {
+        self.uploading.uploadLocation(user: localUser) {
+            
+            (result) in
+
+            if !result {
+                // UI updates on main thread
+                DispatchQueue.main.async { [weak self ] in
+                    
+                    if self != nil {
+
+                        // display localUserPacket and error message
+                        self?.uploading.updateMap(display: (self?.display)!, packet: (self?.localUser.location)!,
+                                    string: "upload to iCloud failed")
+                    }
+                }
+         
+                return
+            }
+            
+            // UI updates on main thread
+            DispatchQueue.main.async { [weak self ] in
+                
+                if self != nil {
+                    // display localUserPacket and error message
+                    self?.uploading.updateMap(display: (self?.display)!, packet: (self?.localUser.location)!,
+                                     string: "uploaded to iCloud")
+                }
+            }
+
+            // this allows for uploading of coordinates on LocalUser location changes
+            // in locationManager()
+            self.uploading.enableUploading()
+        }
         
         // refresh mapView
-        self.mapUpdate.refreshMapView(packet: localUser.location, mapView: mapView)
-        
-        // this allows for uploading of coordinates on LocalUser location changes
-        // in locationManager()
-        uploading.enableUploading()
-        
+        self.mapUpdate.refreshMapView(packet: self.localUser.location, mapView: self.mapView)
+
+/// MARK: -
+
         print("-- enable -- end\n")
     
     }
@@ -442,7 +521,6 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         uploading.disableUploading()
         pollManager.disablePolling()
         poll_entered = 0;
-        
         
     }
 
