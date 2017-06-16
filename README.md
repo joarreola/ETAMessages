@@ -49,12 +49,18 @@ Class project
   - Cloud.swift
     Upload, fetch, save, delete a record to/from iCloud repo.
     
-    - Update semaphore.wait() from distantFuture to 5 sec.
-    - Switch to Public database.
+    Post-Review Updates:
+    - Update upload() to take in whenDone closure , and to call
+      back with result whenDone(result). Call publicDatabase.delete()
+      directly in upload(), call publicDatabase.save() in success
+      path of publicDatabase.delete() closure.
     
   - Uploading.swift - New
   	Manage mobile mode behavior, with localUser and single packet
   
+    Post-Review Updates:
+    - Update uploadLocation() to take in whenDone closure, and to call
+      back with result whenDone(result).
   
   - Users.switf - New
   	Knows user name and location info
@@ -117,7 +123,9 @@ Class project
   	Manages local and remote location updates when CLLocation Framework
   	calls locationManager()
   	
-  	- Added.
+  	Post-Review Updates:
+    - Update uploadToIcloud() to take in whenDone closure, and to call
+      back with result whenDone(result).
  
   - MessagesViewController.swift
     Manages the UI implemented in IBACtion functions enable() and poll().
@@ -128,15 +136,9 @@ Class project
     A UILabel notes local and remote coordinate data, and eta/distance
     info. At times it reports specific app state, sort of like a console.
     
-    - Call mapUpdate.refreshMapView(). Call mapUpdate.displayUpdate().
-    - Remove etaPointer parameter. Use eta.loadPointer(). Remove etaPointer
-      to eta.getEtaDistance() calls.
-    - Update all mapUpdate.refreshMapView() calls to pass eta instance
-      vs. delta value.
-    - Update to user Users and Uploading classes
-    - Update to use GPSLocation class. Remove check_remote()
-    - Rename "poll" to "pollManager"
-    - Don't upload local coordinates in Poll mode.
+    Post-Review Updates:
+    - Update upload.uploadLocation() call to pass a closure
+    - Update gpsLocation.uploadToIcloud() call to pass a closure
  
 - What is the project supposed to do?
   In an environment consiting of two mobile devices, the ETAMessages app
@@ -154,48 +156,28 @@ Class project
   an appropriate function to translate distance to mapView span.
   
 - What is not?
-  Getting random app crashes, likely assocciated with the use of an
-  UnsafeMutableRawPointer (for eta data storage in completionhandled
-  closures). Getting better, but not yet cleared.
-   
-  The latest commit looks much better. No crashes yet on devs or
-  simulator. Converted Eta from struct to class, and fully inited
-  pointer in Eta's init().
-  
-  The random crashes are gone.
+  All implemented code is working.
   
 - What should a reviewer do in order to test your project?
+
   Location coordinates can be updated in the simulator via Debug->Location.
   Depending on the app mode (mobile/stationary) Debug->Location will move
-  the blue dot or the red pin. We'll see if I can have the app behave
-  correctly if the blue dot moves toward the red pin in poll mode.
+  the blue dot or the red pin.
   
-  Actually, the red pin can only be moved by updating the location record
-  manually in the iCloud repo. Was able to do that last week, but can't
-  after Apple's update to the developers/CloudKit Dashboard. Also, can't
-  run the app on a device due to new code signing requirements. This
-  appears to be a recent Apple regression.
   
 - Are there any problems that you know you need to fix?
-  Yes, the random crashes mentioned above.
   
-  The latest commit looks much better. No crashes yet on devs or
-  simulator. Converted Eta from struct to class, and fully inited
-  pointer in Eta's init().
+  Remote all semaphore locks, per review comments.
   
-  The random crashes are gone.
   
 - Are there any areas where you would like help?
-  Not yet. Got good input/suggestions from Michael in 1st code submittion, will work on them.
+
+  Not yet. Working on incorporating review comments.
   
   
 - TODO:
-
-	- Move map refreshing code out of getEtaDistance() closure. Focus just
-	  on eta and distance data. -- DONE
-	- Convert poll-loop to GrandCentralStation per class slides. -- DONE
-	- update all semaphores to 5 seconds -- DONE
-	- sleep -> NStimer: wait for next class
+	- sleep -> NStimer: wait for next class. Will use iCloud container
+	  record-change notifications vs. polling.
 	- Implement thread synchronization with conditional-vars/mutexes.
 	- Implement local notifications.
 	- Consider pop-up menu to enable/disable stationary and mobile modes.
@@ -203,13 +185,9 @@ Class project
 	  by changing the button item background? :-)
 	  Then Remove the Disable button.
 	- Add directions overlay to mapView.
-	- Instantiate pe-user Location instances -- DONE
   	- Implement Class Diagram classes:
   		- EtaNotifications
-  		- Uploading -- DONE
-  		- GPSsLocation -- DONE
-  		- Users -- DONE
-  	- Have app run properly when both Uploading and Polling modes are
-  	  enabled. Need this to test polling without manually updating
-  	  the record in CloudKit Dashboard. -- DONE
+  	- Remove all semaphores per Phil's review comments.
+  	- Refactor code to not make sequential calls to closure-invoking
+  	  methods, per review comments.
   
