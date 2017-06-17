@@ -50,7 +50,8 @@ class GPSLocation {
     ///     - localUser:
     /// - Returns: Location packet uploading outcome: true or false
 
-/// MARK: pre-comments
+    // MARK: start pre-comments
+
     /*
     func uploadToIcloud(localUser: Users) -> Bool {
         //upload to iCloud if enabled_uploading set in IBAction enable()
@@ -75,9 +76,10 @@ class GPSLocation {
     
     }
     */
-/// MARK: -
+    
+    // MARK:- end pre-comments
 
-/// MARK: post-comments
+    // MARK: start post-comments
 
     func uploadToIcloud(user: Users, whenDone: @escaping (Bool) -> ()) -> () {
         
@@ -89,7 +91,7 @@ class GPSLocation {
         }
     }
 
-/// MARK: -
+    // MARK:- end post-comments
 
     /// Attempt to fetch remote-User's record, request eta and distance
     /// if fetched.
@@ -102,14 +104,16 @@ class GPSLocation {
     /// - Returns: Location packet fetching outcome: true or false
 
     func checkRemote(pollRemoteUser: PollManager, localUser: Users, remoteUser: Users,
-                     mapView: MKMapView, eta: EtaAdapter) -> Bool {
+                     mapView: MKMapView, eta: EtaAdapter, display: UILabel) -> Bool {
         // extract location and eta data for remoteUser
         
         print("-- GPSLocation -- checkRemote() -- User: \(remoteUser.getName())")
  
-        var latitude: CLLocationDegrees
-        var longitude: CLLocationDegrees
         let mapUpdate = MapUpdate()
+        
+        // MARK: start pre-comments
+
+        /*
         let fetchRet = pollRemoteUser.fetchRemote()
  
         if (fetchRet.latitude == nil) {
@@ -125,11 +129,50 @@ class GPSLocation {
         print("-- GPSLocation -- check_remote -- mapUpdate.addPin()")
  
         mapUpdate.addPin(packet: remoteUser.location, mapView: mapView, remove: false)
+        */
+        
+        // MARK:- end of pre-comments
+
+        // MARK: start post-comments
+
+        pollRemoteUser.fetchRemote() {
+            
+            (packet: Location) in
+            
+            if packet.latitude == nil {
+                print("-- GPSLocation -- check_remote -- self.pollManager.fetchRemote() - closure -- failed")
+                
+                return
+                
+            } else {
+                
+                print("-- poll -- self.pollManager.fetchRemote() - closure -- remote latitude: \(String(describing: packet.latitude))")
+                print("-- poll -- self.pollManager.fetchRemote() - closure -- remote longitude: \(String(describing: packet.longitude))")
+                
+                // update remoteUser Location
+                remoteUser.location.setLatitude(latitude: packet.latitude!)
+                remoteUser.location.setLongitude(longitude: packet.longitude!)
+                
+                // UI updates on main thread
+                DispatchQueue.main.async { [weak self ] in
+                    
+                    if self != nil {
+                        // note coordinates set on display
+                        print("-- GPSLocation -- check_remote -- mapUpdate.addPin()")
+
+                        mapUpdate.addPin(packet: remoteUser.location, mapView: mapView, remove: false)
+                    }
+                }
+                
+                // get eta and distance. Returns immediately, closure returns later
+                print("-- GPSLocation -- check_remote -- eta.getEtaDistance()")
  
-        print("-- GPSLocation -- check_remote -- eta.getEtaDistance()")
+                eta.getEtaDistance(localPacket: localUser.location, remotePacket: remoteUser.location, mapView: mapView, etaAdapter: eta, display: display)
+            }
+        }
  
-        eta.getEtaDistance(localPacket: localUser.location, remotePacket: remoteUser.location)
- 
+        // MARK:- end of post-comments
+
         return true
     }
 
