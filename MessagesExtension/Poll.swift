@@ -26,7 +26,7 @@ class PollManager {
     private var myRemotePacket: Location
     private var myEta: TimeInterval?
     private var myDistance: Double?
-    private var etaOriginal: TimeInterval
+    private var etaOriginal: TimeInterval?
     private let cloudRemote: CloudAdapter
     static  var enabledPolling: Bool = false
     private let hasArrivedEta: Double = 20.0
@@ -49,13 +49,42 @@ class PollManager {
 
     /// Fetch remoteUser's location record from iCloud
     /// - Returns: A tuple of latitude and longitude coordinates
-
+// MARK: pre-comments
+    /*
     func fetchRemote() -> (latitude: CLLocationDegrees?, longitude: CLLocationDegrees?) {
-        print("-- Poll -- fetchRemote")
+        print("-- PollManager -- fetchRemote")
         
         return cloudRemote.fetchRecord()
         
     }
+    */
+// MARK:-
+    
+// MARK: post comments
+
+    func fetchRemote(whenDone: @escaping (Location) -> ()) -> () {
+        print("-- PollManager -- fetchRemote(whenDone: @escaping (Location) -> ()) -> ()")
+        
+        cloudRemote.fetchRecord() {
+            
+            (packet: Location) in
+
+            if packet.latitude == nil {
+                print("-- PollManager -- fetchRemote(whenDone: @escaping (Location) -> ()) -> () -- cloudRemote.fetchRecord() -- closure -- failed")
+
+                whenDone(packet)
+                
+            } else {
+                print("-- PollManager -- fetchRemote(whenDone: @escaping (Location) -> ()) -> () -- cloudRemote.fetchRecord() -- closure -- latitude: \(String(describing: packet.latitude)) -- longitude: \(String(describing: packet.longitude))")
+                
+                print("-- PollManager -- fetchRemote(whenDone: @escaping (Location) -> ()) -> () -- cloudRemote.fetchRecord() -- closure -- call: whenDone(Location)")
+
+                whenDone(packet)
+            }
+        }
+    }
+
+// MARK:-
 
     /// Poll iCloud for remote User's location record.
     /// while-loop runs in a background DispatchQueue.global thread.
@@ -71,22 +100,24 @@ class PollManager {
     
     func pollRemote(localUser: Users, remotePacket: Location, mapView: MKMapView,
                     eta: EtaAdapter, display: UILabel) {
-        print("-- Poll -- pollRemote")
+        print("-- PollManager -- pollRemote()")
 
-        var rlat: CLLocationDegrees?
-        var rlong: CLLocationDegrees?
+        //var rlat: CLLocationDegrees?
+        //var rlong: CLLocationDegrees?
         
         // initialize to current local and remote postions
         self.myLocalPacket = Location()
-        self.myLocalPacket.setLatitude(latitude: localUser.location.latitude)
-        self.myLocalPacket.setLongitude(longitude: localUser.location.longitude)
+        self.myLocalPacket.setLatitude(latitude: localUser.location.latitude!)
+        self.myLocalPacket.setLongitude(longitude: localUser.location.longitude!)
 
         self.myRemotePacket = Location()
-        self.myRemotePacket.setLatitude(latitude: remotePacket.latitude)
-        self.myRemotePacket.setLongitude(longitude: remotePacket.longitude)
+        self.myRemotePacket.setLatitude(latitude: remotePacket.latitude!)
+        self.myRemotePacket.setLongitude(longitude: remotePacket.longitude!)
 
         let mapUpdate = MapUpdate();
         
+        // MARK: start of DispatchQueue.global(qos: .background).async
+
         /**
          *
          * Below code runs in a separate thread
@@ -94,36 +125,39 @@ class PollManager {
          */
         DispatchQueue.global(qos: .background).async {
     
-            print("\n===============================================================\n")
-            print("-- Poll -- pollRemote -- in queque.addOperation()")
-            print("\n===============================================================\n")
+            print("\n===============================================================")
+            print("-- PollManager -- pollRemote() -- in queque.addOperation()")
+            print("=================================================================")
     
             // etaOriginal
-            self.etaOriginal = eta.getEta()!
-            print("-- Poll -- pollRemote -- self.etaOriginal: \(self.etaOriginal)")
-    
-            // MARK:
-                // FIXME: Add loop-terminating code
-            print("-- Poll -- pollRemote -- into while{}")
-            //var initialEta = eta.getEta()
+            self.etaOriginal = eta.getEta()
+            print("-- PollManager -- pollRemote() -- DispatchQueue.global -- self.etaOriginal: \(String(describing: self.etaOriginal))")
 
+
+            // MARK: start of while-loop
+            
             /**
              *
-             * While loop terminated when Double(self.myEta!) < 50.0, or
+             * While loop terminated when Double(self.myEta!) < 20.0, or
              * setting PollManager.enabledPolling to false in @IBAction disable()
              *
              */
+            print("-- PollManager -- pollRemote() -- DispatchQueue.global -- into while{}")
+
             while PollManager.enabledPolling {
     
                 // check pointer
                 self.myEta = eta.loadPointer()
                 self.myDistance = eta.getDistance()
                 
-                print("-- Poll -- pollRemote -- self.myEta: \(self.myEta!) self.myDistance: \(String(describing: self.myDistance!))")
+                print("-- PollManager -- pollRemote() -- DispatchQueue.global -- self.myEta: \(String(describing: self.myEta)) self.myDistance: \(String(describing: self.myDistance))")
     
-                // selffetchRemote()
-                print("-- Poll -- pollRemote -- pre self.fetchRemote()")
-    
+                // self.fetchRemote()
+                print("-- PollManager -- pollRemote() -- DispatchQueue.global -- pre self.fetchRemote()")
+        
+                // MARK: start of pre-comments
+
+                /*
                 (rlat, rlong) = self.fetchRemote()
 
                 (rlat == nil) ? (self.remoteFound = false) : (self.remoteFound = true)
@@ -200,49 +234,135 @@ class PollManager {
                     //initialEta = self.myEta!
                 //}
                 } // include DispatchQueue.main.async in diff check
+                */
+                // MARK:- end of pre-comments
+                
+                // MARK: start of post-comments
 
-                if  self.myEta != self.etaOriginal {
+                print("-- PollManager -- pollRemote() -- DispatchQueue.global -- self.myEta: \(self.myEta!)")
+                print("-- PollManager -- pollRemote() -- DispatchQueue.global -- etaOriginal: \(self.etaOriginal!)")
+
+                if  self.myEta! != self.etaOriginal! {
+                    print("\n===============================================================")
+                    print("-- PollManager -- pollRemote() -- DispatchQueue.global -- calling self.etaNotification(display: display)")
+                    print("===============================================================\n")
                     
                     self.etaNotification(display: display)
                 }
+
+                self.fetchRemote() {
+                    
+                    (packet: Location) in
+                    
+                    if packet.latitude == nil {
+                        print("-- PollManager -- pollRemote() -- DispatchQueue.global -- self.fetchRemote() -- closure -- returned nil")
+                        
+                        // UI updates on main thread
+                        DispatchQueue.main.async { [weak self ] in
+                            
+                            if self != nil {
+                                
+                                // display localUserPacket
+                                mapUpdate.displayUpdate(display: (display), packet: packet, string: "fetchRemote failed")
+                                
+                            }
+                        }
+
+                        return
+                        
+                    }
+                    
+                    if packet.latitude != self.myRemotePacket.latitude ||
+                        packet.longitude != self.myRemotePacket.longitude ||
+                        localUser.location.latitude != self.myLocalPacket.latitude ||
+                        localUser.location.longitude != self.myLocalPacket.longitude
+                    {
+                        print("\n===============================================================")
+                        print("-- PollManager -- pollRemote() -- DispatchQueue.global -- LOCATION CHANGED")
+                        print("===============================================================\n")
+            
+                        print("-- PollManager -- pollRemote() -- DispatchQueue.global -- self.fetchRemote() -- closure -- remote latitude: \(String(describing: packet.latitude))")
+                        print("-- PollManager -- pollRemote() -- DispatchQueue.global -- self.fetchRemote() -- closure -- remote longitude: \(String(describing: packet.longitude))")
+                        
+                        // update myRemotePacket and myLocalPacket
+                        self.myRemotePacket.setLatitude(latitude: packet.latitude!)
+                        self.myRemotePacket.setLongitude(longitude: packet.longitude!)
+                        
+                        self.myLocalPacket.setLatitude(latitude: localUser.location.latitude!)
+                        self.myLocalPacket.setLongitude(longitude: localUser.location.longitude!)
+
+
+                        // get eta and distance. Returns immediately, closure returns later
+                        print("-- PollManager -- pollRemote() -- DispatchQueue.global -- self.fetchRemote() -- closure -- call: eta.getEtaDistance...")
+                        
+                        eta.getEtaDistance (localPacket: self.myLocalPacket, remotePacket: self.myRemotePacket, mapView: mapView, etaAdapter: eta, display: display)
+                        
+                        // UI updates on main thread
+                        DispatchQueue.main.async { [weak self ] in
+                            
+                            if self != nil {
+                               
+                                // refreshMapView here vs. in eta.getEtaDistance()
+                                print("-- PollManager -- pollRemote() -- DispatchQueue.main.async -- self.fetchRemote() -- call mapUpdate.refreshMapView()")
+                                
+                                mapUpdate.addPin(packet: (self?.myRemotePacket)!,
+                                                 mapView: mapView, remove: false)
+                                
+                                mapUpdate.refreshMapView(localPacket: (self?.myLocalPacket)!,
+                                                         remotePacket: (self?.myRemotePacket)!,
+                                                         mapView: mapView, eta: eta)
+                                
+                                mapUpdate.displayUpdate(display: display,
+                                                        localPacket: self!.myLocalPacket,
+                                                        remotePacket: self!.myRemotePacket,
+                                                        eta: eta)
+                            }
+                        }
+                    } // end of location compare
+                } // end of self.fetchRemote()
    
-                // ETA == has-arrived
+                // MARK:- end of post-comments
+
+                // ETA == has-arrived, break out of while-loop
                 if Double(self.myEta!) <= self.hasArrivedEta {
-                    print("-- Poll -- pollRemote -- stopping pollRemote")
+                    print("\n===========================================================")
+                    print("-- PollManager -- pollRemote() -- DispatchQueue.global -- STOPPING POLLREMOTE")
+                    print("===============================================================\n")
 
                     break
                 }
     
-                // FIXME: switch to NSTime
-                print("-- Poll -- pollRemote -- sleep 2...")
+                // FIXME: switch to NSTime or iCloud notification
+                print("\n===========================================================")
+                print("-- PollManager -- pollRemote() -- DispatchQueue.global -- sleep 2...")
+                print("===============================================================\n")
+
                 sleep(2)
     
-            } // end of while{}
-            // MARK:-
+            }
+            
+            // MARK:- end of while-loop
 
-        } // end of DispatchQueue.global(qos: .background).async
+        }
+        
+        // MARK:- end of DispatchQueue.global(qos: .background).async
 
-    } // end of pollRemote()
-
+    }
 
     /// Request local notifications based on ETA data
     /// - Parameters:
     ///     - display: UILabel instance display
 
     func etaNotification(display: UILabel) {
-        print("-- Poll - etaNotification -- etaOriginal: \(self.etaOriginal) myEta: \(self.myEta!)")
+        print("-- PollManager -- etaNotification() -- etaOriginal: \(String(describing: self.etaOriginal)) myEta: \(self.myEta!)")
         
         let mapUpdate = MapUpdate()
 
         switch self.myEta! {
-        //case etaOriginal:
-        //
-        //    print("Poll - etaNotification -- myEta == etaOriginal")
-            
-        case (self.etaOriginal / 4) * 3:
+        case (self.etaOriginal! / 4) * 3:
 
             print("/n=====================================================================/n")
-            print("-- Poll - etaNotification -- myEta == etaOriginal/4 * 3")
+            print("-- PollManager -- etaNotification -- myEta == etaOriginal/4 * 3")
             print("/n=====================================================================/n")
             
             // do UI updates in the main thread
@@ -254,10 +374,10 @@ class PollManager {
                                     secondString: "3/4ths there")
             }
     
-        case (self.etaOriginal / 4) * 2:
+        case (self.etaOriginal! / 4) * 2:
             
             print("/n=====================================================================/n")
-            print("-- Poll - etaNotification -- myEta == etaOriginal/4 * 2")
+            print("-- PollManager -- etaNotification() -- myEta == etaOriginal/4 * 2")
             print("/n=====================================================================/n")
             
             // do UI updates in the main thread
@@ -269,10 +389,10 @@ class PollManager {
                                     secondString: "Half-way there")
             }
             
-        case (self.etaOriginal / 4) * 1:
+        case (self.etaOriginal! / 4) * 1:
             
             print("/n=====================================================================/n")
-            print("-- Poll - etaNotification -- myEta == etaOriginal/4 * 1")
+            print("-- PollManager -- etaNotification() -- myEta == etaOriginal/4 * 1")
             print("/n=====================================================================/n")
             
             // do UI updates in the main thread
@@ -286,7 +406,7 @@ class PollManager {
         case 0.0...self.hasArrivedEta:
 
             print("/n=====================================================================/n")
-            print("-- Poll - etaNotification -- myEta == 0")
+            print("-- PollManager -- etaNotification() -- myEta == 0")
             print("/n=====================================================================/n")
             
             // do UI updates in the main thread
@@ -300,14 +420,14 @@ class PollManager {
             
         default:
             
-            print("Poll - etaNotification -- default")
+            print("-- PollManager -- etaNotification -- default")
         }
     }
     
     /// Note that polling has been enabled
     
     func enablePolling() {
-        print("--Poll -- enablePolling")
+        print("-- PollManager -- enablePolling")
         
         PollManager.enabledPolling = true
     }
@@ -315,7 +435,7 @@ class PollManager {
     /// Note that polling has been disabled
     
     func disablePolling() {
-        print("--Poll -- disablePolling")
+        print("-- PollManager -- disablePolling")
         
         PollManager.enabledPolling = false
     }
