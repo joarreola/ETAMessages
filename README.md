@@ -54,6 +54,9 @@ Class project
       back with result whenDone(result). Call publicDatabase.delete()
       directly in upload(), call publicDatabase.save() in success
       path of publicDatabase.delete() closure.
+    - Remove semaphore locks in deleteRecord(). Remove saveRecord().
+      Re-implement fetchRecord() to take in a whenDone closure, which
+      will be called with a packet argument.
     
   - Uploading.swift - New
   	Manage mobile mode behavior, with localUser and single packet
@@ -69,54 +72,34 @@ Class project
   	  
   - Poll.swift
     Poll iCloud repo for content changes in remote-User's location record.
-    
-    - Instantiate MapUpdate vs. passing. Call mapUpdate.displaUpdate() for
-      display/console updates.
-    - Remove etaPointer parameter from pollRemote() and as arg to
-      eta.getEtaDistance() call.
-    - Create my Distance property. Populate eta from eta.getEta() v.s
-      from pointer. Call eta.getEtaDistance() in background v.s man thread.
-      Make UI updating calls in main thread.
-    - Convert pollRemote() to GrandCentralStation per class slides.
-    - Update semaphore.wait() from distantFuture to 5 sec.
-    - Update to user Users and Uploading classes
-    - Replace remoteUser with remoteUserName. No need to pass self.etaOriginal
-      nor self.myEta to etaNotification().
-    - Remove fetchRemote() code duplication, instead use Cloud instance and
-      call fetchRecord().
-    - set self.rmoteFound based on rlat ==/!= nil
-    
+
+    Post-Review Updates:
+    - Re-do fetchRemote() to take in a whenDone closure, which is called
+      with a packet argument. Update to accomodate optional coordinates.
+      Pass a closure to the fetchRemote() call in pollRemote(). Make
+      call to eta.getEtaDistance() in closure.
     
   - MapUpdate.swift
-    Manage mapView updates (addPin) and getting ETA and distance between
-    local and remote devices/users.
-    
-    - Moved getEtaDistance() to Eta.swift.
-    - Fixed centerView for when remote location is under local location.
-    - Remove unused var declarations. Update centerView() logic. create
-      refreshMapView() method. Create displayUpdate() method.
-    - Fix multiple pointAnnotations bug after previous commit.
-    -  Replace delta param with eta instance. Add delta-computing switch.
-    - Update to user Users and Uploading classes
-    - Fix refreshMapView() parameter list for single-packet case.
-  
+    Manage mapView updates for remote-user pin, map centering and spanning, and
+    display updates.
+
+    Post-Review Updates:
+    - Update to accomodate the to-optional changes in Location.swift
   
   - Location.switch
     Location coordinate structure.
     
-    - remove remote location properties.
+    Post-Review Updates:
+    - Make latitude and longitude optionals.
     
     
   - Eta.swift
     eta value and etaPointer structure.
     moved in getEtaDistance() from MapUpdate.swift
     
-    - Remove display parameter. Instantiate MapUpdate. Call mapUpdate.
-      displayUpdate().
-    - Add set/getDistance(). Remove eta and etaPointer from params list.
-      Use setEta(), setDistance(), self.loadPointer() in getEtaDistance().
-    - Initialize eta and distance to nil.
-    - Add user location instance
+    Post-Review Updates:
+    - Update getEtaDistance() to update mapView and display within the closure.
+    - Note ETA server error: "Directions Not Available" 
 
 
   - GPSsLocation.swift
@@ -124,8 +107,11 @@ Class project
   	calls locationManager()
   	
   	Post-Review Updates:
-    - Update uploadToIcloud() to take in whenDone closure, and to call
+  	- Update uploadToIcloud() to take in whenDone closure, and to call
       back with result whenDone(result).
+    - Update checkRemote() to take in mapView, EtaAdapter, and display
+      parameters for use in the pollRemoteUser.fetchRemote() closure.
+ 
  
   - MessagesViewController.swift
     Manages the UI implemented in IBACtion functions enable() and poll().
@@ -137,8 +123,12 @@ Class project
     info. At times it reports specific app state, sort of like a console.
     
     Post-Review Updates:
-    - Update upload.uploadLocation() call to pass a closure
-    - Update gpsLocation.uploadToIcloud() call to pass a closure
+    - Update upload.uploadLocation() call to pass a closure.
+      Update gpsLocation.uploadToIcloud() call to pass a closure.
+    - Add display argument to gpsLocation.checkRemote() call. Call
+      self.pollManager.fetchRemote() with a closure that is called back
+      with a packet argument. Call displayUpdate() in main DispatchQueue.
+      Move display updates into self.eta.getEtaDistanc() closure.
  
 - What is the project supposed to do?
   In an environment consiting of two mobile devices, the ETAMessages app
