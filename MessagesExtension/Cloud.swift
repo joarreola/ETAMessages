@@ -188,8 +188,9 @@ class CloudAdapter {
                 print("-- CloudAdapter -- fetchRecord(whenDone: @escaping (Location) -> ()) -> () -- publicDatabase.fetch -- closure -- call: whenDone(self.recordFound): \(self.recordFound)")
     
                 var packet: Location = Location()
-                packet.setLatitude(latitude: nil)
-                packet.setLongitude(longitude: nil)
+                //packet.setLatitude(latitude: nil)
+                //packet.setLongitude(longitude: nil)
+                packet.setLocation(latitude: nil,longitude: nil)
                 
                 whenDone(packet)
     
@@ -210,8 +211,9 @@ class CloudAdapter {
             print("-- CloudAdapter -- fetchRecord(whenDone: @escaping (Location) -> ()) -> () -- closure -- call: whenDone(packet)")
 
             var packet: Location = Location()
-            packet.setLatitude(latitude: self.latitude)
-            packet.setLongitude(longitude: self.longitude)
+            //packet.setLatitude(latitude: self.latitude)
+            //packet.setLongitude(longitude: self.longitude)
+            packet.setLocation(latitude: self.latitude, longitude: self.longitude)
 
             whenDone(packet)
         }
