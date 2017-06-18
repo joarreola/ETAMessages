@@ -133,9 +133,9 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         // locationManager(:didUpdateLocations) guarantees that locations will not
         // be empty
         let location = locations.last!
-        var lmPacket = Location()
-        lmPacket.setLatitude(latitude: location.coordinate.latitude)
-        lmPacket.setLongitude(longitude: location.coordinate.longitude)
+        let lmPacket = Location(userName: "", location: location)
+        //lmPacket.setLatitude(latitude: location.coordinate.latitude)
+        //lmPacket.setLongitude(longitude: location.coordinate.longitude)
         
         // refresh mapView from locationManager just once
         if !locPacket_updated
@@ -482,8 +482,6 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         //self.locationManager.stopUpdatingLocation()
         
         // vars
-        //var latitude: CLLocationDegrees
-        //var longitude: CLLocationDegrees
         poll_entered += 1
     
 // MARK:
@@ -646,8 +644,9 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
                 print("-- poll -- self.pollManager.fetchRemote() - closure -- remote longitude: \(String(describing: packet.longitude))")
                 
                 // update remoteUser Location
-                self.remoteUser.location.setLatitude(latitude: packet.latitude!)
-                self.remoteUser.location.setLongitude(longitude: packet.longitude!)
+                //self.remoteUser.location.setLatitude(latitude: packet.latitude!)
+                //self.remoteUser.location.setLongitude(longitude: packet.longitude!)
+                self.remoteUser.location.setLocation(latitude: packet.latitude!, longitude: packet.longitude!)
                 
                 // UI updates on main thread
                 DispatchQueue.main.async { [weak self ] in
