@@ -17,12 +17,18 @@ import CloudKit
 
 class Users {
     var name: String
-    var location: Location = Location()
+    var location: Location
     
     init(name: String) {
         self.name = name
+        self.location = Location()
     }
     
+    init(name: String, location: Location) {
+        self.name = name
+        self.location = Location(userName: name, location: location)
+    }
+
     func setName(name: String) {
         self.name = name
     }
@@ -30,12 +36,18 @@ class Users {
     func getName() -> String {
         return self.name
     }
-    
+    /*
     func setLatitude(latitude: CLLocationDegrees) {
         location.setLatitude(latitude: latitude)
     }
     
     func setLongitude(longitude: CLLocationDegrees) {
         location.setLongitude(longitude: longitude)
+    }
+    */
+    func setLocation(location: Location) {
+        self.location.latitude = location.latitude
+        self.location.longitude = location.longitude
+        
     }
 }
