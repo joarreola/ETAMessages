@@ -43,6 +43,13 @@ struct PointAnnotations {
 
 class MapUpdate {
     static var pointAnnotationStruct: PointAnnotations = PointAnnotations()
+    private var latitude: CLLocationDegrees = 0.0
+    private var longitude: CLLocationDegrees = 0.0
+    private var locLatitude: CLLocationDegrees = 0.0
+    private var locLongitude: CLLocationDegrees = 0.0
+    private var remLatitude: CLLocationDegrees = 0.0
+    private var remLongitude: CLLocationDegrees = 0.0
+
 
     /// Upload location packet to iCloud
     /// - Parameters:
@@ -110,7 +117,9 @@ class MapUpdate {
     ///     - localpacket: localUser's location coordinates
     ///     - remotepacket: remoteUser's location coordinates
     ///     - mapView: instance of MKMapView to re-center mapView
-    /// - Returns: new center coordinates
+    /// - Returns:
+    ///     - new center coordinates
+    ///     - suggested delta value
 
     func centerView (localpacket: Location, remotePacket: Location, mapView: MKMapView) -> (CLLocationCoordinate2D, Double) {
         print("-- MapUpdate -- centerView: center mapView between local and remote users")
@@ -137,36 +146,17 @@ class MapUpdate {
         }
         
         // for local and remote location pairs
-        /*
-        (Double(localpacket.latitude!) < Double(remotePacket.latitude!)) ?
-                (latDistTo = (localpacket.latitude?.distance(to: remotePacket.latitude!))! / 2) :
-                (latDistTo = (remotePacket.latitude?.distance(to: localpacket.latitude!))! / 2)
-
-        (Double(localpacket.longitude!) < Double(remotePacket.longitude!)) ?
-                (lngDistTo = (localpacket.longitude?.distance(to: remotePacket.longitude!))! / 2) :
-                (lngDistTo = (remotePacket.longitude?.distance(to: localpacket.longitude!))! / 2)
-        */
         latDistTo = abs((localpacket.latitude?.distance(to: remotePacket.latitude!))!) / 2
         lngDistTo = abs((localpacket.longitude?.distance(to: remotePacket.longitude!))!) / 2
         
         print("-- MapUpdate -- centerView -- latDistTo: \(latDistTo) lngDistTo: \(lngDistTo)")
         
-        /*
-        (Double(localpacket.latitude!) > Double(remotePacket.latitude!)) ?
-            (centerLatitude = remotePacket.latitude! + latDistTo) :
-            (centerLatitude = localpacket.latitude! + latDistTo)
-        */
         centerLatitude = (Double(localpacket.latitude!) > Double(remotePacket.latitude!)) ?
             (remotePacket.latitude! + latDistTo) :
             (localpacket.latitude! + latDistTo)
         
 
         // negative longitudes
-        /*
-        (Double(localpacket.longitude!) > Double(remotePacket.longitude!)) ?
-            (centerLongitude = remotePacket.longitude! + lngDistTo) :
-            (centerLongitude = localpacket.longitude! + lngDistTo)
-        */
         centerLongitude = (Double(localpacket.longitude!) > Double(remotePacket.longitude!)) ?
             (remotePacket.longitude! + lngDistTo) :
             (localpacket.longitude! + lngDistTo)
@@ -378,6 +368,36 @@ class MapUpdate {
         display.text = "- \(string)"
         
     }
+    
+    /// Replace nil with 0.0
+    /// - Parameters
+    ///     - packet: location coordinates to display
+    /// - Returns
+    ///     - latitude: value or 0.0
+    ///     - longitude: value or 0.0
+
+    func packetCleanup(packet: Location) {
+
+        self.latitude  = Double(packet.latitude ?? 0.0)
+        self.longitude = Double(packet.longitude ?? 0.0)
+        
+    }
+
+    /// Replace nil with 0.0
+    /// - Parameters
+    ///     - packet: location coordinates to display
+    /// - Returns
+    ///     - latitude: value or 0.0
+    ///     - longitude: value or 0.0
+
+    func packetCleanup(localPacket: Location, remotePacket: Location) {
+        
+        self.locLatitude  = Double(localPacket.latitude ?? 0.0)
+        self.locLongitude = Double(localPacket.longitude ?? 0.0)
+        self.remLatitude  = Double(remotePacket.latitude ?? 0.0)
+        self.remLongitude = Double(remotePacket.longitude ?? 0.0)
+
+    }
 
     /// Update display with local coordinates
     /// - Parameters:
@@ -388,11 +408,10 @@ class MapUpdate {
         print("-- MapUpdate -- displayUpdate(display: UILabel, packet: Location)")
         
         // cleanup packet
-        let latitude  = Double(packet.latitude ?? 0.0)
-        let longitude = Double(packet.longitude ?? 0.0)
+        packetCleanup(packet: packet)
 
         display.text = ""
-        display.text = "local: \t( \(latitude),\n \t\t\(longitude) )"
+        display.text = "local: \t( \(self.latitude),\n \t\t\(self.longitude) )"
         
     }
 
@@ -404,13 +423,12 @@ class MapUpdate {
 
     func displayUpdate(display: UILabel, packet: Location, string: String) {
         print("-- MapUpdate -- displayUpdate(display: UILabel, packet: Location, string: String)")
-        
+
         // cleanup packet
-        let latitude  = Double(packet.latitude ?? 0.0)
-        let longitude = Double(packet.longitude ?? 0.0)
+        packetCleanup(packet: packet)
         
         display.text = ""
-        display.text = "local: \t( \(latitude),\n \t\t\(longitude) )\n" + "- \(string)"
+        display.text = "local: \t( \(self.latitude),\n \t\t\(self.longitude) )\n" + "- \(string)"
         
     }
     
@@ -425,11 +443,10 @@ class MapUpdate {
         print("-- MapUpdate -- displayUpdate(display: UILabel, packet: Location, string: String, secondString: String)")
         
         // cleanup packet
-        let latitude  = Double(packet.latitude ?? 0.0)
-        let longitude = Double(packet.longitude ?? 0.0)
+        packetCleanup(packet: packet)
 
         display.text = ""
-        display.text =  "local: \t( \(latitude),\n \t\t\(longitude) )\n" +
+        display.text =  "local: \t( \(self.latitude),\n \t\t\(self.longitude) )\n" +
                         "- \(string)\n" +
                         "- \(secondString)"
         
@@ -445,14 +462,11 @@ class MapUpdate {
         print("-- MapUpdate -- displayUpdate(display: UILabel, localPacket: Location, remotePacket: Location)")
         
         // cleanup packets
-        let locLatitude  = Double(localPacket.latitude ?? 0.0)
-        let locLongitude = Double(localPacket.longitude ?? 0.0)
-        let remLatitude  = Double(remotePacket.latitude ?? 0.0)
-        let remLongitude = Double(remotePacket.longitude ?? 0.0)
-        
+        packetCleanup(localPacket: localPacket, remotePacket: remotePacket)
+
         display.text = ""
-        display.text =  "local: \t\t( \(locLatitude),\n \t\t\t\(locLongitude) )\n" +
-                        "remote: \t( \(remLatitude),\n \t\t\t\(remLongitude) )"
+        display.text =  "local: \t\t( \(self.locLatitude),\n \t\t\t\(self.locLongitude) )\n" +
+                        "remote: \t( \(self.remLatitude),\n \t\t\t\(self.remLongitude) )"
         
     }
 
@@ -468,14 +482,11 @@ class MapUpdate {
         print("-- MapUpdate -- displayUpdate(display: UILabel, localPacket: Location, remotePacket: Location, string: String)")
         
         // cleanup packets
-        let locLatitude  = Double(localPacket.latitude ?? 0.0)
-        let locLongitude = Double(localPacket.longitude ?? 0.0)
-        let remLatitude  = Double(remotePacket.latitude ?? 0.0)
-        let remLongitude = Double(remotePacket.longitude ?? 0.0)
+        packetCleanup(localPacket: localPacket, remotePacket: remotePacket)
 
         display.text = ""
-        display.text =  "local: \t\t( \(locLatitude),\n \t\t\t\(locLongitude) )\n" +
-                        "remote: \t( \(remLatitude),\n \t\t\t\(remLongitude) )\n" +
+        display.text =  "local: \t\t( \(self.locLatitude),\n \t\t\t\(locLongitude) )\n" +
+                        "remote: \t( \(self.remLatitude),\n \t\t\t\(self.remLongitude) )\n" +
                         "- \(string)"
 
     }
@@ -493,14 +504,11 @@ class MapUpdate {
         print("-- MapUpdate -- displayUpdate(display: UILabel, localPacket: Location, remotePacket: Location, string: String, secondString: String)")
         
         // cleanup packets
-        let locLatitude  = Double(localPacket.latitude ?? 0.0)
-        let locLongitude = Double(localPacket.longitude ?? 0.0)
-        let remLatitude  = Double(remotePacket.latitude ?? 0.0)
-        let remLongitude = Double(remotePacket.longitude ?? 0.0)
+        packetCleanup(localPacket: localPacket, remotePacket: remotePacket)
 
         display.text = ""
-        display.text =  "local: \t\t( \(locLatitude),\n \t\t\t\(locLongitude) )\n" +
-                        "remote: \t( \(remLatitude),\n \t\t\t\(remLongitude) )\n" +
+        display.text =  "local: \t\t( \(self.locLatitude),\n \t\t\t\(self.locLongitude) )\n" +
+                        "remote: \t( \(self.remLatitude),\n \t\t\t\(self.remLongitude) )\n" +
                         "- \(string)\n" +
                         "- \(secondString)"
         
@@ -518,10 +526,7 @@ class MapUpdate {
         print("-- MapUpdate -- displayUpdate(display: UILabel, localPacket: Location, remotePacket: Location, eta: EtaAdapter)")
         
         // cleanup packets
-        let locLatitude  = Double(localPacket.latitude ?? 0.0)
-        let locLongitude = Double(localPacket.longitude ?? 0.0)
-        let remLatitude  = Double(remotePacket.latitude ?? 0.0)
-        let remLongitude = Double(remotePacket.longitude ?? 0.0)
+        packetCleanup(localPacket: localPacket, remotePacket: remotePacket)
 
         let etaString: String
         let distanceString: String
@@ -540,8 +545,8 @@ class MapUpdate {
         
         display.text = ""
         
-        display.text =  "local: \t\t( \(locLatitude),\n \t\t\t\(locLongitude) )\n" +
-                        "remote: \t( \(remLatitude),\n \t\t\t\(remLongitude) )\n" +
+        display.text =  "local: \t\t( \(self.locLatitude),\n \t\t\t\(self.locLongitude) )\n" +
+                        "remote: \t( \(self.remLatitude),\n \t\t\t\(self.remLongitude) )\n" +
                         "eta:\t\t\(etaString) sec\n" +
                         "distance:\t\(distanceString) ft"
     

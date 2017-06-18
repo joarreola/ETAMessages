@@ -11,8 +11,7 @@ import CloudKit
 
 /// latitude and longitude location coordinates
 ///
-/// latitude { set }
-/// longitude { set }
+/// location { set }
 
 struct Location {
     var latitude: CLLocationDegrees?
@@ -37,15 +36,6 @@ struct Location {
         self.longitude = location.coordinate.longitude
     }
 
-    /*
-    mutating func setLatitude(latitude: CLLocationDegrees?) {
-        self.latitude = latitude
-    }
-    
-    mutating func setLongitude(longitude: CLLocationDegrees?) {
-        self.longitude = longitude
-    }
-    */
     mutating func setLocation(latitude: CLLocationDegrees?, longitude: CLLocationDegrees?) {
         self.latitude = latitude
         self.longitude = longitude

@@ -39,23 +39,6 @@ class UploadingManager {
     /// - Parameters:
     ///     - packet: location packet to upload to iCloud
     /// - Returns: upload outcome: true or false
-
-/// MARK: pre-comments
-    /*
-    func uploadLocation(packet: Location) -> Bool {
-        print("--Uploading -- uploadLocation")
-
-        let cloudRet = cloud.upload(packet: packet)
-
-        if (cloudRet == false) {
-            print("--Uploading -- uploadLocation -- cloud.upload(packet) returned nil.")
-        
-        }
-
-        return cloudRet
-    }
-    */
-/// MARK: -
     
 /// MARK: post-comments
 
@@ -67,7 +50,7 @@ class UploadingManager {
         }
     }
 
-/// MARK: -
+// MARK:-
     
     /// Update display with local location coordinates
     /// - Parameters:

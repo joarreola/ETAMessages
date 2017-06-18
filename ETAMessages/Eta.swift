@@ -31,21 +31,7 @@ class EtaAdapter {
         self.mapUdate = MapUpdate()
 
     }
-    /*
-    func storePointer(eta: TimeInterval) {
-        self.etaPointer.storeBytes(of: eta, as: TimeInterval.self)
-    }
-    
-    func deallocatePointer() {
-        self.etaPointer.deallocate(bytes: 64, alignedTo: 8)
-    }
-    
-    func loadPointer() -> TimeInterval {
-        let x = self.etaPointer.load(as: TimeInterval.self)
-        
-        return x
-    }
-    */
+
     func setEta(eta: TimeInterval) {
         self.eta = eta
     }
@@ -66,6 +52,9 @@ class EtaAdapter {
     /// - Parameters:
     ///     - localPacket: location coordinates for local user
     ///     - remotePacket: location coordintates for remote user
+    ///     - mapView: refresh mapView
+    ///     - etaAdapter: update eta and distance data
+    ///     - display: update display content
 
     func getEtaDistance (localPacket: Location, remotePacket: Location, mapView: MKMapView, etaAdapter: EtaAdapter, display: UILabel) {
         print("-- EtaAdapter -- getEtaDistance(): get eta from local to remote device," +
@@ -136,20 +125,7 @@ class EtaAdapter {
                 for step in route.steps {
                     print(step.instructions)
                 }
-                /*
-                // check etaPointer
-                var x = self.loadPointer()
-                print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- etaPointer: \(x)")
 
-                // set
-                if self.eta != nil {
-                    self.storePointer(eta: self.eta!)
-                    print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- updated etaPointer")
-                }
-                
-                x = self.loadPointer()
-                print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- etaPointer: \(x)")
-                */
                 etaAdapter.setEta(eta: route.expectedTravelTime)
                 etaAdapter.setDistance(distance: route.distance * 3.2808)
             }

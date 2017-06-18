@@ -58,6 +58,7 @@ Class project
       Re-implement fetchRecord() to take in a whenDone closure, which
       will be called with a packet argument.
     - Update to use the packet.setLocation() methods.
+    - Remove pre-comments code.
     
   - Uploading.swift - New
   	Manage mobile mode behavior, with localUser and single packet
@@ -65,6 +66,7 @@ Class project
     Post-Review Updates:
     - Update uploadLocation() to take in whenDone closure, and to call
       back with result whenDone(result).
+    - Remove pre-comments code.
   
   - Users.switf - New
   	Knows user name and location info
@@ -73,6 +75,7 @@ Class project
     - Create initializer that takes user name and location. Remove separate
       lat/long setters with a single location setter.
     - Remove the name set/getters.
+    - Remove pre-comments code.
   	  
   - Poll.swift
     Poll iCloud repo for content changes in remote-User's location record.
@@ -85,6 +88,7 @@ Class project
     - Update to use the Location(userName:location) initializer and the
       setLocation() method.
     - Check self.myEta and self.etaOriginal for nil values.
+    - Remove pre-comments code.
     
   - MapUpdate.swift
     Manage mapView updates for remote-user pin, map centering and spanning, and
@@ -96,6 +100,7 @@ Class project
       span delta suggestions in refreshMapView(). Cleanup ternary operator use
       to compute latDistTo and longDisto, and center point coordinates. Add
       a few more cases in the refreshMapView() switch.
+    - Remove pre-comments code.
   
   - Location.switch
     Location coordinate structure.
@@ -104,6 +109,7 @@ Class project
     - Make latitude and longitude optionals.
     - Create constructors that take in userName and Location. Replace
       separate lat/long-setter with a single location setter.
+    - Remove pre-comments code.
     
     
   - Eta.swift
@@ -117,6 +123,7 @@ Class project
     - Remove the UnsafeMutableRawPointer.
     - Refresh mapView in case of "Directions Not Available" error in
       mkDirections.calculate().
+    - Remove pre-comments code.
 
 
   - GPSsLocation.swift
@@ -132,6 +139,7 @@ Class project
       a closure argument result(Bool). Set remoteUser.location directly to
       packet.
     - Update to not call Users.getName().
+    - Remove pre-comments code.
  
  
   - MessagesViewController.swift
@@ -162,6 +170,7 @@ Class project
       stationary user movement during or after polling.
     - Update to use the Location(userName:location) initializer and the
       setLocation() method.
+    - Remove pre-comments code.
  
  
 - What is the project supposed to do?

@@ -48,18 +48,9 @@ class PollManager {
     }
 
     /// Fetch remoteUser's location record from iCloud
-    /// - Returns: A tuple of latitude and longitude coordinates
-// MARK: pre-comments
-    /*
-    func fetchRemote() -> (latitude: CLLocationDegrees?, longitude: CLLocationDegrees?) {
-        print("-- PollManager -- fetchRemote")
-        
-        return cloudRemote.fetchRecord()
-        
-    }
-    */
-// MARK:-
-    
+    /// - Parameters:
+    ///     - whenDone: a closure that returns a Location parameter
+
 // MARK: post comments
 
     func fetchRemote(whenDone: @escaping (Location) -> ()) -> () {
@@ -106,14 +97,8 @@ class PollManager {
         //var rlong: CLLocationDegrees?
         
         // initialize to current local and remote postions
-        //self.myLocalPacket = Location()
-        //self.myLocalPacket.setLatitude(latitude: localUser.location.latitude!)
-        //self.myLocalPacket.setLongitude(longitude: localUser.location.longitude!)
         self.myLocalPacket = Location(userName: localUser.name, location: localUser.location)
-        
-        //self.myRemotePacket = Location()
-        //self.myRemotePacket.setLatitude(latitude: remotePacket.latitude!)
-        //self.myRemotePacket.setLongitude(longitude: remotePacket.longitude!)
+
         self.myRemotePacket = Location(userName: remoteUserName, location: remotePacket)
 
         let mapUpdate = MapUpdate();
@@ -157,94 +142,12 @@ class PollManager {
     
                 // self.fetchRemote()
                 print("-- PollManager -- pollRemote() -- DispatchQueue.global -- pre self.fetchRemote()")
-        
-                // MARK: start of pre-comments
 
-                /*
-                (rlat, rlong) = self.fetchRemote()
-
-                (rlat == nil) ? (self.remoteFound = false) : (self.remoteFound = true)
-
-
-                if self.remoteFound {
-                    print("-- Poll -- pollRemote -- self.cloudRemote.fetchRecord() -- rlat: \(String(describing: rlat!))")
-                    print("-- Poll -- pollRemote -- self.cloudRemote.fetchRecord() -- rlong: \(String(describing: rlong!))")
-                } else {
-                    print("-- Poll -- pollRemote -- self.remoteFound: \(self.remoteFound)")
-                }
-            
-                print("-- Poll -- pollRemote -- localUser.location.latitude: \(localUser.location.latitude)")
-                print("-- Poll -- pollRemote -- localUser.location.longitude: \(localUser.location.longitude)")
-
-                if self.remoteFound &&
-                    (rlat != self.myRemotePacket.latitude ||
-                     rlong != self.myRemotePacket.longitude ||
-                     localUser.location.latitude != self.myLocalPacket.latitude ||
-                     localUser.location.longitude != self.myLocalPacket.longitude
-                    )
-                {
-                    // update myRemotePacket and myLocalPacket
-                    self.myRemotePacket.setLatitude(latitude: rlat!)
-                    self.myRemotePacket.setLongitude(longitude: rlong!)
-                    
-                    // do here?
-                    self.myLocalPacket.setLatitude(latitude: localUser.location.latitude)
-                    self.myLocalPacket.setLongitude(longitude: localUser.location.longitude)
-                
-                
-                    // get eta and distance. Returns immediately, closure returns later
-                    eta.getEtaDistance(localPacket: self.myLocalPacket,
-                                       remotePacket: self.myRemotePacket)
-                    
-                    
-                    // or do here?
-                    /*
-                    if localUser.location.latitude != self.myLocalPacket.latitude ||
-                        localUser.location.longitude != self.myLocalPacket.longitude
-                    {
-                        self.myLocalPacket.setLatitude(latitude: localUser.location.latitude)
-                        self.myLocalPacket.setLongitude(longitude: localUser.location.longitude)
-
-                    }
-                    */
-//                }
-                
-                //if self.myEta !=  initialEta {
-                    // do UI updates in the main thread
-                    
-                    DispatchQueue.main.async { [weak self ] in
-                        
-                        if self != nil {
-                            
-                            // refreshMapView here vs. in eta.getEtaDistance()
-                            print("-- Poll -- pollRemote -- call mapUpdate.refreshMapView()")
-                    
-                            mapUpdate.addPin(packet: (self?.myRemotePacket)!,
-                                             mapView: mapView, remove: false)
-
-                            mapUpdate.refreshMapView(localPacket: (self?.myLocalPacket)!,
-                                        remotePacket: (self?.myRemotePacket)!,
-                                        mapView: mapView, eta: eta)
-                            
-                            mapUpdate.displayUpdate(display: display,
-                                            localPacket: self!.myLocalPacket,
-                                            remotePacket: self!.myRemotePacket,
-                                            eta: eta)
-                        }
-
-                    }
-                    
-                    //initialEta = self.myEta!
-                //}
-                } // include DispatchQueue.main.async in diff check
-                */
-                // MARK:- end of pre-comments
-                
                 // MARK: start of post-comments
 
                 print("-- PollManager -- pollRemote() -- DispatchQueue.global -- self.myEta: \(String(describing: self.myEta))")
                 print("-- PollManager -- pollRemote() -- DispatchQueue.global -- etaOriginal: \(String(describing: self.etaOriginal))")
-//FIX: !
+
                 if  self.myEta != nil && self.etaOriginal != nil &&
                     (self.myEta! != self.etaOriginal!) {
                     print("\n===============================================================")
@@ -289,12 +192,8 @@ class PollManager {
                         print("-- PollManager -- pollRemote() -- DispatchQueue.global -- self.fetchRemote() -- closure -- remote longitude: \(String(describing: packet.longitude))")
                         
                         // update myRemotePacket and myLocalPacket
-                        //self.myRemotePacket.setLatitude(latitude: packet.latitude!)
-                        //self.myRemotePacket.setLongitude(longitude: packet.longitude!)
                         self.myRemotePacket.setLocation(latitude: packet.latitude, longitude: packet.longitude)
                         
-                        //self.myLocalPacket.setLatitude(latitude: localUser.location.latitude!)
-                        //self.myLocalPacket.setLongitude(longitude: localUser.location.longitude!)
                         self.myLocalPacket.setLocation(latitude: localUser.location.latitude, longitude: localUser.location.longitude)
 
                         // get eta and distance. Returns immediately, closure returns later
@@ -310,17 +209,11 @@ class PollManager {
                                 // refreshMapView here vs. in eta.getEtaDistance()
                                 print("-- PollManager -- pollRemote() -- DispatchQueue.main.async -- self.fetchRemote() -- call mapUpdate.refreshMapView()")
                                 
-                                mapUpdate.addPin(packet: (self?.myRemotePacket)!,
-                                                 mapView: mapView, remove: false)
+                                mapUpdate.addPin(packet: (self?.myRemotePacket)!, mapView: mapView, remove: false)
                                 
-                                mapUpdate.refreshMapView(localPacket: (self?.myLocalPacket)!,
-                                                         remotePacket: (self?.myRemotePacket)!,
-                                                         mapView: mapView, eta: eta)
+                                mapUpdate.refreshMapView(localPacket: (self?.myLocalPacket)!, remotePacket: (self?.myRemotePacket)!, mapView: mapView, eta: eta)
                                 
-                                mapUpdate.displayUpdate(display: display,
-                                                        localPacket: self!.myLocalPacket,
-                                                        remotePacket: self!.myRemotePacket,
-                                                        eta: eta)
+                                mapUpdate.displayUpdate(display: display, localPacket: self!.myLocalPacket, remotePacket: self!.myRemotePacket, eta: eta)
                             }
                         }
                     } // end of location compare
@@ -328,7 +221,7 @@ class PollManager {
    
                 // MARK:- end of post-comments
 
-//FIX: !               // ETA == has-arrived, break out of while-loop
+                // ETA == has-arrived, break out of while-loop
                 if self.myEta != nil && (Double(self.myEta!) <= self.hasArrivedEta) {
                     print("\n===========================================================")
                     print("-- PollManager -- pollRemote() -- DispatchQueue.global -- STOPPING POLLREMOTE")
@@ -362,7 +255,7 @@ class PollManager {
         print("-- PollManager -- etaNotification() -- etaOriginal: \(String(describing: self.etaOriginal)) myEta: \(self.myEta!)")
         
         let mapUpdate = MapUpdate()
-//FIX: !
+
         switch self.myEta! {
         case (self.etaOriginal! / 4) * 3:
 
@@ -373,10 +266,7 @@ class PollManager {
             // do UI updates in the main thread
             OperationQueue.main.addOperation() {
                 
-                mapUpdate.displayUpdate(display: display, localPacket: self.myLocalPacket,
-                                    remotePacket: self.myRemotePacket,
-                                    string: "eta:\t\t\((self.myEta!)) sec",
-                                    secondString: "3/4ths there")
+                mapUpdate.displayUpdate(display: display, localPacket: self.myLocalPacket, remotePacket: self.myRemotePacket, string: "eta:\t\t\((self.myEta!)) sec", secondString: "3/4ths there")
             }
     
         case (self.etaOriginal! / 4) * 2:
@@ -388,10 +278,7 @@ class PollManager {
             // do UI updates in the main thread
             OperationQueue.main.addOperation() {
                 
-                mapUpdate.displayUpdate(display: display, localPacket: self.myLocalPacket,
-                                    remotePacket: self.myRemotePacket,
-                                    string: "eta:\t\t\((self.myEta!)) sec",
-                                    secondString: "Half-way there")
+                mapUpdate.displayUpdate(display: display, localPacket: self.myLocalPacket, remotePacket: self.myRemotePacket, string: "eta:\t\t\((self.myEta!)) sec", secondString: "Half-way there")
             }
             
         case (self.etaOriginal! / 4) * 1:
@@ -402,10 +289,7 @@ class PollManager {
             
             // do UI updates in the main thread
             OperationQueue.main.addOperation() {
-                mapUpdate.displayUpdate(display: display, localPacket: self.myLocalPacket,
-                                    remotePacket: self.myRemotePacket,
-                                    string: "eta:\t\t\((self.myEta!)) sec",
-                                    secondString: "1/4th there")
+                mapUpdate.displayUpdate(display: display, localPacket: self.myLocalPacket, remotePacket: self.myRemotePacket, string: "eta:\t\t\((self.myEta!)) sec", secondString: "1/4th there")
             }
             
         case 0.0...self.hasArrivedEta:
@@ -417,10 +301,7 @@ class PollManager {
             // do UI updates in the main thread
             OperationQueue.main.addOperation() {
                 
-                mapUpdate.displayUpdate(display: display, localPacket: self.myLocalPacket,
-                                        remotePacket: self.myRemotePacket,
-                                        string: "eta:\t\t\((self.myEta!)) sec",
-                                        secondString: "\(self.remoteUserName) Has arrived")
+                mapUpdate.displayUpdate(display: display, localPacket: self.myLocalPacket, remotePacket: self.myRemotePacket, string: "eta:\t\t\((self.myEta!)) sec", secondString: "\(self.remoteUserName) Has arrived")
             }
             
         default:
