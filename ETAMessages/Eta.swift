@@ -16,7 +16,7 @@ import MapKit
 /// getEtaDistance(Location, Location)
 
 class EtaAdapter {
-    private var etaPointer: UnsafeMutableRawPointer
+    //private var etaPointer: UnsafeMutableRawPointer
     var eta: TimeInterval?
     var distance: Double?
     private var mapUdate: MapUpdate
@@ -24,14 +24,14 @@ class EtaAdapter {
     init() {
         print("-- EtaAdapter -- init")
         self.eta = nil
-        self.etaPointer = UnsafeMutableRawPointer.allocate(bytes: 64, alignedTo: 1)
-        self.etaPointer.bindMemory(to: TimeInterval.self, capacity: 64)
-        self.etaPointer.storeBytes(of: 0.0, as: TimeInterval.self)
+        //self.etaPointer = UnsafeMutableRawPointer.allocate(bytes: 64, alignedTo: 1)
+        //self.etaPointer.bindMemory(to: TimeInterval.self, capacity: 64)
+        //self.etaPointer.storeBytes(of: 0.0, as: TimeInterval.self)
         self.distance = nil
         self.mapUdate = MapUpdate()
 
     }
-    
+    /*
     func storePointer(eta: TimeInterval) {
         self.etaPointer.storeBytes(of: eta, as: TimeInterval.self)
     }
@@ -45,7 +45,7 @@ class EtaAdapter {
         
         return x
     }
-    
+    */
     func setEta(eta: TimeInterval) {
         self.eta = eta
     }
@@ -132,11 +132,11 @@ class EtaAdapter {
                 for step in route.steps {
                     print(step.instructions)
                 }
-
+                /*
                 // check etaPointer
                 var x = self.loadPointer()
                 print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- etaPointer: \(x)")
-                
+
                 // set
                 if self.eta != nil {
                     self.storePointer(eta: self.eta!)
@@ -145,7 +145,7 @@ class EtaAdapter {
                 
                 x = self.loadPointer()
                 print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- etaPointer: \(x)")
-                
+                */
                 etaAdapter.setEta(eta: route.expectedTravelTime)
                 etaAdapter.setDistance(distance: route.distance * 3.2808)
             }
