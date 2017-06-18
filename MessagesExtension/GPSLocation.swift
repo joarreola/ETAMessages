@@ -21,20 +21,18 @@ class GPSLocation {
     
     init() {
         self.packet = Location()
-        self.packet.setLatitude(latitude: 0.0)
-        self.packet.setLongitude(longitude: 0.0)
     }
 
     /// Update location data in User instance, and local lmPacket copy
     /// - Parameters:
     ///     - localUser:
     ///     - lmPacket:
-    
+    /*
     func updateUserCoordinates(localUser: Users, packet: Location) {
         // stuff User's Location structure and update lmPacket
         
         print("-- GPSLocation -- updateLocalCoordinates() -- User: \(localUser.getName())")
-        
+
         localUser.location.setLatitude(latitude: packet.latitude)
         
         localUser.location.setLongitude(longitude: packet.longitude)
@@ -43,8 +41,11 @@ class GPSLocation {
         
         self.packet.setLongitude(longitude: packet.longitude)
 
+        localUser.location = packet
+        self.packet = packet
+
     }
-    
+    */
     /// Upload a location record to iCloud
     /// - Parameters:
     ///     - localUser:
@@ -103,9 +104,7 @@ class GPSLocation {
     ///     - eta: EtaAdapter instance to make the getEtaDistance() call
     /// - Returns: Location packet fetching outcome: true or false
 
-    func checkRemote(pollRemoteUser: PollManager, localUser: Users, remoteUser: Users,
-                     mapView: MKMapView, eta: EtaAdapter, display: UILabel) -> Bool {
-        // extract location and eta data for remoteUser
+    func checkRemote(pollRemoteUser: PollManager, localUser: Users, remoteUser: Users, mapView: MKMapView, eta: EtaAdapter, display: UILabel, result: @escaping (Bool) -> ()) {
         
         print("-- GPSLocation -- checkRemote() -- User: \(remoteUser.getName())")
  
@@ -142,7 +141,7 @@ class GPSLocation {
             if packet.latitude == nil {
                 print("-- GPSLocation -- check_remote -- self.pollManager.fetchRemote() - closure -- failed")
                 
-                return
+                result(false)
                 
             } else {
                 
@@ -150,8 +149,9 @@ class GPSLocation {
                 print("-- poll -- self.pollManager.fetchRemote() - closure -- remote longitude: \(String(describing: packet.longitude))")
                 
                 // update remoteUser Location
-                remoteUser.location.setLatitude(latitude: packet.latitude!)
-                remoteUser.location.setLongitude(longitude: packet.longitude!)
+                //remoteUser.location.setLatitude(latitude: packet.latitude!)
+                //remoteUser.location.setLongitude(longitude: packet.longitude!)
+                remoteUser.location = packet
                 
                 // UI updates on main thread
                 DispatchQueue.main.async { [weak self ] in
@@ -168,12 +168,13 @@ class GPSLocation {
                 print("-- GPSLocation -- check_remote -- eta.getEtaDistance()")
  
                 eta.getEtaDistance(localPacket: localUser.location, remotePacket: remoteUser.location, mapView: mapView, etaAdapter: eta, display: display)
+                
+                result(true)
             }
+            
         }
  
         // MARK:- end of post-comments
-
-        return true
     }
 
 }
