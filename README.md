@@ -57,6 +57,7 @@ Class project
     - Remove semaphore locks in deleteRecord(). Remove saveRecord().
       Re-implement fetchRecord() to take in a whenDone closure, which
       will be called with a packet argument.
+    - Update to use the packet.setLocation() methods.
     
   - Uploading.swift - New
   	Manage mobile mode behavior, with localUser and single packet
@@ -68,7 +69,9 @@ Class project
   - Users.switf - New
   	Knows user name and location info
   	
-  	- replace set/getname() with set/getName().
+  	Post-Review Updates:
+    - Create initializer that takes user name and location. Remove separate
+      lat/long setters with a single location setter.
   	  
   - Poll.swift
     Poll iCloud repo for content changes in remote-User's location record.
@@ -78,6 +81,8 @@ Class project
       with a packet argument. Update to accomodate optional coordinates.
       Pass a closure to the fetchRemote() call in pollRemote(). Make
       call to eta.getEtaDistance() in closure.
+    - Update to use the Location(userName:location) initializer and the
+      setLocation() method.
     
   - MapUpdate.swift
     Manage mapView updates for remote-user pin, map centering and spanning, and
@@ -91,6 +96,8 @@ Class project
     
     Post-Review Updates:
     - Make latitude and longitude optionals.
+    - Create constructors that take in userName and Location. Replace
+      separate lat/long-setter with a single location setter.
     
     
   - Eta.swift
@@ -101,6 +108,7 @@ Class project
     - Update getEtaDistance() to update mapView and display within the closure.
     - Note ETA server error: "Directions Not Available"
     - Update print()s.
+    - Remove the UnsafeMutableRawPointer.
 
 
   - GPSsLocation.swift
@@ -143,6 +151,8 @@ Class project
       takes in a closure to handle the result of the checkRemote() call.
       Call startUpdatingLocation() and enableUploading() in poll() respond to
       stationary user movement during or after polling.
+    - Update to use the Location(userName:location) initializer and the
+      setLocation() method.
  
  
 - What is the project supposed to do?
