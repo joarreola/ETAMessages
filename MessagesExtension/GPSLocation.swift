@@ -84,7 +84,7 @@ class GPSLocation {
 
     func uploadToIcloud(user: Users, whenDone: @escaping (Bool) -> ()) -> () {
         
-        let cloud = CloudAdapter(userName: user.getName())
+        let cloud = CloudAdapter(userName: user.name)
 
         cloud.upload(user: user) { (result: Bool) in
             
@@ -106,7 +106,7 @@ class GPSLocation {
 
     func checkRemote(pollRemoteUser: PollManager, localUser: Users, remoteUser: Users, mapView: MKMapView, eta: EtaAdapter, display: UILabel, result: @escaping (Bool) -> ()) {
         
-        print("-- GPSLocation -- checkRemote() -- User: \(remoteUser.getName())")
+        print("-- GPSLocation -- checkRemote() -- User: \(remoteUser.name)")
  
         let mapUpdate = MapUpdate()
         
