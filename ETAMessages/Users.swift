@@ -29,22 +29,6 @@ class Users {
         self.location = Location(userName: name, location: location)
     }
 
-    func setName(name: String) {
-        self.name = name
-    }
-    
-    func getName() -> String {
-        return self.name
-    }
-    /*
-    func setLatitude(latitude: CLLocationDegrees) {
-        location.setLatitude(latitude: latitude)
-    }
-    
-    func setLongitude(longitude: CLLocationDegrees) {
-        location.setLongitude(longitude: longitude)
-    }
-    */
     func setLocation(location: Location) {
         self.location.latitude = location.latitude
         self.location.longitude = location.longitude
