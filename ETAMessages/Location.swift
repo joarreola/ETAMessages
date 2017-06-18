@@ -17,17 +17,37 @@ import CloudKit
 struct Location {
     var latitude: CLLocationDegrees?
     var longitude: CLLocationDegrees?
+    var userName: String
 
     init() {
         self.latitude = 0.0
         self.longitude = 0.0
+        self.userName = ""
+    }
+    
+    init(userName: String, location: Location) {
+        self.userName = userName
+        self.latitude = location.latitude
+        self.longitude = location.longitude
+    }
+    
+    init(userName: String, location: CLLocation) {
+        self.userName = userName
+        self.latitude = location.coordinate.latitude
+        self.longitude = location.coordinate.longitude
     }
 
+    /*
     mutating func setLatitude(latitude: CLLocationDegrees?) {
         self.latitude = latitude
     }
     
     mutating func setLongitude(longitude: CLLocationDegrees?) {
+        self.longitude = longitude
+    }
+    */
+    mutating func setLocation(latitude: CLLocationDegrees?, longitude: CLLocationDegrees?) {
+        self.latitude = latitude
         self.longitude = longitude
     }
 }
