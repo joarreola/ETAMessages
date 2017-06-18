@@ -99,7 +99,8 @@ Class project
     
     Post-Review Updates:
     - Update getEtaDistance() to update mapView and display within the closure.
-    - Note ETA server error: "Directions Not Available" 
+    - Note ETA server error: "Directions Not Available"
+    - Update print()s.
 
 
   - GPSsLocation.swift
@@ -111,6 +112,9 @@ Class project
       back with result whenDone(result).
     - Update checkRemote() to take in mapView, EtaAdapter, and display
       parameters for use in the pollRemoteUser.fetchRemote() closure.
+    - Remove lat/long-setting in init(). Update checkRemote() to take in
+      a closure argument result(Bool). Set remoteUser.location directly to
+      packet.
  
  
   - MessagesViewController.swift
@@ -129,6 +133,17 @@ Class project
       self.pollManager.fetchRemote() with a closure that is called back
       with a packet argument. Call displayUpdate() in main DispatchQueue.
       Move display updates into self.eta.getEtaDistanc() closure.
+    - Unwrap locations.last in locationManager(). Set self.localUser.location
+      directly to lmPacket per GPSLocation changes. Call
+      self.handleUploadResult(result) in self.gpsLocation.uploadToIcloud()
+      closure, in locationManager(). Add handleUploadResult() method that
+      takes in a closure to process the uploadToIcloud() result, updating
+      the display with appropriate messages, and calling gpsLocation.checkRemote()
+      if polling had been enabled. Added handleCheckRemoteResult() method that
+      takes in a closure to handle the result of the checkRemote() call.
+      Call startUpdatingLocation() and enableUploading() in poll() respond to
+      stationary user movement during or after polling.
+ 
  
 - What is the project supposed to do?
   In an environment consiting of two mobile devices, the ETAMessages app
