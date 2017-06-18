@@ -84,6 +84,7 @@ Class project
       call to eta.getEtaDistance() in closure.
     - Update to use the Location(userName:location) initializer and the
       setLocation() method.
+    - Check self.myEta and self.etaOriginal for nil values.
     
   - MapUpdate.swift
     Manage mapView updates for remote-user pin, map centering and spanning, and
@@ -91,6 +92,10 @@ Class project
 
     Post-Review Updates:
     - Update to accomodate the to-optional changes in Location.swift
+    - Return the larger of the lat/long deltas in centerView(). Use as
+      span delta suggestions in refreshMapView(). Cleanup ternary operator use
+      to compute latDistTo and longDisto, and center point coordinates. Add
+      a few more cases in the refreshMapView() switch.
   
   - Location.switch
     Location coordinate structure.
@@ -110,6 +115,8 @@ Class project
     - Note ETA server error: "Directions Not Available"
     - Update print()s.
     - Remove the UnsafeMutableRawPointer.
+    - Refresh mapView in case of "Directions Not Available" error in
+      mkDirections.calculate().
 
 
   - GPSsLocation.swift
