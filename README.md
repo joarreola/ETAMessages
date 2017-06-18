@@ -72,6 +72,7 @@ Class project
   	Post-Review Updates:
     - Create initializer that takes user name and location. Remove separate
       lat/long setters with a single location setter.
+    - Remove the name set/getters.
   	  
   - Poll.swift
     Poll iCloud repo for content changes in remote-User's location record.
@@ -123,6 +124,7 @@ Class project
     - Remove lat/long-setting in init(). Update checkRemote() to take in
       a closure argument result(Bool). Set remoteUser.location directly to
       packet.
+    - Update to not call Users.getName().
  
  
   - MessagesViewController.swift
