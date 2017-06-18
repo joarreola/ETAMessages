@@ -95,6 +95,10 @@ class EtaAdapter {
                         // add pin and refresh mapView
                         print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- error -- DispatchQueue.main.async -- closure")
                         
+                        etaAdapter.mapUdate.addPin(packet: remotePacket, mapView: mapView, remove: false)
+                        
+                        etaAdapter.mapUdate.refreshMapView(localPacket: localPacket, remotePacket: remotePacket, mapView: mapView, eta: etaAdapter)
+
                         etaAdapter.mapUdate.displayUpdate(display: display, localPacket: localPacket, remotePacket: remotePacket, string: "Directions Not Available")
                     }
                 }
