@@ -68,7 +68,7 @@ class EtaAdapter {
     ///     - remotePacket: location coordintates for remote user
 
     func getEtaDistance (localPacket: Location, remotePacket: Location, mapView: MKMapView, etaAdapter: EtaAdapter, display: UILabel) {
-        print("-- EtaAdapter -- getEtaDistance: get eta from local to remote device," +
+        print("-- EtaAdapter -- getEtaDistance(): get eta from local to remote device," +
             " and travel distance between devices")
     
         let mkDirReq: MKDirectionsRequest = MKDirectionsRequest()
@@ -86,14 +86,14 @@ class EtaAdapter {
         mkDirections.calculate { [ unowned self ] (response, error) in
             
             if let error = error {
-                print("-- EtaAdapter -- mkDirections.calculate() -- closure -- error -- Error: \(String(describing: error))")
+                print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- error -- Error: \(String(describing: error))")
                 
                 // UI updates on main thread
                 DispatchQueue.main.async { [weak self ] in
                     
                     if self != nil {
                         // add pin and refresh mapView
-                        print("-- EtaAdapter -- mkDirections.calculate() -- closure -- error -- DispatchQueue.main.async -- closure")
+                        print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- error -- DispatchQueue.main.async -- closure")
                         
                         etaAdapter.mapUdate.displayUpdate(display: display, localPacket: localPacket, remotePacket: remotePacket, string: "Directions Not Available")
                     }
@@ -108,7 +108,7 @@ class EtaAdapter {
             // can't get self.eta nor self.distance out of the closure on 1st poll
             guard let unwrappedResponse = response else {
                 
-                print("-- EtaAdapter -- mkDirections.calculate() -- closire -- unwrappedResponse -- Error: \(String(describing: error))")
+                print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closire -- unwrappedResponse -- Error: \(String(describing: error))")
                 
                 self.eta = nil
                 self.distance = nil
@@ -120,14 +120,14 @@ class EtaAdapter {
                 //mapView.add(route.polyline)
                 //mapView.setVisibleMapRect(route.polyline.boundingMapRect, animated: true)
                 
-                print("-- EtaAdapter -- mkDirections.calculate() -- closure -- Distance: \(route.distance) meters")
-                print("-- EtaAdapter -- mkDirections.calculate() -- closure -- ETA: \(route.expectedTravelTime) sec")
+                print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- Distance: \(route.distance) meters")
+                print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- ETA: \(route.expectedTravelTime) sec")
                 
                 self.setEta(eta: route.expectedTravelTime)
                 self.setDistance(distance: route.distance * 3.2808)
 
-                print("-- EtaAdapter -- mkDirections.calculate() -- closure -- self.distance: \(String(describing: self.distance!)) feet")
-                print("-- EtaAdapter -- mkDirections.calculate() -- closure -- self.eta: \(self.eta!)) sec")
+                print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- self.distance: \(String(describing: self.distance!)) feet")
+                print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- self.eta: \(self.eta!)) sec")
                 
                 for step in route.steps {
                     print(step.instructions)
@@ -135,16 +135,16 @@ class EtaAdapter {
 
                 // check etaPointer
                 var x = self.loadPointer()
-                print("-- EtaAdapter -- mkDirections.calculate() -- closure -- etaPointer: \(x)")
+                print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- etaPointer: \(x)")
                 
                 // set
                 if self.eta != nil {
                     self.storePointer(eta: self.eta!)
-                    print("-- EtaAdapter -- mkDirections.calculate() -- closure -- updated etaPointer")
+                    print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- updated etaPointer")
                 }
                 
                 x = self.loadPointer()
-                print("-- EtaAdapter -- mkDirections.calculate() -- closure -- etaPointer: \(x)")
+                print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- etaPointer: \(x)")
                 
                 etaAdapter.setEta(eta: route.expectedTravelTime)
                 etaAdapter.setDistance(distance: route.distance * 3.2808)
@@ -155,7 +155,7 @@ class EtaAdapter {
                 
                 if self != nil {
                     // add pin and refresh mapView
-                    print("-- EtaAdapter -- mkDirections.calculate() -- closure -- DispatchQueue.main.async -- closure")
+                    print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- DispatchQueue.main.async -- closure")
                     
                     etaAdapter.mapUdate.addPin(packet: remotePacket, mapView: mapView, remove: false)
                     
@@ -167,7 +167,7 @@ class EtaAdapter {
             
             return
         }
-        print("-- Eta -- mkDirections.calculate -- returning after closure")
+        print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- returning after closure")
         
         return
         
