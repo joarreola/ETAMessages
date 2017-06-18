@@ -106,13 +106,15 @@ class PollManager {
         //var rlong: CLLocationDegrees?
         
         // initialize to current local and remote postions
-        self.myLocalPacket = Location()
-        self.myLocalPacket.setLatitude(latitude: localUser.location.latitude!)
-        self.myLocalPacket.setLongitude(longitude: localUser.location.longitude!)
-
-        self.myRemotePacket = Location()
-        self.myRemotePacket.setLatitude(latitude: remotePacket.latitude!)
-        self.myRemotePacket.setLongitude(longitude: remotePacket.longitude!)
+        //self.myLocalPacket = Location()
+        //self.myLocalPacket.setLatitude(latitude: localUser.location.latitude!)
+        //self.myLocalPacket.setLongitude(longitude: localUser.location.longitude!)
+        self.myLocalPacket = Location(userName: localUser.name, location: localUser.location)
+        
+        //self.myRemotePacket = Location()
+        //self.myRemotePacket.setLatitude(latitude: remotePacket.latitude!)
+        //self.myRemotePacket.setLongitude(longitude: remotePacket.longitude!)
+        self.myRemotePacket = Location(userName: remoteUserName, location: remotePacket)
 
         let mapUpdate = MapUpdate();
         
@@ -145,9 +147,10 @@ class PollManager {
             print("-- PollManager -- pollRemote() -- DispatchQueue.global -- into while{}")
 
             while PollManager.enabledPolling {
-    
+
                 // check pointer
-                self.myEta = eta.loadPointer()
+                //self.myEta = eta.loadPointer()
+                self.myEta = eta.getEta()
                 self.myDistance = eta.getDistance()
                 
                 print("-- PollManager -- pollRemote() -- DispatchQueue.global -- self.myEta: \(String(describing: self.myEta)) self.myDistance: \(String(describing: self.myDistance))")
@@ -285,12 +288,13 @@ class PollManager {
                         print("-- PollManager -- pollRemote() -- DispatchQueue.global -- self.fetchRemote() -- closure -- remote longitude: \(String(describing: packet.longitude))")
                         
                         // update myRemotePacket and myLocalPacket
-                        self.myRemotePacket.setLatitude(latitude: packet.latitude!)
-                        self.myRemotePacket.setLongitude(longitude: packet.longitude!)
+                        //self.myRemotePacket.setLatitude(latitude: packet.latitude!)
+                        //self.myRemotePacket.setLongitude(longitude: packet.longitude!)
+                        self.myRemotePacket.setLocation(latitude: packet.latitude, longitude: packet.longitude)
                         
-                        self.myLocalPacket.setLatitude(latitude: localUser.location.latitude!)
-                        self.myLocalPacket.setLongitude(longitude: localUser.location.longitude!)
-
+                        //self.myLocalPacket.setLatitude(latitude: localUser.location.latitude!)
+                        //self.myLocalPacket.setLongitude(longitude: localUser.location.longitude!)
+                        self.myLocalPacket.setLocation(latitude: localUser.location.latitude, longitude: localUser.location.longitude)
 
                         // get eta and distance. Returns immediately, closure returns later
                         print("-- PollManager -- pollRemote() -- DispatchQueue.global -- self.fetchRemote() -- closure -- call: eta.getEtaDistance...")
