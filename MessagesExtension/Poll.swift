@@ -242,10 +242,11 @@ class PollManager {
                 
                 // MARK: start of post-comments
 
-                print("-- PollManager -- pollRemote() -- DispatchQueue.global -- self.myEta: \(self.myEta!)")
-                print("-- PollManager -- pollRemote() -- DispatchQueue.global -- etaOriginal: \(self.etaOriginal!)")
-
-                if  self.myEta! != self.etaOriginal! {
+                print("-- PollManager -- pollRemote() -- DispatchQueue.global -- self.myEta: \(String(describing: self.myEta))")
+                print("-- PollManager -- pollRemote() -- DispatchQueue.global -- etaOriginal: \(String(describing: self.etaOriginal))")
+//FIX: !
+                if  self.myEta != nil && self.etaOriginal != nil &&
+                    (self.myEta! != self.etaOriginal!) {
                     print("\n===============================================================")
                     print("-- PollManager -- pollRemote() -- DispatchQueue.global -- calling self.etaNotification(display: display)")
                     print("===============================================================\n")
@@ -327,8 +328,8 @@ class PollManager {
    
                 // MARK:- end of post-comments
 
-                // ETA == has-arrived, break out of while-loop
-                if Double(self.myEta!) <= self.hasArrivedEta {
+//FIX: !               // ETA == has-arrived, break out of while-loop
+                if self.myEta != nil && (Double(self.myEta!) <= self.hasArrivedEta) {
                     print("\n===========================================================")
                     print("-- PollManager -- pollRemote() -- DispatchQueue.global -- STOPPING POLLREMOTE")
                     print("===============================================================\n")
@@ -361,7 +362,7 @@ class PollManager {
         print("-- PollManager -- etaNotification() -- etaOriginal: \(String(describing: self.etaOriginal)) myEta: \(self.myEta!)")
         
         let mapUpdate = MapUpdate()
-
+//FIX: !
         switch self.myEta! {
         case (self.etaOriginal! / 4) * 3:
 
