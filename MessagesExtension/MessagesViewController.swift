@@ -7,6 +7,7 @@
 //
 
 import UIKit
+//import AppKit
 import Messages
 import MapKit
 import CoreLocation
@@ -20,9 +21,11 @@ import UserNotifications
 /// @IBAction func poll(UIBarButtonItem)
 /// @IBAction func disable(UIBarButtonItem)
 
-class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
-                                                    CLLocationManagerDelegate {
-    
+class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CLLocationManagerDelegate {
+
+    // notifications delegate
+    weak var delegate: UNUserNotificationCenterDelegate?
+
     @IBOutlet weak var mapView: MKMapView!
     
     var locationManager = CLLocationManager()
@@ -41,7 +44,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
     var pollManager = PollManager(remoteUserName: "Oscar-ipad")
     var mapUpdate = MapUpdate() // needed here?
     var uploading = UploadingManager(name: "Oscar-iphone")
-    var gpsLocation = GPSLocation()
+    var gpsLocation = GPSLocationAdapter()
     
     // move these two to the respective class, Poll or GpsLocationAdapter
     var locPacket_updated: Bool = false
@@ -57,13 +60,22 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         self.locationManager.requestWhenInUseAuthorization()
         self.locationManager.startUpdatingLocation()
         self.mapView.showsUserLocation = true
+
         self.mapView.delegate = self
 
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        print("-- viewWillAppear ------------------------------------------------")
+
+    }
+
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+        print("-- didReceiveMemoryWarning ------------------------------------------------")
     }
     
     // MARK: - Conversation Handling
@@ -121,14 +133,13 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
         // Use this method to finalize any behaviors associated with the change in presentation style.
         print("-- didTransition ---------------------------------------------------")
     }
-
+    
     /**
      *
      * Called by the CLLocation Framework on GPS location changes
      *
      */
-    func locationManager(_ manager: CLLocationManager,
-                         didUpdateLocations locations: [CLLocation]) {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
         // locationManager(:didUpdateLocations) guarantees that locations will not
         // be empty
@@ -534,3 +545,4 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate,
     }
 
 }
+
