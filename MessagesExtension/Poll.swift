@@ -9,6 +9,8 @@
 import Foundation
 import CloudKit
 import MapKit
+import UIKit
+import Messages
 
 /// Poll iCloud for remote User's location record.
 /// Request local notifications based on ETA data
@@ -31,6 +33,7 @@ class PollManager {
     static  var enabledPolling: Bool = false
     private let hasArrivedEta: Double = 40.0
     private let localNotification: ETANotifications
+    var messagesVC: MSMessagesAppViewController?
     
     init(remoteUserName: String) {
         print("-- PollManager -- init()")
@@ -46,6 +49,7 @@ class PollManager {
         self.myLocalPacket = Location()
         self.myRemotePacket = Location()
         self.localNotification = ETANotifications()
+        self.messagesVC = nil
         
     }
 
@@ -299,16 +303,16 @@ class PollManager {
             print("/n=====================================================================/n")
             print("-- PollManager -- etaNotification() -- myEta == 0")
             print("/n=====================================================================/n")
-            
+            /*
             // do UI updates in the main thread
             OperationQueue.main.addOperation() {
                 
                 mapUpdate.displayUpdate(display: display, localPacket: self.myLocalPacket, remotePacket: self.myRemotePacket, string: "eta:\t\t\((self.myEta!)) sec", secondString: "\(self.remoteUserName) Has arrived")
                 
             }
-            
+            */
             // MARK: local notification
-            
+
             self.localNotification.configureContent(milePost: "\(self.remoteUserName) Has arrived")
             
             self.localNotification.registerNotification()
@@ -317,10 +321,32 @@ class PollManager {
             
             // MARK:-
             
+            // MARK: pseudo local notification
+
+            if messagesVC != nil {
+                
+                print("-- PollManager -- etaNotification() -- call: presentViewController()")
+
+                DispatchQueue.main.async { [weak self ] in
+                    
+                    if self != nil {
+
+                        self?.presentViewController(message: (self?.remoteUserName)! + " Has Arrived")
+                    }
+                }
+                
+            } else {
+                print("-- PollManager -- etaNotification() -- messagesVC == nil")
+            }
+            
+            // MARK:-
+            
+            
         default:
             
             print("-- PollManager -- etaNotification -- default")
         }
+        print("-- PollManager -- etaNotification -- exit")
     }
     
     /// Note that polling has been enabled
@@ -339,6 +365,40 @@ class PollManager {
         PollManager.enabledPolling = false
     }
 
+    func presentViewController(message: String) {
+        print("-- PollManager -- presentViewController() --------------------------")
+        var controller: UIViewController!
+        
+            controller = instantiatePseudoNotificationsViewController(message: message)
+        
+            self.messagesVC?.addChildViewController(controller)
+        
+            controller.view.frame = (self.messagesVC?.view.bounds)!
+            controller.view.translatesAutoresizingMaskIntoConstraints = false
+            self.messagesVC?.view.addSubview(controller.view)
+            
+            controller.view.leftAnchor.constraint(equalTo: (self.messagesVC?.view.leftAnchor)!).isActive = true
+            controller.view.rightAnchor.constraint(equalTo: (self.messagesVC?.view.rightAnchor)!).isActive = true
+            controller.view.topAnchor.constraint(equalTo: (self.messagesVC?.view.topAnchor)!).isActive = true
+            controller.view.bottomAnchor.constraint(equalTo: (self.messagesVC?.view.bottomAnchor)!).isActive = true
+        
+            //self?.display.text = self?.message
+            //controller.loadView()
+            controller.didMove(toParentViewController: self.messagesVC)
+
+    }
+    
+    private func instantiatePseudoNotificationsViewController(message: String) -> UIViewController {
+        print("-- PollManager -- instantiatePseudoNotificationsViewController()")
+
+        guard let controller = self.messagesVC?.storyboard?.instantiateViewController(withIdentifier: "PseudoNotificationsViewController") as? PseudoNotificationsViewController else {
+            fatalError("PseudoNotificationsViewController not found")
+        }
+        controller.message = message
+        
+        return controller
+    }
+    
 }
 
 
