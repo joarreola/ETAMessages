@@ -62,6 +62,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         self.mapView.showsUserLocation = true
 
         self.mapView.delegate = self
+        
+        self.pollManager.messagesVC = self
 
     }
     
@@ -125,6 +127,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     
         // Use this method to prepare for the change in presentation style.
         print("-- willTransition --------------------------------------------------")
+        
     }
     
     override func didTransition(to presentationStyle: MSMessagesAppPresentationStyle) {
@@ -134,6 +137,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         print("-- didTransition ---------------------------------------------------")
     }
     
+
+
     /**
      *
      * Called by the CLLocation Framework on GPS location changes
