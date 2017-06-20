@@ -124,6 +124,7 @@ Class project
     - Refresh mapView in case of "Directions Not Available" error in
       mkDirections.calculate().
     - Remove pre-comments code.
+    - Add localNotification calls.
 
 
   - GPSsLocation.swift
@@ -140,7 +141,19 @@ Class project
       packet.
     - Update to not call Users.getName().
     - Remove pre-comments code.
+    - Change class name to GPSLocationAdapter.
  
+ 
+  - ETANotifications.swift - New File
+    Configure, register, and schedule local notifications.
+
+
+
+  - LocalNotificationDelegate.swift - New file.
+    Responding to actionable notifications and receiving notifications
+    while your app is in the foreground
+
+
  
   - MessagesViewController.swift
     Manages the UI implemented in IBACtion functions enable() and poll().
@@ -171,6 +184,7 @@ Class project
     - Update to use the Location(userName:location) initializer and the
       setLocation() method.
     - Remove pre-comments code.
+    - Add viewWillAppear() override. Add delegate for local notifications.
  
  
 - What is the project supposed to do?
