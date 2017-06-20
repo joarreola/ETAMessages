@@ -29,7 +29,8 @@ class PollManager {
     private var etaOriginal: TimeInterval?
     private let cloudRemote: CloudAdapter
     static  var enabledPolling: Bool = false
-    private let hasArrivedEta: Double = 20.0
+    private let hasArrivedEta: Double = 40.0
+    private let localNotification: ETANotifications
     
     init(remoteUserName: String) {
         print("-- PollManager -- init()")
@@ -44,6 +45,7 @@ class PollManager {
         self.cloudRemote  = CloudAdapter(userName: remoteUserName)
         self.myLocalPacket = Location()
         self.myRemotePacket = Location()
+        self.localNotification = ETANotifications()
         
     }
 
@@ -93,9 +95,9 @@ class PollManager {
                     eta: EtaAdapter, display: UILabel) {
         print("-- PollManager -- pollRemote()")
 
-        //var rlat: CLLocationDegrees?
-        //var rlong: CLLocationDegrees?
-        
+        // request notification authorization
+        //localNotification.requestAuthorization()
+
         // initialize to current local and remote postions
         self.myLocalPacket = Location(userName: localUser.name, location: localUser.location)
 
@@ -149,7 +151,7 @@ class PollManager {
                 print("-- PollManager -- pollRemote() -- DispatchQueue.global -- etaOriginal: \(String(describing: self.etaOriginal))")
 
                 if  self.myEta != nil && self.etaOriginal != nil &&
-                    (self.myEta! != self.etaOriginal!) {
+                    (self.myEta! != self.etaOriginal!)  || self.myEta! <= self.hasArrivedEta {
                     print("\n===============================================================")
                     print("-- PollManager -- pollRemote() -- DispatchQueue.global -- calling self.etaNotification(display: display)")
                     print("===============================================================\n")
@@ -302,7 +304,18 @@ class PollManager {
             OperationQueue.main.addOperation() {
                 
                 mapUpdate.displayUpdate(display: display, localPacket: self.myLocalPacket, remotePacket: self.myRemotePacket, string: "eta:\t\t\((self.myEta!)) sec", secondString: "\(self.remoteUserName) Has arrived")
+                
             }
+            
+            // MARK: local notification
+            
+            self.localNotification.configureContent(milePost: "\(self.remoteUserName) Has arrived")
+            
+            self.localNotification.registerNotification()
+            
+            self.localNotification.scheduleNotification()
+            
+            // MARK:-
             
         default:
             
