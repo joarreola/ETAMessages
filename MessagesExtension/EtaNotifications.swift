@@ -8,65 +8,82 @@
 
 import Foundation
 import UserNotifications
-//import NotificationCenter
+import UserNotifications
 
-class EtaNotifications {
-// configure
+class ETANotifications {
+    
+    weak var delegate: UNUserNotificationCenter?
+
+    // configure
     let content = UNMutableNotificationContent()
     let center = UNUserNotificationCenter.current()
     
-    func configureContent() {
+    init() {
+    }
+
+    func configureContent(milePost: String) {
         print("-- EtaNotifications -- configureContent()")
         
-        // Configure the content. . .
+        // 1- Configure the content.
         self.content.title = NSString.localizedUserNotificationString(forKey: "ETAMessages", arguments: nil)
-        self.content.body = NSString.localizedUserNotificationString(forKey: "Here", arguments: nil)
-        self.content.sound = UNNotificationSound.default()
+        self.content.body = NSString.localizedUserNotificationString(forKey: milePost, arguments: nil)
         
-        // Deliver the notification in five seconds.
-        //let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
-        //let request = UNNotificationRequest(identifier: "FiveSecond", content: content, trigger: trigger)
+        self.content.sound = UNNotificationSound.default()
     
     }
     
     func scheduleNotification() {
         print("-- EtaNotifications -- scheduleNotification()")
         
-        // Deliver the notification in five seconds.
+        // Deliver the notification in 1 second.
 
-        // can't be <60sec if repeating
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
-        let request = UNNotificationRequest(identifier: "OneSecond", content: self.content, trigger: trigger)
+        // 2- configure the trigger. can't be <60sec if repeating
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        print("-- EtaNotifications -- scheduleNotification() -- UNTimeIntervalNotificationTrigger()")
+
+        // 3- Create the request object.
+        let request = UNNotificationRequest(identifier: "ETAMessages", content: self.content, trigger: trigger)
+        print("-- EtaNotifications -- scheduleNotification() -- UNNotificationRequest()")
         
-        // Schedule the notification.
-        //let center = UNUserNotificationCenter.current()
-        
+        // 4- Schedule the notification.
         print("-- EtaNotifications -- scheduleNotification -- center.add(request)")
+
         center.add(request) { (error : Error?) in
-            if let theError = error {
-                // Handle any errors
-                print("-- EtaNotifications -- scheduleNotification -- center.add -- closure -- Error: \(theError.localizedDescription)")
+            if error != nil {
+                print("-- EtaNotifications -- scheduleNotification -- center.add -- closure -- error: \(String(describing: error?.localizedDescription))")
             } else {
-                print("-- EtaNotifications -- scheduleNotification -- center.add -- closure -- NoError")
+                print("-- EtaNotifications -- scheduleNotification -- center.add -- closure -- Succeeded")
             }
         }
+        print("-- EtaNotifications -- scheduleNotification -- center.add(request) -- out of closure")
     }
 
     func requestAuthorization() {
         print("-- EtaNotifications -- requestAuthorization()")
         
         // requestAuthorization
-        //let center = UNUserNotificationCenter.current()
-        self.center.requestAuthorization(options: [.alert, .sound]) { (granted, error) in
+        self.center.requestAuthorization(options: [.alert, .sound]) {
             // Enable or disable features based on authorization.
-            print("-- EtaNotifications -- requestAuthorization -- closure")
             
-            let generalCategory = UNNotificationCategory(identifier: "OneSecond",
+            (granted, error) in
+            
+            if error != nil {
+                print("-- EtaNotifications -- requestAuthorization() -- self.center.requestAuthorization() -- closure -- error: \(String(describing: error))")
+                
+                return
+            }
+            
+            if granted {
+
+                print("-- EtaNotifications -- requestAuthorization() -- self.center.requestAuthorization() -- closure -- granted: \(granted)")
+            
+                let generalCategory = UNNotificationCategory(identifier: "OneSecond",
                                                          actions: [],
                                                          intentIdentifiers: [],
                                                          options: .customDismissAction)
             
-            self.center.setNotificationCategories([generalCategory])
+                self.center.setNotificationCategories([generalCategory])
+            }
             
         }
     }
@@ -88,7 +105,6 @@ class EtaNotifications {
         let center = UNUserNotificationCenter.current()
         center.add(request) { (error : Error?) in
             if let theError = error {
-                // Handle any errors
                 print(theError.localizedDescription)
             }
         }
@@ -104,46 +120,7 @@ class EtaNotifications {
                                                  options: .customDismissAction)
     
         // Register the category.
-        let center = UNUserNotificationCenter.current()
         center.setNotificationCategories([generalCategory])
     }
-    
-    
-/*
-// custom actions
-    let generalCategory = UNNotificationCategory(identifier: "GENERAL",
-                                                 actions: [],
-                                                 intentIdentifiers: [],
-                                                 options: .customDismissAction)
-    
-    // Create the custom actions for the TIMER_EXPIRED category.
-    let snoozeAction = UNNotificationAction(identifier: "SNOOZE_ACTION",
-                                            title: "Snooze",
-                                            options: UNNotificationActionOptions(rawValue: 0))
-    let stopAction = UNNotificationAction(identifier: "STOP_ACTION",
-                                          title: "Stop",
-                                          options: .foreground)
-    
-    let expiredCategory = UNNotificationCategory(identifier: "TIMER_EXPIRED",
-                                                 actions: [snoozeAction, stopAction],
-                                                 intentIdentifiers: [],
-                                                 options: UNNotificationCategoryOptions(rawValue: 0))
-    
-    // Register the notification categories.
-    let center = UNUserNotificationCenter.current()
-    center.setNotificationCategories([generalCategory, expiredCategory])
-    
-    
-// Schedule a local notification for delivery
-    // Create the request object.
-    let request = UNNotificationRequest(identifier: "MorningAlarm", content: content, trigger: trigger)
-    
-    // Schedule the request.
-    let center = UNUserNotificationCenter.current()
-    center.add(request) { (error : Error?) in
-    if let theError = error {
-    print(theError.localizedDescription)
-    }
-    }
- */
+
 }
