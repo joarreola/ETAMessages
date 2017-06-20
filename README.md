@@ -89,6 +89,8 @@ Class project
       setLocation() method.
     - Check self.myEta and self.etaOriginal for nil values.
     - Remove pre-comments code.
+    - Add support to instantiate PseudoNotificationsViewController on
+      ETA == 0.
     
   - MapUpdate.swift
     Manage mapView updates for remote-user pin, map centering and spanning, and
@@ -154,6 +156,11 @@ Class project
     while your app is in the foreground
 
 
+  - PseudoNotificationsViewController.swift - New file.
+    View holding a UILabel to present a blue background and a "Has Arrived"
+    message. Instantiated in PollManager.etaNotification() when ETA == 0
+    (or close enough).
+
  
   - MessagesViewController.swift
     Manages the UI implemented in IBACtion functions enable() and poll().
@@ -185,6 +192,8 @@ Class project
       setLocation() method.
     - Remove pre-comments code.
     - Add viewWillAppear() override. Add delegate for local notifications.
+    - Set pollManager.messagesVC property to self to instantiate
+      PseudoNotificationsViewController.
  
  
 - What is the project supposed to do?
