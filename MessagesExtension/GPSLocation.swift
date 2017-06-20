@@ -16,7 +16,7 @@ import MapKit
 /// uploadToIcloud(Users)
 /// checkRemote(PollManager, Users, Users, MKMapView, EtaAdapter) -> Bool
 
-class GPSLocation {
+class GPSLocationAdapter {
     private var packet: Location
     
     init() {
