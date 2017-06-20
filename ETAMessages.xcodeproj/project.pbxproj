@@ -15,7 +15,7 @@
 		DF85038C1EE88EAC00734D4C /* GPSLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF85038B1EE88EAC00734D4C /* GPSLocation.swift */; };
 		DF8503921EEDE08400734D4C /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF8503911EEDE08400734D4C /* CloudKit.framework */; };
 		DF8503941EEE49F700734D4C /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF8503931EEE49F700734D4C /* MapKit.framework */; };
-		DF9DABD01EF8D6BC0026535B /* PseudoNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF9DABCF1EF8D6BC0026535B /* PseudoNotifications.swift */; };
+		DF9DAC181EF9A7F00026535B /* PseudoNotificationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF9DAC171EF9A7F00026535B /* PseudoNotificationsViewController.swift */; };
 		DFC5DD6B1ED3920900FF8D97 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DFC5DD6A1ED3920900FF8D97 /* Assets.xcassets */; };
 		DFC5DD721ED3920900FF8D97 /* MessagesExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = DFC5DD711ED3920900FF8D97 /* MessagesExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		DFC5DD771ED3920900FF8D97 /* Messages.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFC5DD761ED3920900FF8D97 /* Messages.framework */; };
@@ -61,7 +61,7 @@
 		DF85038B1EE88EAC00734D4C /* GPSLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPSLocation.swift; sourceTree = "<group>"; };
 		DF8503911EEDE08400734D4C /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		DF8503931EEE49F700734D4C /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		DF9DABCF1EF8D6BC0026535B /* PseudoNotifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PseudoNotifications.swift; sourceTree = "<group>"; };
+		DF9DAC171EF9A7F00026535B /* PseudoNotificationsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PseudoNotificationsViewController.swift; sourceTree = "<group>"; };
 		DFC5DD671ED3920900FF8D97 /* ETAMessages.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ETAMessages.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFC5DD6A1ED3920900FF8D97 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DFC5DD6C1ED3920900FF8D97 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -148,7 +148,7 @@
 				DF2A59921EE6579500244566 /* EtaNotifications.swift */,
 				DF85038B1EE88EAC00734D4C /* GPSLocation.swift */,
 				DF5A3C001EF8625000833CCF /* LocalNotificationDelegate.swift */,
-				DF9DABCF1EF8D6BC0026535B /* PseudoNotifications.swift */,
+				DF9DAC171EF9A7F00026535B /* PseudoNotificationsViewController.swift */,
 			);
 			path = MessagesExtension;
 			sourceTree = "<group>";
@@ -269,13 +269,13 @@
 			files = (
 				DF2A59931EE6579500244566 /* EtaNotifications.swift in Sources */,
 				DF2A59911EE4FCBA00244566 /* Users.swift in Sources */,
+				DF9DAC181EF9A7F00026535B /* PseudoNotificationsViewController.swift in Sources */,
 				DFC5DD941ED3D7C500FF8D97 /* Poll.swift in Sources */,
 				DFC5DD901ED3A30100FF8D97 /* Location.swift in Sources */,
 				DF2A9F921EDFC45D00485BD1 /* Eta.swift in Sources */,
 				DF2A598F1EE4F7CF00244566 /* Uploading.swift in Sources */,
 				DF5A3C011EF8625000833CCF /* LocalNotificationDelegate.swift in Sources */,
 				DFC5DD921ED3AEC700FF8D97 /* Cloud.swift in Sources */,
-				DF9DABD01EF8D6BC0026535B /* PseudoNotifications.swift in Sources */,
 				DFC5DD7A1ED3920900FF8D97 /* MessagesViewController.swift in Sources */,
 				DFD07B801ED4A94700C559BF /* MapUpdate.swift in Sources */,
 				DF85038C1EE88EAC00734D4C /* GPSLocation.swift in Sources */,
