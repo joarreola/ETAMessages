@@ -122,12 +122,12 @@ class CloudAdapter {
     func upload(user: Users, whenDone: @escaping (Bool) -> ()) -> () {
         // Called by enable() @IBAction function
         print("-- CloudAdapter -- upload()")
-        
+        /*
         // Set the record’s fields.
         print("-- CloudAdapter -- upload() -- set coordinates")
         self.locationRecord["latitude"]  = user.location.latitude! as CKRecordValue
         self.locationRecord["longitude"] = user.location.longitude! as CKRecordValue
-        
+        */
         self.publicDatabase.delete(withRecordID: self.locationRecordID) {
             (record, error) in
 
@@ -141,6 +141,11 @@ class CloudAdapter {
             
             self.locationRecordID = CKRecordID(recordName: self.user)
             self.locationRecord = CKRecord(recordType: "Location", recordID: self.locationRecordID)
+
+            print("-- CloudAdapter -- upload() -- set coordinates")
+            self.locationRecord["latitude"]  = user.location.latitude! as CKRecordValue
+            self.locationRecord["longitude"] = user.location.longitude! as CKRecordValue
+
 
             // call save() method while in the delete closure
             self.publicDatabase.save(self.locationRecord) {
@@ -158,7 +163,7 @@ class CloudAdapter {
 
                     return
                 }
-                print("-- CloudAdapter -- upload() -- self.publicDatabase.delete -- closure -- self.publicDatabase.save -- closure --Record saved: \(self.locationRecordID)")
+                print("-- CloudAdapter -- upload() -- self.publicDatabase.delete -- closure -- self.publicDatabase.save -- closure -- Record saved: \(self.locationRecordID)")
                 
                 self.recordSaved = true
                 
@@ -166,6 +171,41 @@ class CloudAdapter {
                 print("-- CloudAdapter -- upload() -- call: whenDone(self.recordSaved): \(self.recordSaved)")
                 
                 whenDone(self.recordSaved)
+                
+        // Mark: add a subscription to get a notification on a record change
+                
+                print("-- CloudAdapter -- upload() -- self.publicDatabase.delete -- closure -- self.publicDatabase.save -- closure -- setup subscription -- RecordId: Oscar-iphone")
+                
+                let locationSubscription = CKQuerySubscription(recordType: "Location", predicate: NSPredicate(format: "TRUEPREDICATE"), options: CKQuerySubscriptionOptions.firesOnRecordCreation)
+                
+                let locationNotificationInfo = CKNotificationInfo()
+                
+                locationNotificationInfo.shouldSendContentAvailable = true
+                
+                locationNotificationInfo.shouldBadge = false
+                
+                locationNotificationInfo.alertBody = "Oscar-ipad updated"
+                
+                locationSubscription.notificationInfo = locationNotificationInfo
+
+                let operation = CKModifySubscriptionsOperation(subscriptionsToSave: [locationSubscription], subscriptionIDsToDelete: [])
+        
+                operation.modifySubscriptionsCompletionBlock = {
+                    
+                    savedSubscriptions, deletedSubscriptionIDs, operationError in
+                    if operationError != nil {
+    
+                        print("-- CloudAdapter -- upload() -- self.publicDatabase.delete -- closure -- error: \(String(describing: operationError))")
+
+                    } else {
+
+                        print("-- CloudAdapter -- upload() -- self.publicDatabase.delete -- closure -- Subscribed")
+                    }
+                }
+                
+                self.publicDatabase.add(operation)
+
+        // MARK:- end
                 
             }
         }
