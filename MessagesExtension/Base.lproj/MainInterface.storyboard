@@ -84,6 +84,46 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="X47-rx-isc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="-803" y="16"/>
+        </scene>
+        <!--Pseudo Notifications View Controller-->
+        <scene sceneID="GPC-0R-dog">
+            <objects>
+                <viewController storyboardIdentifier="PseudoNotificationsViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="kv5-gb-TUO" customClass="PseudoNotificationsViewController" customModule="MessagesExtension" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="xdP-Kj-pk3"/>
+                        <viewControllerLayoutGuide type="bottom" id="2D3-SS-FmB"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="OKv-K5-DQW">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="6" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a3D-2N-B6b">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <color key="backgroundColor" red="0.40000000600000002" green="0.80000001190000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="tintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="27"/>
+                                <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="0.0" green="0.50196081400000003" blue="1" alpha="0.09861943493150685" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="a3D-2N-B6b" secondAttribute="bottom" id="32U-qQ-Xn3"/>
+                            <constraint firstItem="a3D-2N-B6b" firstAttribute="top" secondItem="OKv-K5-DQW" secondAttribute="top" id="8MW-dF-VAh"/>
+                            <constraint firstAttribute="trailing" secondItem="a3D-2N-B6b" secondAttribute="trailing" id="JY6-5T-eUM"/>
+                            <constraint firstItem="a3D-2N-B6b" firstAttribute="leading" secondItem="OKv-K5-DQW" secondAttribute="leading" id="MaT-Xt-XJa"/>
+                            <constraint firstItem="a3D-2N-B6b" firstAttribute="centerX" secondItem="OKv-K5-DQW" secondAttribute="centerX" id="V2g-uh-Pb1"/>
+                            <constraint firstItem="a3D-2N-B6b" firstAttribute="centerY" secondItem="OKv-K5-DQW" secondAttribute="centerY" id="bU3-ns-d06"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="display" destination="a3D-2N-B6b" id="RQp-tg-gNS"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Rga-61-zwi" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-56" y="168"/>
         </scene>
     </scenes>
 </document>
