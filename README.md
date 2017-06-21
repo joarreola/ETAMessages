@@ -92,6 +92,8 @@ Class project
     - Add support to instantiate PseudoNotificationsViewController on
       ETA == 0.
     - Replace sleep(2) with a DispatchSourceTimer.
+    - Cleanup etaNotification(): Create setupLocalNotification() and
+      setupPseudoLocalNotification().
     
   - MapUpdate.swift
     Manage mapView updates for remote-user pin, map centering and spanning, and
