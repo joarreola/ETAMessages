@@ -263,6 +263,8 @@ class PollManager {
                 
                 mapUpdate.displayUpdate(display: display, localPacket: self.myLocalPacket, remotePacket: self.myRemotePacket, string: "eta:\t\t\((self.myEta!)) sec", secondString: "3/4ths there")
             }
+            setupLocalNotification(message: (self.remoteUserName) + " Will arrive in \(self.myEta!) sec")
+            setupPseudoLocalNotification(message: (self.remoteUserName) + " Will arrive in \(self.myEta!) sec")
     
         case (self.etaOriginal! / 4) * 2:
             
@@ -275,6 +277,8 @@ class PollManager {
                 
                 mapUpdate.displayUpdate(display: display, localPacket: self.myLocalPacket, remotePacket: self.myRemotePacket, string: "eta:\t\t\((self.myEta!)) sec", secondString: "Half-way there")
             }
+            setupLocalNotification(message: (self.remoteUserName) + " Will arrive in \(self.myEta!) sec")
+            setupPseudoLocalNotification(message: (self.remoteUserName) + " Will arrive in \(self.myEta!) sec")
             
         case (self.etaOriginal! / 4) * 1:
             
@@ -286,47 +290,31 @@ class PollManager {
             OperationQueue.main.addOperation() {
                 mapUpdate.displayUpdate(display: display, localPacket: self.myLocalPacket, remotePacket: self.myRemotePacket, string: "eta:\t\t\((self.myEta!)) sec", secondString: "1/4th there")
             }
+            setupLocalNotification(message: (self.remoteUserName) + " Will arrive in \(self.myEta!) sec")
+            setupPseudoLocalNotification(message: (self.remoteUserName) + " Will arrive in \(self.myEta!) sec")
             
         case 0.0...self.hasArrivedEta:
 
             print("/n=====================================================================/n")
             print("-- PollManager -- etaNotification() -- myEta == 0")
             print("/n=====================================================================/n")
-            /*
+            
             // do UI updates in the main thread
             OperationQueue.main.addOperation() {
                 
                 mapUpdate.displayUpdate(display: display, localPacket: self.myLocalPacket, remotePacket: self.myRemotePacket, string: "eta:\t\t\((self.myEta!)) sec", secondString: "\(self.remoteUserName) Has arrived")
                 
             }
-            */
+            
             // MARK: local notification
 
-            self.localNotification.configureContent(milePost: "\(self.remoteUserName) Has arrived")
-            
-            self.localNotification.registerNotification()
-            
-            self.localNotification.scheduleNotification()
+            setupLocalNotification(message: (self.remoteUserName) + " Has arrived")
             
             // MARK:-
             
             // MARK: pseudo local notification
-
-            if messagesVC != nil {
-                
-                print("-- PollManager -- etaNotification() -- call: presentViewController()")
-
-                DispatchQueue.main.async { [weak self ] in
-                    
-                    if self != nil {
-
-                        self?.presentViewController(message: (self?.remoteUserName)! + " Has Arrived")
-                    }
-                }
-                
-            } else {
-                print("-- PollManager -- etaNotification() -- messagesVC == nil")
-            }
+            
+            setupPseudoLocalNotification(message: (self.remoteUserName) + " Has arrived")
             
             // MARK:-
             
@@ -338,6 +326,40 @@ class PollManager {
         print("-- PollManager -- etaNotification -- exit")
     }
     
+    /// localNotification()
+    
+    func setupLocalNotification(message: String) {
+        
+        print("-- PollManager -- etaNotification() -- setupLocalNotification()")
+
+        self.localNotification.configureContent(milePost: message)
+        
+        self.localNotification.registerNotification()
+        
+        self.localNotification.scheduleNotification()
+    }
+
+    /// setupPseudoLocalNotification
+    
+    func setupPseudoLocalNotification(message: String) {
+        
+        if messagesVC != nil {
+            
+            print("-- PollManager -- etaNotification() -- setupPseudoLocalNotification() -- call: presentViewController()")
+            
+            DispatchQueue.main.async { [weak self ] in
+                
+                if self != nil {
+                    
+                    self?.presentViewController(message: (self?.remoteUserName)! + " Has Arrived")
+                }
+            }
+            
+        } else {
+            print("-- PollManager -- etaNotification() -- setupPseudoLocalNotification() -- messagesVC == nil")
+        }
+    }
+
     /// Note that polling has been enabled
     
     func enablePolling() {
@@ -354,6 +376,8 @@ class PollManager {
         PollManager.enabledPolling = false
     }
 
+    /// presentViewController()
+    
     func presentViewController(message: String) {
         print("-- PollManager -- presentViewController() --------------------------")
         var controller: UIViewController!
@@ -376,6 +400,8 @@ class PollManager {
             controller.didMove(toParentViewController: self.messagesVC)
 
     }
+    
+    /// instantiatePseudoNotificationsViewController()
     
     private func instantiatePseudoNotificationsViewController(message: String) -> UIViewController {
         print("-- PollManager -- instantiatePseudoNotificationsViewController()")
