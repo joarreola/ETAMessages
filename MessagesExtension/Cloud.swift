@@ -30,14 +30,14 @@ class CloudAdapter {
         self.user = userName
         
         self.locationRecordID = CKRecordID(recordName: self.user)
-        print("-- CloudAdapter -- init -- locationRecordID: \(locationRecordID)")
+        //print("-- CloudAdapter -- init -- locationRecordID: \(locationRecordID)")
     
         self.locationRecord = CKRecord(recordType: "Location",
                                        recordID: locationRecordID)
-        print("-- CloudAdapter -- init -- locationRecord: \(locationRecord)")
+        //print("-- CloudAdapter -- init -- locationRecord: \(locationRecord)")
     
         self.myContainer = CKContainer.default()
-        print("-- CloudAdapter -- init -- myContainer.default()")
+        //print("-- CloudAdapter -- init -- myContainer.default()")
         publicDatabase = self.myContainer.publicCloudDatabase
         
     }
@@ -50,7 +50,7 @@ class CloudAdapter {
 
     func fetchRecord(whenDone: @escaping (Location) -> ()) -> () {
         
-        print("-- CloudAdapter -- fetchRecord(whenDone: @escaping (Location) -> ()) -> ())")
+        //print("-- CloudAdapter -- fetchRecord(whenDone: @escaping (Location) -> ()) -> ())")
 
         self.publicDatabase.fetch(withRecordID: self.locationRecordID) {
 
@@ -62,7 +62,7 @@ class CloudAdapter {
                 self.recordFound = false
     
                 // callback to the passed closure
-                print("-- CloudAdapter -- fetchRecord(whenDone: @escaping (Location) -> ()) -> () -- publicDatabase.fetch -- closure -- call: whenDone(self.recordFound): \(self.recordFound)")
+                //print("-- CloudAdapter -- fetchRecord(whenDone: @escaping (Location) -> ()) -> () -- publicDatabase.fetch -- closure -- call: whenDone(self.recordFound): \(self.recordFound)")
     
                 var packet: Location = Location()
                 packet.setLocation(latitude: nil,longitude: nil)
@@ -72,18 +72,18 @@ class CloudAdapter {
                 return
             }
 
-            print("-- CloudAdapter -- fetchRecord(whenDone: @escaping (Location) -> ()) -> () -- publicDatabase.fetch -- closure -- Record found: \(self.locationRecordID)")
+            //print("-- CloudAdapter -- fetchRecord(whenDone: @escaping (Location) -> ()) -> () -- publicDatabase.fetch -- closure -- Record found: \(self.locationRecordID)")
     
             self.latitude = record?["latitude"] as? CLLocationDegrees
             self.longitude = record?["longitude"] as? CLLocationDegrees
     
-            print("-- CloudAdapter -- fetchRecord(whenDone: @escaping (Location) -> ()) -> () -- publicDatabase.fetch -- closure -- latitude: \(String(describing: self.latitude))")
-            print("-- CloudAdapter -- fetchRecord(whenDone: @escaping (Location) -> ()) -> () -- publicDatabase.fetch -- closure --  longitude: \(String(describing: self.longitude))")
+            //print("-- CloudAdapter -- fetchRecord(whenDone: @escaping (Location) -> ()) -> () -- publicDatabase.fetch -- closure -- latitude: \(String(describing: self.latitude))")
+            //print("-- CloudAdapter -- fetchRecord(whenDone: @escaping (Location) -> ()) -> () -- publicDatabase.fetch -- closure --  longitude: \(String(describing: self.longitude))")
 
             self.recordFound = true
     
             // callback to the passed closure
-            print("-- CloudAdapter -- fetchRecord(whenDone: @escaping (Location) -> ()) -> () -- closure -- call: whenDone(packet)")
+            //print("-- CloudAdapter -- fetchRecord(whenDone: @escaping (Location) -> ()) -> () -- closure -- call: whenDone(packet)")
 
             var packet: Location = Location()
             packet.setLocation(latitude: self.latitude, longitude: self.longitude)
@@ -98,7 +98,7 @@ class CloudAdapter {
 
     func deleteRecord() {
         
-        print("-- CloudAdapter -- in deleteRecord()")
+        //print("-- CloudAdapter -- in deleteRecord()")
         
         self.publicDatabase.delete(withRecordID: self.locationRecordID) {
             (record, error) in
@@ -108,7 +108,7 @@ class CloudAdapter {
                 
                 return
             }
-            print("-- CloudAdapter -- deleteRecord() -- self.publicDatabase.delete() -- closure -- Record deleted: \(self.locationRecordID)")
+            //print("-- CloudAdapter -- deleteRecord() -- self.publicDatabase.delete() -- closure -- Record deleted: \(self.locationRecordID)")
             
         }
     }
@@ -121,7 +121,7 @@ class CloudAdapter {
 
     func upload(user: Users, whenDone: @escaping (Bool) -> ()) -> () {
         // Called by enable() @IBAction function
-        print("-- CloudAdapter -- upload()")
+        //print("-- CloudAdapter -- upload()")
         /*
         // Set the record’s fields.
         print("-- CloudAdapter -- upload() -- set coordinates")
@@ -136,7 +136,7 @@ class CloudAdapter {
 
             } else {
             
-                print("-- CloudAdapter -- upload() -- self.publicDatabase.delete -- closure -- Record deleted: \(self.locationRecordID)")
+                //print("-- CloudAdapter -- upload() -- self.publicDatabase.delete -- closure -- Record deleted: \(self.locationRecordID)")
             }
             
             self.locationRecordID = CKRecordID(recordName: self.user)
@@ -157,24 +157,24 @@ class CloudAdapter {
                     self.recordSaved = false
                     
                     // callback to the passed closure
-                    print("-- CloudAdapter -- upload() -- call: whenDone(self.recordSaved): \(self.recordSaved)")
+                    //print("-- CloudAdapter -- upload() -- call: whenDone(self.recordSaved): \(self.recordSaved)")
                     
                     whenDone(self.recordSaved)
 
                     return
                 }
-                print("-- CloudAdapter -- upload() -- self.publicDatabase.delete -- closure -- self.publicDatabase.save -- closure -- Record saved: \(self.locationRecordID)")
+                //print("-- CloudAdapter -- upload() -- self.publicDatabase.delete -- closure -- self.publicDatabase.save -- closure -- Record saved: \(self.locationRecordID)")
                 
                 self.recordSaved = true
                 
                 // callback to the passed closure
-                print("-- CloudAdapter -- upload() -- call: whenDone(self.recordSaved): \(self.recordSaved)")
+                //print("-- CloudAdapter -- upload() -- call: whenDone(self.recordSaved): \(self.recordSaved)")
                 
                 whenDone(self.recordSaved)
                 
         // Mark: add a subscription to get a notification on a record change
                 
-                print("-- CloudAdapter -- upload() -- self.publicDatabase.delete -- closure -- self.publicDatabase.save -- closure -- setup subscription -- RecordId: Oscar-iphone")
+                //print("-- CloudAdapter -- upload() -- self.publicDatabase.delete -- closure -- self.publicDatabase.save -- closure -- setup subscription -- RecordId: Oscar-iphone")
                 
                 let locationSubscription = CKQuerySubscription(recordType: "Location", predicate: NSPredicate(format: "TRUEPREDICATE"), options: CKQuerySubscriptionOptions.firesOnRecordCreation)
                 
@@ -195,11 +195,11 @@ class CloudAdapter {
                     savedSubscriptions, deletedSubscriptionIDs, operationError in
                     if operationError != nil {
     
-                        print("-- CloudAdapter -- upload() -- self.publicDatabase.delete -- closure -- error: \(String(describing: operationError))")
+                        //print("-- CloudAdapter -- upload() -- self.publicDatabase.delete -- closure -- error: \(String(describing: operationError))")
 
                     } else {
 
-                        print("-- CloudAdapter -- upload() -- self.publicDatabase.delete -- closure -- Subscribed")
+                        //print("-- CloudAdapter -- upload() -- self.publicDatabase.delete -- closure -- Subscribed")
                     }
                 }
                 

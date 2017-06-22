@@ -24,9 +24,6 @@ class EtaAdapter {
     init() {
         print("-- EtaAdapter -- init")
         self.eta = nil
-        //self.etaPointer = UnsafeMutableRawPointer.allocate(bytes: 64, alignedTo: 1)
-        //self.etaPointer.bindMemory(to: TimeInterval.self, capacity: 64)
-        //self.etaPointer.storeBytes(of: 0.0, as: TimeInterval.self)
         self.distance = nil
         self.mapUdate = MapUpdate()
 
@@ -57,8 +54,7 @@ class EtaAdapter {
     ///     - display: update display content
 
     func getEtaDistance (localPacket: Location, remotePacket: Location, mapView: MKMapView, etaAdapter: EtaAdapter, display: UILabel) {
-        print("-- EtaAdapter -- getEtaDistance(): get eta from local to remote device," +
-            " and travel distance between devices")
+        //print("-- EtaAdapter -- getEtaDistance(): get eta from local to remote device," + " and travel distance between devices")
     
         let mkDirReq: MKDirectionsRequest = MKDirectionsRequest()
         
@@ -82,7 +78,7 @@ class EtaAdapter {
                     
                     if self != nil {
                         // add pin and refresh mapView
-                        print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- error -- DispatchQueue.main.async -- closure")
+                        //print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- error -- DispatchQueue.main.async -- closure")
                         
                         etaAdapter.mapUdate.addPin(packet: remotePacket, mapView: mapView, remove: false)
                         
@@ -113,14 +109,14 @@ class EtaAdapter {
                 //mapView.add(route.polyline)
                 //mapView.setVisibleMapRect(route.polyline.boundingMapRect, animated: true)
                 
-                print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- Distance: \(route.distance) meters")
-                print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- ETA: \(route.expectedTravelTime) sec")
+                //print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- Distance: \(route.distance) meters")
+                //print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- ETA: \(route.expectedTravelTime) sec")
                 
                 self.setEta(eta: route.expectedTravelTime)
                 self.setDistance(distance: route.distance * 3.2808)
 
-                print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- self.distance: \(String(describing: self.distance!)) feet")
-                print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- self.eta: \(self.eta!)) sec")
+                //print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- self.distance: \(String(describing: self.distance!)) feet")
+                //print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- self.eta: \(self.eta!)) sec")
                 
                 for step in route.steps {
                     print(step.instructions)
@@ -135,7 +131,7 @@ class EtaAdapter {
                 
                 if self != nil {
                     // add pin and refresh mapView
-                    print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- DispatchQueue.main.async -- closure")
+                    //print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- DispatchQueue.main.async -- closure")
                     
                     etaAdapter.mapUdate.addPin(packet: remotePacket, mapView: mapView, remove: false)
                     
@@ -144,12 +140,6 @@ class EtaAdapter {
                     etaAdapter.mapUdate.displayUpdate(display: display, localPacket: localPacket, remotePacket: remotePacket, eta: etaAdapter)
                 }
             }
-            
-            return
         }
-        print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- returning after closure")
-        
-        return
-        
     }
 }

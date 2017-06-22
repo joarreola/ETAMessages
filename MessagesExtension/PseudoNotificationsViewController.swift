@@ -15,7 +15,7 @@ class PseudoNotificationsViewController: UIViewController {
     var message: String = ""
     
     override func viewDidLoad() {
-        print("-- PseudoNotificationsViewController -- viewDidLoad()")
+        //print("-- PseudoNotificationsViewController -- viewDidLoad()")
         super.viewDidLoad()
         
         self.display.text = self.message
@@ -24,7 +24,7 @@ class PseudoNotificationsViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-        print("-- PseudoNotificationsViewController -- didReceiveMemoryWarning()")
+        //print("-- PseudoNotificationsViewController -- didReceiveMemoryWarning()")
 
     }
 

@@ -40,8 +40,8 @@ class MobilitySimulator {
         self.origLocation.latitude = user.location.latitude!
         self.origLocation.longitude = user.location.longitude!
         
-        print("-- MobilitySimulator -- start() -- DispatchSourceTimer -- self.origLocation.latitude: \(String(describing: self.origLocation.latitude))")
-        print("-- MobilitySimulator -- start() -- DispatchSourceTimer -- self.origLocation.longitude: \(String(describing: self.origLocation.longitude))")
+        //print("-- MobilitySimulator -- start() -- DispatchSourceTimer -- self.origLocation.latitude: \(String(describing: self.origLocation.latitude))")
+        //print("-- MobilitySimulator -- start() -- DispatchSourceTimer -- self.origLocation.longitude: \(String(describing: self.origLocation.longitude))")
 
         tempUser = Users(name: user.name)
         //tempUser.location.latitude = user.location.latitude! + deltaLatitude
@@ -54,20 +54,20 @@ class MobilitySimulator {
          * Below code runs in a separate thread
          *
          */
-        print("-- MobilitySimulator -- start() -- DispatchSourceTimer -- start configuration")
+        //print("-- MobilitySimulator -- start() -- DispatchSourceTimer -- start configuration")
         
         let queue = DispatchQueue(label: "edu.ucsc.ETAMessages.timer", attributes: .concurrent)
         timer?.cancel()
         timer = DispatchSource.makeTimerSource(queue: queue)
         timer?.scheduleRepeating(deadline: .now(), interval: .seconds(1))
-        print("-- MobilitySimulator -- start() -- DispatchSourceTimer -- end configuration")
+        //print("-- MobilitySimulator -- start() -- DispatchSourceTimer -- end configuration")
         
         timer?.setEventHandler(handler: {
-            print("-- MobilitySimulator -- start() -- DispatchSourceTimer -- in handler")
+            //print("-- MobilitySimulator -- start() -- DispatchSourceTimer -- in handler")
             
             // upload new location
-            print("-- MobilitySimulator -- start() -- DispatchSourceTimer -- in handler -- tempUser.location.latitude: \(String(describing: self.tempUser.location.latitude))")
-            print("-- MobilitySimulator -- start() -- DispatchSourceTimer -- in handler -- tempUser.location.longitude: \(String(describing: self.tempUser.location.longitude))")
+            //print("-- MobilitySimulator -- start() -- DispatchSourceTimer -- in handler -- tempUser.location.latitude: \(String(describing: self.tempUser.location.latitude))")
+            //print("-- MobilitySimulator -- start() -- DispatchSourceTimer -- in handler -- tempUser.location.longitude: \(String(describing: self.tempUser.location.longitude))")
             
             self.gpsLocation.uploadToIcloud(user: self.tempUser) {
                 
@@ -90,10 +90,10 @@ class MobilitySimulator {
                     
                 } else {
                     
-                    print("-- MobilitySimulator -- start() -- gpsLocation.uploadToIcloud() -- closure -- succeeded")
+                    //print("-- MobilitySimulator -- start() -- gpsLocation.uploadToIcloud() -- closure -- succeeded")
                     
-                    print("-- MobilitySimulator -- start() -- DispatchSourceTimer -- in handler -- tempUser.location.latitude: \(String(describing: self.tempUser.location.latitude))")
-                    print("-- MobilitySimulator -- start() -- DispatchSourceTimer -- in handler -- tempUser.location.longitude: \(String(describing: self.tempUser.location.longitude))")
+                    //print("-- MobilitySimulator -- start() -- DispatchSourceTimer -- in handler -- tempUser.location.latitude: \(String(describing: self.tempUser.location.latitude))")
+                    //print("-- MobilitySimulator -- start() -- DispatchSourceTimer -- in handler -- tempUser.location.longitude: \(String(describing: self.tempUser.location.longitude))")
                     
                     // UI updates on main thread
                     DispatchQueue.main.async { [weak self ] in
@@ -116,7 +116,7 @@ class MobilitySimulator {
                     // check if there
                     if Double(self.tempUser.location.longitude!) >= Double(self.origLocation.longitude!) || MobilitySimulator.mobilitySimulatorEnabled == false {
                         
-                        print("-- MobilitySimulator -- start() -- gpsLocation.uploadToIcloud() -- closure -- self.timer?.cancel()")
+                        //print("-- MobilitySimulator -- start() -- gpsLocation.uploadToIcloud() -- closure -- self.timer?.cancel()")
                         
                         self.timer?.cancel()
                         

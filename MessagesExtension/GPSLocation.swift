@@ -55,7 +55,7 @@ class GPSLocationAdapter {
 
     func checkRemote(pollRemoteUser: PollManager, localUser: Users, remoteUser: Users, mapView: MKMapView, eta: EtaAdapter, display: UILabel, result: @escaping (Bool) -> ()) {
         
-        print("-- GPSLocation -- checkRemote() -- User: \(remoteUser.name)")
+        //print("-- GPSLocation -- checkRemote() -- User: \(remoteUser.name)")
  
         let mapUpdate = MapUpdate()
 
@@ -66,14 +66,14 @@ class GPSLocationAdapter {
             (packet: Location) in
             
             if packet.latitude == nil {
-                print("-- GPSLocation -- check_remote -- self.pollManager.fetchRemote() - closure -- failed")
+                //print("-- GPSLocation -- check_remote -- self.pollManager.fetchRemote() - closure -- failed")
                 
                 result(false)
                 
             } else {
                 
-                print("-- poll -- self.pollManager.fetchRemote() - closure -- remote latitude: \(String(describing: packet.latitude))")
-                print("-- poll -- self.pollManager.fetchRemote() - closure -- remote longitude: \(String(describing: packet.longitude))")
+                //print("-- poll -- self.pollManager.fetchRemote() - closure -- remote latitude: \(String(describing: packet.latitude))")
+                //print("-- poll -- self.pollManager.fetchRemote() - closure -- remote longitude: \(String(describing: packet.longitude))")
                 
                 // update remoteUser Location
                 remoteUser.location = packet
@@ -83,14 +83,14 @@ class GPSLocationAdapter {
                     
                     if self != nil {
                         // note coordinates set on display
-                        print("-- GPSLocation -- check_remote -- mapUpdate.addPin()")
+                        //print("-- GPSLocation -- check_remote -- mapUpdate.addPin()")
 
                         mapUpdate.addPin(packet: remoteUser.location, mapView: mapView, remove: false)
                     }
                 }
                 
                 // get eta and distance. Returns immediately, closure returns later
-                print("-- GPSLocation -- check_remote -- eta.getEtaDistance()")
+                //print("-- GPSLocation -- check_remote -- eta.getEtaDistance()")
  
                 eta.getEtaDistance(localPacket: localUser.location, remotePacket: remoteUser.location, mapView: mapView, etaAdapter: eta, display: display)
                 
@@ -108,7 +108,7 @@ class GPSLocationAdapter {
         
         if !result {
             
-            print("-- GPSLocation -- handleUploadResult() -- gpsLocation.uploadToIcloud(localUser: localUser) -- Failed")
+            //print("-- GPSLocation -- handleUploadResult() -- gpsLocation.uploadToIcloud(localUser: localUser) -- Failed")
             
             // UI updates on main thread
             DispatchQueue.main.async { [weak self ] in
@@ -121,7 +121,7 @@ class GPSLocationAdapter {
             
         } else {
             
-            print("-- GPSLocation -- handleUploadResult() -- gpsLocation.uploadToIcloud(localUser: localUser) -- succeeded")
+            //print("-- GPSLocation -- handleUploadResult() -- gpsLocation.uploadToIcloud(localUser: localUser) -- succeeded")
             
             // UI updates on main thread
             DispatchQueue.main.async { [weak self ] in
@@ -130,14 +130,14 @@ class GPSLocationAdapter {
                     
                     self?.mapUpdate.displayUpdate(display: display, packet: localUser.location, string: "uploaded to iCloud")
                     
-                    print("-- GPSLocation -- handleUploadResult() -- call gpsLocation.check_remote()")
+                    //print("-- GPSLocation -- handleUploadResult() -- call gpsLocation.check_remote()")
                     
                 }
             }
             
             // don't check remote user if polling has net yet been enabled
             if !PollManager.enabledPolling {
-                print("-- handleUploadResult() -- don't check remote user")
+                //print("-- handleUploadResult() -- don't check remote user")
                 
                 return
                 
@@ -147,7 +147,7 @@ class GPSLocationAdapter {
                 
                 (result: Bool) in
                 
-                print("-- GPSLocation -- handleUploadResult() -- gpsLocation.checkRemote() closure -- call self.handleCheckRemoteResult(result)")
+                //print("-- GPSLocation -- handleUploadResult() -- gpsLocation.checkRemote() closure -- call self.handleCheckRemoteResult(result)")
                 
                 self.handleCheckRemoteResult(result, display: display, localUser: localUser, remoteUser: remoteUser, eta: eta)
                 

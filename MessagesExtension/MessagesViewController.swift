@@ -54,7 +54,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        print("-- viewDidLoad -----------------------------------------------------")
+        //print("-- viewDidLoad -----------------------------------------------------")
         
         self.locationManager.delegate = self
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -70,7 +70,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print("-- viewWillAppear ------------------------------------------------")
+        //print("-- viewWillAppear ------------------------------------------------")
 
     }
 
@@ -78,7 +78,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-        print("-- didReceiveMemoryWarning ------------------------------------------------")
+        //print("-- didReceiveMemoryWarning ------------------------------------------------")
     }
     
     // MARK: - Conversation Handling
@@ -88,7 +88,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         // This will happen when the extension is about to present UI.
         
         // Use this method to configure the extension and restore previously stored state.
-        print("-- willBecomeActive ------------------------------------------------")
+        //print("-- willBecomeActive ------------------------------------------------")
 
     }
     
@@ -100,7 +100,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         // Use this method to release shared resources, save user data, invalidate timers,
         // and store enough state information to restore your extension to its current state
         // in case it is terminated later.
-        print("-- didResignActive -------------------------------------------------")
+        //print("-- didResignActive -------------------------------------------------")
     }
    
     override func didReceive(_ message: MSMessage, conversation: MSConversation) {
@@ -108,26 +108,26 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         // extension on a remote device.
         
         // Use this method to trigger UI updates in response to the message.
-        print("-- didReceive ------------------------------------------------------")
+        //print("-- didReceive ------------------------------------------------------")
     }
     
     override func didStartSending(_ message: MSMessage, conversation: MSConversation) {
         // Called when the user taps the send button.
-        print("-- didStartSending -------------------------------------------------")
+        //print("-- didStartSending -------------------------------------------------")
     }
     
     override func didCancelSending(_ message: MSMessage, conversation: MSConversation) {
         // Called when the user deletes the message without sending it.
     
         // Use this to clean up state related to the deleted message.
-        print("-- didCancelSending ------------------------------------------------")
+        //print("-- didCancelSending ------------------------------------------------")
     }
     
     override func willTransition(to presentationStyle: MSMessagesAppPresentationStyle) {
         // Called before the extension transitions to a new presentation style.
     
         // Use this method to prepare for the change in presentation style.
-        print("-- willTransition --------------------------------------------------")
+        //print("-- willTransition --------------------------------------------------")
         
     }
     
@@ -135,7 +135,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         // Called after the extension transitions to a new presentation style.
     
         // Use this method to finalize any behaviors associated with the change in presentation style.
-        print("-- didTransition ---------------------------------------------------")
+        //print("-- didTransition ---------------------------------------------------")
     }
     
 
@@ -175,14 +175,14 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         }
         
         // A new location: update User's Location object
-        print("-- locationManager -- location: '\(location)'")
+        //print("-- locationManager -- location: '\(location)'")
             
         //gpsLocation.updateUserCoordinates(localUser: localUser, packet: lmPacket)
         self.localUser.location = lmPacket
 
         if (UploadingManager.enabledUploading) {
             // refresh mapView if enabledUploading
-            print("-- locationManager -- refresh mapView")
+            //print("-- locationManager -- refresh mapView")
             
             self.mapUpdate.refreshMapView(packet: localUser.location, mapView: mapView)
 
@@ -194,7 +194,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                 
                 // MARK: start post-comments
                 
-                print("-- locationManager -- gpsLocation.uploadToIcloud(localUser: localUser) -- closure -- call self.handleUploadResult(result)")
+                //print("-- locationManager -- gpsLocation.uploadToIcloud(localUser: localUser) -- closure -- call self.handleUploadResult(result)")
 
                 self.gpsLocation.handleUploadResult(result, display: self.display, localUser: self.localUser, remoteUser: self.remoteUser, mapView: self.mapView, eta: self.eta, pollManager: self.pollManager)
                 
@@ -205,18 +205,6 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 // MARK:-
 
         }
-        /*
-        // poll_entered is 0 if Poll button not yet tapped
-        if poll_entered == 0 {
-
-            //mapUpdate.displayUpdate(display: display, packet: localUser.location)
-                
-            return
-                
-        }
-        */
-        // MARK: here because Poll button was tapped, need to check remote location
-
     }
 
  
@@ -243,9 +231,9 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         // reenable in case disabled
         self.locationManager.startUpdatingLocation()
 
-        print("\n=================================================================")
-        print("@IBAction func enable()")
-        print("===================================================================")
+        //print("\n=================================================================")
+        //print("@IBAction func enable()")
+        //print("===================================================================")
 
 // MARK: post-comments
 
@@ -291,13 +279,13 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
     @IBAction func mobilitySumulation(_ sender: UIBarButtonItem) {
         
-        print("\n==================================================================")
-        print("@IBAction func mobilitySumulation()")
-        print("====================================================================")
+        //print("\n==================================================================")
+        //print("@IBAction func mobilitySumulation()")
+        //print("====================================================================")
         
         self.locationManager.stopUpdatingLocation()
          
-        print("-- mobilitySumulation -- starting mobility simulation")
+        //print("-- mobilitySumulation -- starting mobility simulation")
          
         mobilitySimulator.startMobilitySimulator(user: localUser, display: display, mapView: mapView)
 
@@ -320,7 +308,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     
 // MARK:
         // FIXME: temporary. will call pollManager.pollRemote() directly, removing all other code
-        
+    
         // start RemoteUser polling on 2nd tap... for now
         //  eta and distance checked at 2 sec interval
         if poll_entered > 1 {
@@ -402,7 +390,11 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                     }
                 }
                 
-//                self.poll_entered = 0;
+                // reset poll_entered to get a chance to recheck for remoteRecord before
+                // calling pollManager.pollRemote(), which polls for the record
+                // But, could instead let pollManager.pollRemote() to exit after N (10?)
+                // retries?
+                self.poll_entered = 0;
 
                 return
 
@@ -436,7 +428,6 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
 // MARK:- end of post-comments
 
-        return
     }
   
     /**
@@ -447,9 +438,9 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     @IBAction func disable(_ sender: UIBarButtonItem) {
         // Remove location record from iCloud repository.
 
-        print("\n==================================================================")
-        print("@IBAction func disable()")
-        print("====================================================================")
+        //print("\n==================================================================")
+        //print("@IBAction func disable()")
+        //print("====================================================================")
 
         // clear display
         mapUpdate.displayUpdate(display: display)

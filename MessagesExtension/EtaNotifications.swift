@@ -22,7 +22,7 @@ class ETANotifications {
     }
 
     func configureContent(milePost: String) {
-        print("-- EtaNotifications -- configureContent()")
+        //print("-- EtaNotifications -- configureContent()")
         
         // 1- Configure the content.
         self.content.title = NSString.localizedUserNotificationString(forKey: "ETAMessages", arguments: nil)
@@ -33,33 +33,32 @@ class ETANotifications {
     }
     
     func scheduleNotification() {
-        print("-- EtaNotifications -- scheduleNotification()")
+        //print("-- EtaNotifications -- scheduleNotification()")
         
         // Deliver the notification in 1 second.
 
         // 2- configure the trigger. can't be <60sec if repeating
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-        print("-- EtaNotifications -- scheduleNotification() -- UNTimeIntervalNotificationTrigger()")
+        //print("-- EtaNotifications -- scheduleNotification() -- UNTimeIntervalNotificationTrigger()")
 
         // 3- Create the request object.
         let request = UNNotificationRequest(identifier: "ETAMessages", content: self.content, trigger: trigger)
-        print("-- EtaNotifications -- scheduleNotification() -- UNNotificationRequest()")
+        //print("-- EtaNotifications -- scheduleNotification() -- UNNotificationRequest()")
         
         // 4- Schedule the notification.
-        print("-- EtaNotifications -- scheduleNotification -- center.add(request)")
+        //print("-- EtaNotifications -- scheduleNotification -- center.add(request)")
 
         center.add(request) { (error : Error?) in
             if error != nil {
                 print("-- EtaNotifications -- scheduleNotification -- center.add -- closure -- error: \(String(describing: error?.localizedDescription))")
             } else {
-                print("-- EtaNotifications -- scheduleNotification -- center.add -- closure -- Succeeded")
+                //print("-- EtaNotifications -- scheduleNotification -- center.add -- closure -- Succeeded")
             }
         }
-        print("-- EtaNotifications -- scheduleNotification -- center.add(request) -- out of closure")
     }
 
     func requestAuthorization() {
-        print("-- EtaNotifications -- requestAuthorization()")
+        //print("-- EtaNotifications -- requestAuthorization()")
         
         // requestAuthorization
         self.center.requestAuthorization(options: [.alert, .sound]) {
@@ -75,7 +74,7 @@ class ETANotifications {
             
             if granted {
 
-                print("-- EtaNotifications -- requestAuthorization() -- self.center.requestAuthorization() -- closure -- granted: \(granted)")
+                //print("-- EtaNotifications -- requestAuthorization() -- self.center.requestAuthorization() -- closure -- granted: \(granted)")
             
                 let generalCategory = UNNotificationCategory(identifier: "OneSecond",
                                                          actions: [],
@@ -89,7 +88,7 @@ class ETANotifications {
     }
 
     func all() {
-         print("-- EtaNotifications -- all()")
+         //print("-- EtaNotifications -- all()")
         
         // configure
         let content = UNMutableNotificationContent()
@@ -112,7 +111,7 @@ class ETANotifications {
     
     func registerNotification() {
         // Register
-        print("-- EtaNotifications -- registerNotification()")
+        //print("-- EtaNotifications -- registerNotification()")
         
         let generalCategory = UNNotificationCategory(identifier: "GENERAL",
                                                  actions: [],
