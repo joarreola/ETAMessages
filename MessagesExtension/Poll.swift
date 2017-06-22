@@ -124,7 +124,7 @@ class PollManager {
         let queue = DispatchQueue(label: "edu.ucsc.ETAMessages.timer", attributes: .concurrent)
         timer?.cancel()
         timer = DispatchSource.makeTimerSource(queue: queue)
-        timer?.scheduleRepeating(deadline: .now(), interval: .seconds(2))
+        timer?.scheduleRepeating(deadline: .now(), interval: .milliseconds(1700))
         //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- end configuration")
         
         timer?.setEventHandler(handler: {
