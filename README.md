@@ -95,6 +95,7 @@ Class project
     - Cleanup etaNotification(): Create setupLocalNotification() and
       setupPseudoLocalNotification().
     - Fix explicit unwrapping crash in pollRemote().
+    - Set self.etaOriginal once myEta is no longer nil.
     
   - MapUpdate.swift
     Manage mapView updates for remote-user pin, map centering and spanning, and
@@ -209,6 +210,8 @@ Class project
       support for mobility-simulation. Remove reseting of poll_enabled.
     - Move out handleUploadResult() and handleCheckRemoteResult() to
       GPSsLocation.swift.
+    - Call pollRemote() inside the success path of the fetchRemote() closure,
+      right after calling getEtaDistance().
  
  
 - What is the project supposed to do?
