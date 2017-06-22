@@ -37,8 +37,6 @@ class PollManager {
     var timer: DispatchSourceTimer?
     
     init(remoteUserName: String) {
-        print("-- PollManager -- init()")
-
         self.latitude = 0.0
         self.longitude = 0.0
         self.remoteUserName = remoteUserName
@@ -136,7 +134,13 @@ class PollManager {
                 //self.myEta = eta.loadPointer()
                 self.myEta = eta.getEta()
                 self.myDistance = eta.getDistance()
+            
+                // need to set etaOriginal the 1st time myEta is no longer nil
+                if self.etaOriginal == nil {
                 
+                    self.etaOriginal = self.myEta
+                }
+            
                 //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- self.myEta: \(String(describing: self.myEta)) self.myDistance: \(String(describing: self.myDistance))")
     
                 // self.fetchRemote()
@@ -148,7 +152,7 @@ class PollManager {
                 //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- etaOriginal: \(String(describing: self.etaOriginal))")
 
                 if self.myEta != nil && self.etaOriginal != nil {
-                    if self.myEta! != self.etaOriginal!  || self.myEta! <= self.hasArrivedEta {
+                    if self.myEta! != self.etaOriginal!  || Double(self.myEta!) <= self.hasArrivedEta {
                         //print("\n===============================================================")
                         //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- calling self.etaNotification(display: display)")
                         //print("===============================================================\n")
