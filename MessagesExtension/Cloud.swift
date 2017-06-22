@@ -151,8 +151,9 @@ class CloudAdapter {
             self.publicDatabase.save(self.locationRecord) {
                 (record, error) in
 
-                if let error = error {
-                    print("-- CloudAdapter -- upload() -- self.publicDatabase.delete -- closure -- self.publicDatabase.save -- closure -- Error: \(self.locationRecordID): \(error)")
+                if error != nil {
+                    // filter out "Server Record Changed" errors
+                    //print("-- CloudAdapter -- upload() -- self.publicDatabase.delete -- closure -- self.publicDatabase.save -- closure -- Error: \(self.locationRecordID): \(error)")
                     
                     self.recordSaved = false
                     
@@ -173,7 +174,7 @@ class CloudAdapter {
                 whenDone(self.recordSaved)
                 
         // Mark: add a subscription to get a notification on a record change
-                
+        /*
                 //print("-- CloudAdapter -- upload() -- self.publicDatabase.delete -- closure -- self.publicDatabase.save -- closure -- setup subscription -- RecordId: Oscar-iphone")
                 
                 let locationSubscription = CKQuerySubscription(recordType: "Location", predicate: NSPredicate(format: "TRUEPREDICATE"), options: CKQuerySubscriptionOptions.firesOnRecordCreation)
@@ -195,7 +196,7 @@ class CloudAdapter {
                     savedSubscriptions, deletedSubscriptionIDs, operationError in
                     if operationError != nil {
     
-                        //print("-- CloudAdapter -- upload() -- self.publicDatabase.delete -- closure -- error: \(String(describing: operationError))")
+                        print("-- CloudAdapter -- upload() -- self.publicDatabase.delete -- closure -- error: \(String(describing: operationError))")
 
                     } else {
 
@@ -204,7 +205,7 @@ class CloudAdapter {
                 }
                 
                 self.publicDatabase.add(operation)
-
+        */
         // MARK:- end
                 
             }
