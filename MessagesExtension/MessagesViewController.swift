@@ -195,8 +195,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                 // MARK: start post-comments
                 
                 print("-- locationManager -- gpsLocation.uploadToIcloud(localUser: localUser) -- closure -- call self.handleUploadResult(result)")
-                
-                self.handleUploadResult(result)
+
+                self.gpsLocation.handleUploadResult(result, display: self.display, localUser: self.localUser, remoteUser: self.remoteUser, mapView: self.mapView, eta: self.eta, pollManager: self.pollManager)
                 
                 // MARK:- end post-comments
                 
@@ -219,98 +219,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
     }
 
-    // MARK: start post-comments
-    
-    func handleUploadResult(_ result: Bool) {
-
-        if !result {
-            
-            print("-- handleUploadResult() -- gpsLocation.uploadToIcloud(localUser: localUser) -- Failed")
-            
-            // UI updates on main thread
-            DispatchQueue.main.async { [weak self ] in
-                
-                if self != nil {
-
-                    self?.mapUpdate.displayUpdate(display: (self?.display)!, packet: (self?.localUser.location)!, string: "upload to iCloud failed")
-                }
-            }
-            
-        } else {
-
-            print("-- handleUploadResult() -- gpsLocation.uploadToIcloud(localUser: localUser) -- succeeded")
-            
-            // UI updates on main thread
-            DispatchQueue.main.async { [weak self ] in
-                
-                if self != nil {
-                    
-                    self?.mapUpdate.displayUpdate(display: (self?.display)!, packet: (self?.localUser.location)!, string: "uploaded to iCloud")
-            
-                    print("-- handleUploadResult() -- call gpsLocation.check_remote()")
-                    
-                }
-            }
-
-            // don't check remote user if polling has net yet been enabled
-            if !PollManager.enabledPolling {
-                print("-- handleUploadResult() -- don't check remote user")
-                
-                return
-            
-            }
-
-            gpsLocation.checkRemote(pollRemoteUser: pollManager, localUser: localUser, remoteUser: remoteUser, mapView: mapView, eta: eta, display: display) {
-                                            
-                (result: Bool) in
-                                            
-                print("-- handleUploadResult() -- gpsLocation.checkRemote() closure -- call self.handleCheckRemoteResult(result)")
-                                            
-                self.handleCheckRemoteResult(result)
-                                            
-            }
-        }
-    }
-    
-    func handleCheckRemoteResult(_ result: Bool) {
-
-        if !result {
-            
-            // failed to fetch RemoteUser's location.
-            // Assumed due to Disabled by RemoteUser
-            //  - reset poll_entered to 0
-            //  - update display
-            
-            // UI updates on main thread
-            DispatchQueue.main.async { [weak self ] in
-                
-                if self != nil {
-                    
-                    self?.mapUpdate.displayUpdate(display: (self?.display)!, packet: (self?.localUser.location)!, string: "remote user location not found", secondString: "tap Poll to restart session")
-                }
-            }
-
-//            self.poll_entered = 0
-            
-        } else {
-            
-            // update display to include remotePacket and eta data
-            
-            // UI updates on main thread
-            DispatchQueue.main.async { [weak self ] in
-                
-                if self != nil {
-
-                    self?.mapUpdate.displayUpdate(display: (self?.display)!, localPacket: (self?.localUser.location)!, remotePacket: (self?.remoteUser.location)!, eta: (self?.eta)!)
-                    
-                }
-            }
-            
-        }
-    }
-
-    // MARK:- end post comments
-
+ 
     @nonobjc func locationManager(manager: CLLocationManager!,
                                   didFailWithError error: NSError!) {
         
@@ -388,7 +297,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         
         self.locationManager.stopUpdatingLocation()
          
-        print("-- enable -- starting mobility simulation")
+        print("-- mobilitySumulation -- starting mobility simulation")
          
         mobilitySimulator.startMobilitySimulator(user: localUser, display: display, mapView: mapView)
 
