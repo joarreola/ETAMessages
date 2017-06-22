@@ -31,7 +31,7 @@ class PollManager {
     private var etaOriginal: TimeInterval?
     private let cloudRemote: CloudAdapter
     static  var enabledPolling: Bool = false
-    private let hasArrivedEta: Double = 35.0
+    private let hasArrivedEta: Double = 20.0
     private let localNotification: ETANotifications
     var messagesVC: MSMessagesAppViewController?
     var timer: DispatchSourceTimer?
@@ -123,8 +123,8 @@ class PollManager {
          */
         print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- start configuration")
         
-        let queue = DispatchQueue(label: "com.firm.app.timer", attributes: .concurrent)
-        timer?.cancel()        // cancel previous timer if any
+        let queue = DispatchQueue(label: "edu.ucsc.ETAMessages.timer", attributes: .concurrent)
+        timer?.cancel()
         timer = DispatchSource.makeTimerSource(queue: queue)
         timer?.scheduleRepeating(deadline: .now(), interval: .seconds(2))
         print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- end configuration")
@@ -147,14 +147,16 @@ class PollManager {
                 print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- self.myEta: \(String(describing: self.myEta))")
                 print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- etaOriginal: \(String(describing: self.etaOriginal))")
 
-                if  self.myEta != nil && self.etaOriginal != nil &&
-                    (self.myEta! != self.etaOriginal!)  || self.myEta! <= self.hasArrivedEta {
-                    print("\n===============================================================")
-                    print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- calling self.etaNotification(display: display)")
-                    print("===============================================================\n")
+                if self.myEta != nil && self.etaOriginal != nil {
+                    if self.myEta! != self.etaOriginal!  || self.myEta! <= self.hasArrivedEta {
+                        print("\n===============================================================")
+                        print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- calling self.etaNotification(display: display)")
+                        print("===============================================================\n")
                     
-                    self.etaNotification(display: display)
+                        self.etaNotification(display: display)
+                    }
                 }
+            
 
                 self.fetchRemote() {
                     
@@ -169,7 +171,7 @@ class PollManager {
                             if self != nil {
                                 
                                 // display localUserPacket
-                                mapUpdate.displayUpdate(display: (display), packet: packet, string: "fetchRemote failed")
+// verbosity                    mapUpdate.displayUpdate(display: (display), packet: packet, string: "fetchRemote failed")
                                 
                             }
                         }
