@@ -142,7 +142,7 @@ class CloudAdapter {
             self.locationRecordID = CKRecordID(recordName: self.user)
             self.locationRecord = CKRecord(recordType: "Location", recordID: self.locationRecordID)
 
-            print("-- CloudAdapter -- upload() -- set coordinates")
+            //print("-- CloudAdapter -- upload() -- set coordinates")
             self.locationRecord["latitude"]  = user.location.latitude! as CKRecordValue
             self.locationRecord["longitude"] = user.location.longitude! as CKRecordValue
 
