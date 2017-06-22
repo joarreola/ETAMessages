@@ -42,9 +42,10 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     // thus String literals
     //var cloud = CloudAdapter(userName: "Oscar-iphone") // done in UploadingManager()
     var pollManager = PollManager(remoteUserName: "Oscar-ipad")
-    var mapUpdate = MapUpdate() // needed here?
+    var mapUpdate = MapUpdate()
     var uploading = UploadingManager(name: "Oscar-iphone")
     var gpsLocation = GPSLocationAdapter()
+    var mobilitySimulator = MobilitySimulator(userName: "Oscar-iphone")
     
     // move these two to the respective class, Poll or GpsLocationAdapter
     var locPacket_updated: Bool = false
@@ -204,7 +205,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 // MARK:-
 
         }
-
+        /*
         // poll_entered is 0 if Poll button not yet tapped
         if poll_entered == 0 {
 
@@ -213,7 +214,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
             return
                 
         }
-
+        */
         // MARK: here because Poll button was tapped, need to check remote location
 
     }
@@ -289,7 +290,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                 }
             }
 
-            self.poll_entered = 0
+//            self.poll_entered = 0
             
         } else {
             
@@ -377,8 +378,20 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
 // MARK: -
 
-        print("-- enable -- end\n")
-    
+    }
+
+    @IBAction func mobilitySumulation(_ sender: UIBarButtonItem) {
+        
+        print("\n==================================================================")
+        print("@IBAction func mobilitySumulation()")
+        print("====================================================================")
+        
+        self.locationManager.stopUpdatingLocation()
+         
+        print("-- enable -- starting mobility simulation")
+         
+        mobilitySimulator.startMobilitySimulator(user: localUser, display: display, mapView: mapView)
+
     }
 
     /**
@@ -398,6 +411,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     
 // MARK:
         // FIXME: temporary. will call pollManager.pollRemote() directly, removing all other code
+        
         // start RemoteUser polling on 2nd tap... for now
         //  eta and distance checked at 2 sec interval
         if poll_entered > 1 {
@@ -423,8 +437,6 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
             // enable in case stationary user moves during or after polling
             self.locationManager.startUpdatingLocation()
             self.uploading.enableUploading()
-            
-            print("-- poll -- poll(): return\n")
             
             return
         }
@@ -481,7 +493,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                     }
                 }
                 
-                self.poll_entered = 0;
+//                self.poll_entered = 0;
 
                 return
 
@@ -515,8 +527,6 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
 // MARK:- end of post-comments
 
-        print("-- poll -- return\n")
-
         return
     }
   
@@ -546,6 +556,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         uploading.disableUploading()
         pollManager.disablePolling()
         poll_entered = 0;
+        mobilitySimulator.stopMobilitySimulator()
         
     }
 
