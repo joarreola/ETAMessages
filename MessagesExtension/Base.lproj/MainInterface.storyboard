@@ -28,7 +28,11 @@
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LtH-d8-iox">
                                 <rect key="frame" x="0.0" y="484" width="320" height="44"/>
                                 <items>
-                                    <barButtonItem title="Food" id="Qsi-aJ-bGj"/>
+                                    <barButtonItem title="Simulate" id="Qsi-aJ-bGj">
+                                        <connections>
+                                            <action selector="mobilitySumulation:" destination="ObA-dk-sSI" id="jnX-7z-D4D"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem systemItem="flexibleSpace" id="v6r-8Z-AQH"/>
                                     <barButtonItem title="Enable" id="EwD-F4-1N3">
                                         <connections>
