@@ -22,7 +22,6 @@ class EtaAdapter {
     private var mapUdate: MapUpdate
     
     init() {
-        print("-- EtaAdapter -- init")
         self.eta = nil
         self.distance = nil
         self.mapUdate = MapUpdate()
