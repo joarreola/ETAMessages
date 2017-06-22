@@ -20,6 +20,7 @@ class EtaAdapter {
     var eta: TimeInterval?
     var distance: Double?
     private var mapUdate: MapUpdate
+    private var previousDistance: TimeInterval? = nil
     
     init() {
         self.eta = nil
@@ -69,8 +70,8 @@ class EtaAdapter {
         
         mkDirections.calculate { [ unowned self ] (response, error) in
             
-            if let error = error {
-                print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- error -- Error: \(String(describing: error))")
+            if error != nil {
+                //print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- error -- Error: \(String(describing: error))")
                 
                 // UI updates on main thread
                 DispatchQueue.main.async { [weak self ] in
@@ -96,7 +97,7 @@ class EtaAdapter {
             // can't get self.eta nor self.distance out of the closure on 1st poll
             guard let unwrappedResponse = response else {
                 
-                print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closire -- unwrappedResponse -- Error: \(String(describing: error))")
+                //print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closire -- unwrappedResponse -- Error: \(String(describing: error))")
                 
                 self.eta = nil
                 self.distance = nil
@@ -117,12 +118,24 @@ class EtaAdapter {
                 //print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- self.distance: \(String(describing: self.distance!)) feet")
                 //print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- self.eta: \(self.eta!)) sec")
                 
-                for step in route.steps {
-                    print(step.instructions)
+                for _ in route.steps {
+                    //print(step.instructions)
                 }
 
                 etaAdapter.setEta(eta: route.expectedTravelTime)
                 etaAdapter.setDistance(distance: route.distance * 3.2808)
+                
+                if self.previousDistance == nil || Double(self.distance!) < Double(self.previousDistance!){
+                    //print("--  EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- self.previousDistance = self.distance: \(String(describing: self.previousDistance))")
+
+                    self.previousDistance = self.distance
+
+                } else if Double(self.distance!) > Double(self.previousDistance!) {
+                    // for simulation: don't update mapView if got a greater DISTANCE
+                    //print("--  EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- eta > previousDistance: \(String(describing: self.distance)) , \(String(describing: self.previousDistance))")
+
+                    return
+                }
             }
             
             // UI updates on main thread
