@@ -11,6 +11,7 @@
 		DF2A59911EE4FCBA00244566 /* Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF2A59901EE4FCBA00244566 /* Users.swift */; };
 		DF2A59931EE6579500244566 /* EtaNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF2A59921EE6579500244566 /* EtaNotifications.swift */; };
 		DF2A9F921EDFC45D00485BD1 /* Eta.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF2A9F911EDFC45D00485BD1 /* Eta.swift */; };
+		DF4FFE681EFAE61D00D6A00D /* MobilitySimulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4FFE671EFAE61D00D6A00D /* MobilitySimulator.swift */; };
 		DF5A3C011EF8625000833CCF /* LocalNotificationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5A3C001EF8625000833CCF /* LocalNotificationDelegate.swift */; };
 		DF85038C1EE88EAC00734D4C /* GPSLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF85038B1EE88EAC00734D4C /* GPSLocation.swift */; };
 		DF8503921EEDE08400734D4C /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF8503911EEDE08400734D4C /* CloudKit.framework */; };
@@ -57,6 +58,7 @@
 		DF2A59901EE4FCBA00244566 /* Users.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Users.swift; sourceTree = "<group>"; };
 		DF2A59921EE6579500244566 /* EtaNotifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EtaNotifications.swift; sourceTree = "<group>"; };
 		DF2A9F911EDFC45D00485BD1 /* Eta.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Eta.swift; sourceTree = "<group>"; };
+		DF4FFE671EFAE61D00D6A00D /* MobilitySimulator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MobilitySimulator.swift; sourceTree = "<group>"; };
 		DF5A3C001EF8625000833CCF /* LocalNotificationDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalNotificationDelegate.swift; sourceTree = "<group>"; };
 		DF85038B1EE88EAC00734D4C /* GPSLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPSLocation.swift; sourceTree = "<group>"; };
 		DF8503911EEDE08400734D4C /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
@@ -149,6 +151,7 @@
 				DF85038B1EE88EAC00734D4C /* GPSLocation.swift */,
 				DF5A3C001EF8625000833CCF /* LocalNotificationDelegate.swift */,
 				DF9DAC171EF9A7F00026535B /* PseudoNotificationsViewController.swift */,
+				DF4FFE671EFAE61D00D6A00D /* MobilitySimulator.swift */,
 			);
 			path = MessagesExtension;
 			sourceTree = "<group>";
@@ -279,6 +282,7 @@
 				DFC5DD7A1ED3920900FF8D97 /* MessagesViewController.swift in Sources */,
 				DFD07B801ED4A94700C559BF /* MapUpdate.swift in Sources */,
 				DF85038C1EE88EAC00734D4C /* GPSLocation.swift in Sources */,
+				DF4FFE681EFAE61D00D6A00D /* MobilitySimulator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
