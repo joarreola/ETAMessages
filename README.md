@@ -18,25 +18,19 @@ Class project
 
 	Stationary Mode:
 
-		- Tap Poll button: (this is for test purposes only, will removed)
-		  local and remote coordinates are displayed. Remote user is noted
-		  with a pointAnnotation (red pin), local user noted with blue dot.
-
 		- Tap Poll button again:
-		  eta and distance data is appended to the display. mapView is
-		  refreshed, center between users, span'ed appropriately to cover
-		  most of mapView.
+		  Remote user is noted with a pointAnnotation (red pin), local user
+		  noted with blue dot. eta and distance data is appended to the display.
+		  mapView is refreshed, centered between users, span'ed appropriately
+		  to cover most of mapView.
 
 		- Move local user closer to remote user (backwards but works to
 		  test eta notification trigger code) via Simulator:
 		  Debug -> Location -> CustomLocation. Changing the 3rd and 4th
 		  decimals to match remote coordinates is sufficient to trigger the
-		  ETA==0 condition (<50 sec):
+		  ETA==0 condition (<= 20 sec):
 		  Local user blue dot moves to red pin. Polling stops. Display
 		  notes "Oscar has arrived"
-
-		- Tap Disable button:
-		  MapView is refresh showing just the blue dot, and re-spanned.
 		
 	Known Issues:
 		- Reloading the app via the txt-msgs app-store may result in
