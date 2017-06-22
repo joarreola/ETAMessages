@@ -39,9 +39,8 @@ Class project
 		  MapView is refresh showing just the blue dot, and re-spanned.
 		
 	Known Issues:
-		- Can't restart polling after Disable or Has-Arrived notification.
-		- Reloading the app via the txt-msgs app-store produces strange
-		  images on the simulator.
+		- Reloading the app via the txt-msgs app-store may result in
+		  corrupted mapView.
 		
 		
 - How did you organize the project's code and resources?
@@ -59,6 +58,7 @@ Class project
       will be called with a packet argument.
     - Update to use the packet.setLocation() methods.
     - Remove pre-comments code.
+    - Re-enable an error print().
     
   - Uploading.swift - New
   	Manage mobile mode behavior, with localUser and single packet
@@ -96,6 +96,7 @@ Class project
       setupPseudoLocalNotification().
     - Fix explicit unwrapping crash in pollRemote().
     - Set self.etaOriginal once myEta is no longer nil.
+    - Reduce polling interval to 1700 milli seconds for simulation.
     
   - MapUpdate.swift
     Manage mapView updates for remote-user pin, map centering and spanning, and
@@ -109,6 +110,7 @@ Class project
       a few more cases in the refreshMapView() switch.
     - Remove pre-comments code.
     - Update case value for span deltas.
+    - Replace delta switch with:  delta = Float(distance * 0.0000015)
   
   - Location.switch
     Location coordinate structure.
@@ -134,6 +136,7 @@ Class project
     - Remove pre-comments code.
     - Add localNotification calls.
     - Set mkDirReq.transportType to .automobile.
+    - Track distance vs. eta for simulation.
 
 
   - GPSsLocation.swift
@@ -170,10 +173,12 @@ Class project
     message. Instantiated in PollManager.etaNotification() when ETA == 0
     (or close enough).
     
-  - MessagesExtension/MobilitySimulator.swift - New file.
+  - MobilitySimulator.swift - New file.
     Simulate iPhone device mobility by updating iCloud record directly.
+    
+    - Reduce step increments to 0.0025 when will jump over destination.
 
- 
+
   - MessagesViewController.swift
     Manages the UI implemented in IBACtion functions enable() and poll().
     The mobile user enters the app via the Enable button, the stationary
@@ -223,45 +228,30 @@ Class project
   All of the above are working as expected. Remote-User location can be
   read from iCloud records, as the devices get closer, the mapView span is
   updated to zoom in. Mobile device location coordinates are updated to
-  iCloud repo. ETA and distance data extraction is working. The polling
-  for remore-location code is in, but needs some refinements. A while loop
-  is launched in a separate thread, will switch to GCS.
-  The etaNotifications() method exits but needs refinement. Need to create
-  an appropriate function to translate distance to mapView span.
+  iCloud repo. ETA and distance data extraction is working.
   
 - What is not?
-  All implemented code is working.
-  
-- What should a reviewer do in order to test your project?
-
-  Location coordinates can be updated in the simulator via Debug->Location.
-  Depending on the app mode (mobile/stationary) Debug->Location will move
-  the blue dot or the red pin.
-  
+  Can't receive remote or local notifications. This is expected behavior
+  for a Messages Extension, will need to incorporate as a target of a
+  parent app.
   
 - Are there any problems that you know you need to fix?
   
-  Remote all semaphore locks, per review comments.
+  MapView corruption and missing mapView on some launches.
   
   
 - Are there any areas where you would like help?
 
-  Not yet. Working on incorporating review comments.
+  Not yet.
   
   
 - TODO:
-	- sleep -> NStimer: wait for next class. Will use iCloud container
-	  record-change notifications vs. polling.
-	- Implement thread synchronization with conditional-vars/mutexes.
-	- Implement local notifications.
+	- Implement local notifications for has-arrived notice.
+	- Implement remote notification from iCloud record server.
 	- Consider pop-up menu to enable/disable stationary and mobile modes.
 	  Or possibly just note if enabled/disabled
-	  by changing the button item background? :-)
+	  by changing the button item background?
 	  Then Remove the Disable button.
 	- Add directions overlay to mapView.
-  	- Implement Class Diagram classes:
-  		- EtaNotifications
-  	- Remove all semaphores per Phil's review comments.
-  	- Refactor code to not make sequential calls to closure-invoking
-  	  methods, per review comments.
+
   
