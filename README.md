@@ -150,6 +150,8 @@ Class project
     - Update to not call Users.getName().
     - Remove pre-comments code.
     - Change class name to GPSLocationAdapter.
+    - Move in handleUploadResult() and handleCheckRemoteResult() from
+      MessagesViewController.swift.
  
  
   - ETANotifications.swift - New File
@@ -205,6 +207,8 @@ Class project
       PseudoNotificationsViewController.
     - Change Food button to Simulate add IBAction to mobilitySumulation. Add
       support for mobility-simulation. Remove reseting of poll_enabled.
+    - Move out handleUploadResult() and handleCheckRemoteResult() to
+      GPSsLocation.swift.
  
  
 - What is the project supposed to do?
