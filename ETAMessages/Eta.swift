@@ -67,8 +67,8 @@ class EtaAdapter {
         mkDirReq.destination = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: remotePacket.latitude!, longitude: remotePacket.longitude!), addressDictionary: nil))
         
         mkDirReq.requestsAlternateRoutes = false
-        //mkDirReq.transportType = .automobile
-        mkDirReq.transportType = .walking
+        mkDirReq.transportType = .automobile
+        //mkDirReq.transportType = .walking
         
         let mkDirections = MKDirections(request: mkDirReq)
         
