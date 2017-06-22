@@ -66,7 +66,7 @@ class MapUpdate {
         pointAnnotation = MKPointAnnotation()
         
         if MapUpdate.pointAnnotationStruct.pointAnnotation != nil {
-            print("-- MapUpdate -- addPin -- removing pointAnnotation: \(String(describing: MapUpdate.pointAnnotationStruct.pointAnnotation))")
+            //print("-- MapUpdate -- addPin -- removing pointAnnotation: \(String(describing: MapUpdate.pointAnnotationStruct.pointAnnotation))")
             
             mapView.removeAnnotation(MapUpdate.pointAnnotationStruct.pointAnnotation!)
 
@@ -218,6 +218,7 @@ class MapUpdate {
         (center, dist) = self.centerView(localpacket: localPacket, remotePacket: remotePacket, mapView: mapView)
 // MARK:
         // FIXME: center mapView without eta.distance data
+
         // compute delta based on distance
         if eta.distance == nil || remotePacket.latitude == 0.0 {
 
@@ -227,111 +228,12 @@ class MapUpdate {
             delta = Float(dist * 3)
             
         } else {
-        // FIXME: Do linear-regression
-            // compute a delta to reset the span. Use switch for now
+            // compute a delta to reset the span.
             let distance = eta.distance!
+            
+            delta = Float(distance * 0.0000015)
 
-            //print("-- MapUpdate -- refreshMapView -- distance: \(distance)")
-
-            switch distance {
-                
-            case 0..<10:
-                
-                delta = 0.0001
-                
-            case 10..<50:
-                
-                delta = 0.0001
-                
-            case 50..<250:
-                
-                delta = 0.0001
-                
-            case 250..<500:
-                
-                delta = 0.0005
-                
-            case 500..<1000:
-                
-                delta = 0.005
-                
-            case 1000..<2000:
-                
-                delta = 0.0065
-            
-            case 2000..<3000:
-                
-                delta = 0.0075
-                
-            case 3000..<4000:
-                
-                delta = 0.0095
-    
-            case 4000..<5000:
-                
-                delta = 0.015
-                
-            case 5000..<6000:
-                
-                delta = 0.025
-            
-            case 6000..<7000:
-                
-                delta = 0.035
-
-            case 7000..<8000:
-                
-                delta = 0.045
-
-            case 8000..<10000:
-                
-                delta = 0.055
-                
-            case 10000..<20000:
-                
-                delta = 0.1
-                
-            case 20000..<40000:
-                
-                delta = 0.13
-                
-            case 40000..<50000:
-                
-                delta = 0.2
-                
-            case 50000..<100000:
-                
-                delta = 0.3
-                
-            case 100000..<200000:
-                
-                delta = 0.4
-            
-            case 200000..<300000:
-                
-                delta = 0.5
-            
-            case 300000..<400000:
-                
-                delta = 0.6
-            
-            case 400000..<500000:
-                
-                delta = 0.8
-            
-            case 500000..<600000:
-                
-                delta = 0.85
-            
-            case 600000..<700000:
-                
-                delta = 0.9
-                
-            default:
-                
-                delta = 0.1
-            }
-            //print("-- MapUpdate -- refreshMapView -- delta: \(delta)")
+            //print("-- MapUpdate -- refreshMapView -- distance: \(distance), delta: \(delta)")
         }
 // MARK:-
 
