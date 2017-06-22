@@ -257,35 +257,35 @@ class MapUpdate {
                 
             case 1000..<2000:
                 
-                delta = 0.006
+                delta = 0.0065
             
             case 2000..<3000:
                 
-                delta = 0.007
+                delta = 0.0075
                 
             case 3000..<4000:
                 
-                delta = 0.009
+                delta = 0.0095
     
             case 4000..<5000:
                 
-                delta = 0.01
+                delta = 0.015
                 
             case 5000..<6000:
                 
-                delta = 0.02
+                delta = 0.025
             
             case 6000..<7000:
                 
-                delta = 0.03
+                delta = 0.035
 
             case 7000..<8000:
                 
-                delta = 0.04
+                delta = 0.045
 
             case 8000..<10000:
                 
-                delta = 0.05
+                delta = 0.055
                 
             case 10000..<20000:
                 
@@ -317,11 +317,11 @@ class MapUpdate {
             
             case 400000..<500000:
                 
-                delta = 0.7
+                delta = 0.8
             
             case 500000..<600000:
                 
-                delta = 0.8
+                delta = 0.85
             
             case 600000..<700000:
                 
