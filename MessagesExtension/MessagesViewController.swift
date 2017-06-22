@@ -299,10 +299,10 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     @IBAction func poll(_ sender: UIBarButtonItem) {
         // check for remoteUser record
 
-        print("\n==================================================================")
-        print("@IBAction func poll()")
-        print("====================================================================")
-
+        //print("\n==================================================================")
+        //print("@IBAction func poll()")
+        //print("====================================================================")
+/*
         // vars
         poll_entered += 1
     
@@ -337,7 +337,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
             
             return
         }
-        
+ */
 // MARK:-
 
 // MARK: Does stationary user have a need to upload location to iCloud?
@@ -368,7 +368,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         // display localUserPacket
         self.mapUpdate.displayUpdate(display: self.display, packet: self.localUser.location)
         
-        print("-- poll --  pollManager.fetchRemote for remote location record...")
+        //print("-- poll --  pollManager.fetchRemote for 1st remote location record...")
 
 // MARK: start of post-comments
 
@@ -377,7 +377,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
             (packet: Location) in
             
             if packet.latitude == nil {
-                print("-- poll -- self.pollManager.fetchRemote() - closure -- failed")
+                //print("-- poll -- self.pollManager.fetchRemote() - closure -- failed")
                 
                 // UI updates on main thread
                 DispatchQueue.main.async { [weak self ] in
@@ -394,14 +394,14 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                 // calling pollManager.pollRemote(), which polls for the record
                 // But, could instead let pollManager.pollRemote() to exit after N (10?)
                 // retries?
-                self.poll_entered = 0;
+                //self.poll_entered = 0;
 
                 return
 
             } else {
 
-                print("-- poll -- self.pollManager.fetchRemote() - closure -- remote latitude: \(String(describing: packet.latitude))")
-                print("-- poll -- self.pollManager.fetchRemote() - closure -- remote longitude: \(String(describing: packet.longitude))")
+                //print("-- poll -- self.pollManager.fetchRemote() - closure -- remote latitude: \(String(describing: packet.latitude))")
+                //print("-- poll -- self.pollManager.fetchRemote() - closure -- remote longitude: \(String(describing: packet.longitude))")
                 
                 // update remoteUser Location
                 self.remoteUser.location.setLocation(latitude: packet.latitude!, longitude: packet.longitude!)
@@ -416,10 +416,21 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                 }
                 
                 // get eta and distance. Returns immediately, closure returns later
-                print("-- poll -- self.pollManager.fetchRemote() -- closure -- eta.getEtaDistance...")
+                //print("-- poll -- self.pollManager.fetchRemote() -- closure -- call: eta.getEtaDistance")
                 
                 self.eta.getEtaDistance (localPacket: self.localUser.location, remotePacket: self.remoteUser.location, mapView: self.mapView, etaAdapter: self.eta, display: self.display)
                 
+                //print("-- poll -- self.pollManager.fetchRemote() -- closure -- call: pollManager.pollRemote")
+// should not call pollRemote() after calling getEtaDistance, as they will trip over
+// each other!
+                // addpin() display() and refreshMapView() are called in pollRemote()
+                self.pollManager.pollRemote(localUser: self.localUser, remotePacket: self.remoteUser.location, mapView: self.mapView, eta: self.eta, display: self.display)
+                
+                // enable in case stationary user moves during or after polling
+                self.locationManager.startUpdatingLocation()
+                self.uploading.enableUploading()
+                
+                //print("-- poll -- self.pollManager.fetchRemote() -- exit closure")
             }
             
             // should polling be enabled here or outside self.pollManager.fetchRemote()?
