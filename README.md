@@ -94,6 +94,7 @@ Class project
     - Replace sleep(2) with a DispatchSourceTimer.
     - Cleanup etaNotification(): Create setupLocalNotification() and
       setupPseudoLocalNotification().
+    - Fix explicit unwrapping crash in pollRemote().
     
   - MapUpdate.swift
     Manage mapView updates for remote-user pin, map centering and spanning, and
@@ -106,6 +107,7 @@ Class project
       to compute latDistTo and longDisto, and center point coordinates. Add
       a few more cases in the refreshMapView() switch.
     - Remove pre-comments code.
+    - Update case value for span deltas.
   
   - Location.switch
     Location coordinate structure.
@@ -130,6 +132,7 @@ Class project
       mkDirections.calculate().
     - Remove pre-comments code.
     - Add localNotification calls.
+    - Set mkDirReq.transportType to .automobile.
 
 
   - GPSsLocation.swift
@@ -163,6 +166,9 @@ Class project
     View holding a UILabel to present a blue background and a "Has Arrived"
     message. Instantiated in PollManager.etaNotification() when ETA == 0
     (or close enough).
+    
+  - MessagesExtension/MobilitySimulator.swift - New file.
+    Simulate iPhone device mobility by updating iCloud record directly.
 
  
   - MessagesViewController.swift
@@ -197,6 +203,8 @@ Class project
     - Add viewWillAppear() override. Add delegate for local notifications.
     - Set pollManager.messagesVC property to self to instantiate
       PseudoNotificationsViewController.
+    - Change Food button to Simulate add IBAction to mobilitySumulation. Add
+      support for mobility-simulation. Remove reseting of poll_enabled.
  
  
 - What is the project supposed to do?
