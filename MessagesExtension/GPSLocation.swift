@@ -18,6 +18,7 @@ import MapKit
 
 class GPSLocationAdapter {
     private var packet: Location
+    private var mapUpdate = MapUpdate()
     
     init() {
         self.packet = Location()
@@ -100,5 +101,98 @@ class GPSLocationAdapter {
  
         // MARK:- end of post-comments
     }
+    
+    // MARK: moving from locationManager() in MessagesViewcontroller.swift
+    
+    func handleUploadResult(_ result: Bool, display: UILabel, localUser: Users, remoteUser: Users, mapView: MKMapView, eta: EtaAdapter, pollManager: PollManager) {
+        
+        if !result {
+            
+            print("-- GPSLocation -- handleUploadResult() -- gpsLocation.uploadToIcloud(localUser: localUser) -- Failed")
+            
+            // UI updates on main thread
+            DispatchQueue.main.async { [weak self ] in
+                
+                if self != nil {
+                    
+                    self?.mapUpdate.displayUpdate(display: display, packet: localUser.location, string: "upload to iCloud failed")
+                }
+            }
+            
+        } else {
+            
+            print("-- GPSLocation -- handleUploadResult() -- gpsLocation.uploadToIcloud(localUser: localUser) -- succeeded")
+            
+            // UI updates on main thread
+            DispatchQueue.main.async { [weak self ] in
+                
+                if self != nil {
+                    
+                    self?.mapUpdate.displayUpdate(display: display, packet: localUser.location, string: "uploaded to iCloud")
+                    
+                    print("-- GPSLocation -- handleUploadResult() -- call gpsLocation.check_remote()")
+                    
+                }
+            }
+            
+            // don't check remote user if polling has net yet been enabled
+            if !PollManager.enabledPolling {
+                print("-- handleUploadResult() -- don't check remote user")
+                
+                return
+                
+            }
+            
+            self.checkRemote(pollRemoteUser: pollManager, localUser: localUser, remoteUser: remoteUser, mapView: mapView, eta: eta, display: display) {
+                
+                (result: Bool) in
+                
+                print("-- GPSLocation -- handleUploadResult() -- gpsLocation.checkRemote() closure -- call self.handleCheckRemoteResult(result)")
+                
+                self.handleCheckRemoteResult(result, display: display, localUser: localUser, remoteUser: remoteUser, eta: eta)
+                
+            }
+        }
+    }
+    
+    func handleCheckRemoteResult(_ result: Bool, display: UILabel, localUser: Users, remoteUser: Users, eta: EtaAdapter) {
+        
+        if !result {
+            
+            // failed to fetch RemoteUser's location.
+            // Assumed due to Disabled by RemoteUser
+            //  - reset poll_entered to 0
+            //  - update display
+            
+            // UI updates on main thread
+            DispatchQueue.main.async { [weak self ] in
+                
+                if self != nil {
+                    
+                    self?.mapUpdate.displayUpdate(display: display, packet: localUser.location, string: "remote user location not found", secondString: "tap Poll to restart session")
+                }
+            }
+            
+            //            self.poll_entered = 0
+            
+        } else {
+            
+            // update display to include remotePacket and eta data
+            
+            // UI updates on main thread
+            DispatchQueue.main.async { [weak self ] in
+                
+                if self != nil {
+                    
+                    self?.mapUpdate.displayUpdate(display: display, localPacket: localUser.location, remotePacket: remoteUser.location, eta: eta)
+                    
+                }
+            }
+            
+        }
+    }
+    
+    
+    // MARK:-
 
 }
