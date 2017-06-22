@@ -13,7 +13,7 @@ import MapKit
 class MobilitySimulator {
     static var mobilitySimulatorEnabled: Bool = false
     private let deltaLatitude = 0.09
-    private let deltaLongitude = 0.15
+    private let deltaLongitude = 0.20
     private var timer: DispatchSourceTimer?
     private var gpsLocation: GPSLocationAdapter
     private var mapUpdate: MapUpdate
@@ -35,8 +35,7 @@ class MobilitySimulator {
         //  37.340,128,049,289,19
         //-122.033,242,313,304,92
         
-        // add      0.099,999 to latitude
-        // subtract 0.009,999 to longitude
+        // subtract 0.20 from longitude
         self.origLocation.latitude = user.location.latitude!
         self.origLocation.longitude = user.location.longitude!
         
@@ -108,10 +107,14 @@ class MobilitySimulator {
                     }
                     
                     // get closer
-                    // add      0.099,999 to latitude
-                    // subtract 0.009,999 to longitude
-                    //self.tempUser.location.latitude = self.tempUser.location.latitude! - 0.000055
-                    self.tempUser.location.longitude = self.tempUser.location.longitude! + 0.00500
+                    if Double(self.tempUser.location.longitude!) + 0.005 > Double(self.origLocation.longitude!) {
+                        
+                        self.tempUser.location.longitude = self.tempUser.location.longitude! + 0.0025
+
+                    } else {
+                        
+                        self.tempUser.location.longitude = self.tempUser.location.longitude! + 0.005
+                    }
                     
                     // check if there
                     if Double(self.tempUser.location.longitude!) >= Double(self.origLocation.longitude!) || MobilitySimulator.mobilitySimulatorEnabled == false {
