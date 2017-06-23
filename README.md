@@ -12,9 +12,6 @@ Class project
 		  Debug -> Location -> CustomLocation:
 		  Blue dot will move to new location, mapView will be centered.
 
-		- Tap Disable button:
-		  Display is cleared. Local coordinates removed.
-
 
 	Stationary Mode:
 
