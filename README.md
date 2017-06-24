@@ -102,6 +102,8 @@ Class project
     - Remove pre-comments code.
     - Update case value for span deltas.
     - Replace delta switch with:  delta = Float(distance * 0.0000015)
+    - Don't remove point annotation if on same location, to reduce
+      pin jitter.
   
   - Location.switch
     Location coordinate structure.
@@ -128,6 +130,8 @@ Class project
     - Add localNotification calls.
     - Set mkDirReq.transportType to .automobile.
     - Track distance vs. eta for simulation.
+    - Don't addPin() nor etaAdapter.mapUdate.refreshMapView() on getEtaDistance()
+      failure, and add secondString to displayUpdate() to reduce jumpiness.
 
 
   - GPSsLocation.swift
@@ -147,6 +151,7 @@ Class project
     - Change class name to GPSLocationAdapter.
     - Move in handleUploadResult() and handleCheckRemoteResult() from
       MessagesViewController.swift.
+    - Update display in handleUploadResult() only if not polling.
  
  
   - ETANotifications.swift - New File
@@ -208,6 +213,7 @@ Class project
       GPSsLocation.swift.
     - Call pollRemote() inside the success path of the fetchRemote() closure,
       right after calling getEtaDistance().
+    - Don't refreshMapView() in locationManager() if polling.
  
  
 - What is the project supposed to do?
