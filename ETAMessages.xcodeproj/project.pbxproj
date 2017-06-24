@@ -11,6 +11,7 @@
 		DF2A59911EE4FCBA00244566 /* Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF2A59901EE4FCBA00244566 /* Users.swift */; };
 		DF2A59931EE6579500244566 /* EtaNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF2A59921EE6579500244566 /* EtaNotifications.swift */; };
 		DF2A9F921EDFC45D00485BD1 /* Eta.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF2A9F911EDFC45D00485BD1 /* Eta.swift */; };
+		DF49C9E41EFDEBEC00EBB1E8 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DF49C9E31EFDEBEC00EBB1E8 /* Settings.bundle */; };
 		DF4FFE681EFAE61D00D6A00D /* MobilitySimulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4FFE671EFAE61D00D6A00D /* MobilitySimulator.swift */; };
 		DF5A3C011EF8625000833CCF /* LocalNotificationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5A3C001EF8625000833CCF /* LocalNotificationDelegate.swift */; };
 		DF85038C1EE88EAC00734D4C /* GPSLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF85038B1EE88EAC00734D4C /* GPSLocation.swift */; };
@@ -58,6 +59,7 @@
 		DF2A59901EE4FCBA00244566 /* Users.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Users.swift; sourceTree = "<group>"; };
 		DF2A59921EE6579500244566 /* EtaNotifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EtaNotifications.swift; sourceTree = "<group>"; };
 		DF2A9F911EDFC45D00485BD1 /* Eta.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Eta.swift; sourceTree = "<group>"; };
+		DF49C9E31EFDEBEC00EBB1E8 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		DF4FFE671EFAE61D00D6A00D /* MobilitySimulator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MobilitySimulator.swift; sourceTree = "<group>"; };
 		DF5A3C001EF8625000833CCF /* LocalNotificationDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalNotificationDelegate.swift; sourceTree = "<group>"; };
 		DF85038B1EE88EAC00734D4C /* GPSLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPSLocation.swift; sourceTree = "<group>"; };
@@ -152,6 +154,7 @@
 				DF5A3C001EF8625000833CCF /* LocalNotificationDelegate.swift */,
 				DF9DAC171EF9A7F00026535B /* PseudoNotificationsViewController.swift */,
 				DF4FFE671EFAE61D00D6A00D /* MobilitySimulator.swift */,
+				DF49C9E31EFDEBEC00EBB1E8 /* Settings.bundle */,
 			);
 			path = MessagesExtension;
 			sourceTree = "<group>";
@@ -259,6 +262,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DFC5DD7F1ED3920900FF8D97 /* Assets.xcassets in Resources */,
+				DF49C9E41EFDEBEC00EBB1E8 /* Settings.bundle in Resources */,
 				DFC5DD7D1ED3920900FF8D97 /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
