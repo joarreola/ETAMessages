@@ -78,13 +78,13 @@ class EtaAdapter {
                     
                     if self != nil {
                         // add pin and refresh mapView
-                        //print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- error -- DispatchQueue.main.async -- closure")
-                        
+                        print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- error -- DispatchQueue.main.async -- closure")
+                        /* will re-span map to a default value resulting in jumpy-map
                         etaAdapter.mapUdate.addPin(packet: remotePacket, mapView: mapView, remove: false)
                         
                         etaAdapter.mapUdate.refreshMapView(localPacket: localPacket, remotePacket: remotePacket, mapView: mapView, eta: etaAdapter)
-
-                        etaAdapter.mapUdate.displayUpdate(display: display, localPacket: localPacket, remotePacket: remotePacket, string: "Directions Not Available")
+                        */
+                        etaAdapter.mapUdate.displayUpdate(display: display, localPacket: localPacket, remotePacket: remotePacket, string: "eta not available", secondString: "distance not available")
                     }
                 }
                 
@@ -143,7 +143,7 @@ class EtaAdapter {
                 
                 if self != nil {
                     // add pin and refresh mapView
-                    //print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- DispatchQueue.main.async -- closure")
+                    print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- DispatchQueue.main.async -- closure")
                     
                     etaAdapter.mapUdate.addPin(packet: remotePacket, mapView: mapView, remove: false)
                     
