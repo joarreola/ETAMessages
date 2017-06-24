@@ -123,15 +123,18 @@ class GPSLocationAdapter {
             
             //print("-- GPSLocation -- handleUploadResult() -- gpsLocation.uploadToIcloud(localUser: localUser) -- succeeded")
             
-            // UI updates on main thread
-            DispatchQueue.main.async { [weak self ] in
+            // don't update display for just localUser if polling
+            if !PollManager.enabledPolling {
+                // UI updates on main thread
+                DispatchQueue.main.async { [weak self ] in
                 
-                if self != nil {
+                    if self != nil {
                     
-                    self?.mapUpdate.displayUpdate(display: display, packet: localUser.location, string: "uploaded to iCloud")
+                        self?.mapUpdate.displayUpdate(display: display, packet: localUser.location, string: "uploaded to iCloud")
                     
-                    //print("-- GPSLocation -- handleUploadResult() -- call gpsLocation.check_remote()")
+                        //print("-- GPSLocation -- handleUploadResult() -- call gpsLocation.check_remote()")
                     
+                    }
                 }
             }
             
@@ -168,6 +171,7 @@ class GPSLocationAdapter {
             DispatchQueue.main.async { [weak self ] in
                 
                 if self != nil {
+                    //print("-- GPSLocationAdapter -- handleCheckRemoteResult -- closure -- DispatchQueue.main.async -- error -- call: self?.mapUpdate.displayUpdate()")
                     
                     self?.mapUpdate.displayUpdate(display: display, packet: localUser.location, string: "remote user location not found", secondString: "tap Poll to restart session")
                 }
@@ -183,6 +187,7 @@ class GPSLocationAdapter {
             DispatchQueue.main.async { [weak self ] in
                 
                 if self != nil {
+                    //print("-- GPSLocationAdapter -- handleCheckRemoteResult -- closure -- DispatchQueue.main.async -- success -- call: self?.mapUpdate.displayUpdate()")
                     
                     self?.mapUpdate.displayUpdate(display: display, localPacket: localUser.location, remotePacket: remoteUser.location, eta: eta)
                     
