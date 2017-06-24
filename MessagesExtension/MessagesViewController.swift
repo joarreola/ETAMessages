@@ -6,6 +6,7 @@
 //  Copyright © 2017 Oscar Arreola. All rights reserved.
 //
 
+import Foundation
 import UIKit
 //import AppKit
 import Messages
@@ -182,19 +183,23 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
         if (UploadingManager.enabledUploading) {
             // refresh mapView if enabledUploading
-            //print("-- locationManager -- refresh mapView")
             
-            self.mapUpdate.refreshMapView(packet: localUser.location, mapView: mapView)
+            // don't refresh MapView centered on localUser if polling enabled
+            if !PollManager.enabledPolling {
+                //print("-- locationManager -- refresh mapView for localUser")
+
+                self.mapUpdate.refreshMapView(packet: localUser.location, mapView: mapView)
+            }
 
 // MARK: post-comments
-            
+            //print("-- locationManager -- call: self.gpsLocation.uploadToIcloud(user: localUser)")
             self.gpsLocation.uploadToIcloud(user: localUser) {
                 
                 (result: Bool) in
                 
                 // MARK: start post-comments
                 
-                //print("-- locationManager -- gpsLocation.uploadToIcloud(localUser: localUser) -- closure -- call self.handleUploadResult(result)")
+                //print("-- locationManager -- gpsLocation.uploadToIcloud(localUser: localUser) -- closure -- call self.gpsLocation.handleUploadResult(result)")
 
                 self.gpsLocation.handleUploadResult(result, display: self.display, localUser: self.localUser, remoteUser: self.remoteUser, mapView: self.mapView, eta: self.eta, pollManager: self.pollManager)
                 
