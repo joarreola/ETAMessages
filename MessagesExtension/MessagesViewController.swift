@@ -35,6 +35,12 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
     @IBOutlet weak var display: UILabel!
 
+    @IBOutlet weak var fetchActivity: UIActivityIndicatorView!
+    @IBOutlet weak var uploadActivity: UIActivityIndicatorView!
+    
+    @IBOutlet weak var uploadLabel: UILabel!
+    @IBOutlet weak var fetchLabel: UILabel!
+
     // hardcoding for now
     let localUser  = Users(name: "Oscar-iphone")
     let remoteUser = Users(name: "Oscar-ipad")
@@ -193,10 +199,21 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
 // MARK: post-comments
             //print("-- locationManager -- call: self.gpsLocation.uploadToIcloud(user: localUser)")
-            self.gpsLocation.uploadToIcloud(user: localUser) {
+
+            //uploadActivity.startAnimating()
+
+            self.gpsLocation.uploadToIcloud(user: localUser, uploadActivityIndicator: uploadActivity) {
                 
                 (result: Bool) in
                 
+                DispatchQueue.main.async { [weak self ] in
+                    
+                    if self != nil {
+                        
+                        //self?.uploadActivity.stopAnimating()
+                    }
+                }
+
                 // MARK: start post-comments
                 
                 //print("-- locationManager -- gpsLocation.uploadToIcloud(localUser: localUser) -- closure -- call self.gpsLocation.handleUploadResult(result)")
@@ -243,7 +260,10 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 // MARK: post-comments
 
         // Upload localUserPacket to Cloud repository
-        self.uploading.uploadLocation(user: localUser) {
+        
+        //self.uploadActivity.startAnimating()
+        
+        self.uploading.uploadLocation(user: localUser, uploadActivityIndicator: uploadActivity) {
             
             (result) in
 
@@ -255,9 +275,11 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
                         // display localUserPacket and error message
                         self?.uploading.updateMap(display: (self?.display)!, packet: (self?.localUser.location)!, string: "upload to iCloud failed")
+                        
+                        //self?.uploadActivity.stopAnimating()
                     }
                 }
-         
+
                 return
             }
             
@@ -267,6 +289,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                 if self != nil {
                     // display localUserPacket and error message
                     self?.uploading.updateMap(display: (self?.display)!, packet: (self?.localUser.location)!, string: "uploaded to iCloud")
+                    
+                    //self?.uploadActivity.stopAnimating()
                 }
             }
 
@@ -292,7 +316,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
          
         //print("-- mobilitySumulation -- starting mobility simulation")
          
-        mobilitySimulator.startMobilitySimulator(user: localUser, display: display, mapView: mapView)
+        mobilitySimulator.startMobilitySimulator(user: localUser, display: display, mapView: mapView, uploadActivityIndicator: uploadActivity)
 
     }
 
@@ -377,6 +401,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
 // MARK: start of post-comments
 
+        self.fetchActivity.startAnimating()
+
         self.pollManager.fetchRemote() {
             
             (packet: Location) in
@@ -391,6 +417,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                         
                         // display localUserPacket
                         self?.mapUpdate.displayUpdate(display: (self?.display)!, packet: (self?.localUser.location)!, string: "fetchRemote failed")
+                        
+                        self?.fetchActivity.stopAnimating()
 
                     }
                 }
@@ -417,6 +445,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                     if self != nil {
                         // note coordinates set on display
                         self?.mapUpdate.displayUpdate(display: (self?.display)!, localPacket: (self?.localUser.location)!, remotePacket: packet)
+                        
+                        self?.fetchActivity.stopAnimating()
                     }
                 }
                 
