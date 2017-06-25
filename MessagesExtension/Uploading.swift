@@ -39,9 +39,9 @@ class UploadingManager {
     
 /// MARK: post-comments
 
-    func uploadLocation(user: Users, whenDone: @escaping (Bool) -> ()) -> () {
+    func uploadLocation(user: Users, uploadActivityIndicator: UIActivityIndicatorView, whenDone: @escaping (Bool) -> ()) -> () {
 
-        cloud.upload(user: user) { (result: Bool) in
+        cloud.upload(user: user, uploadActivityIndicator: uploadActivityIndicator) { (result: Bool) in
 
             whenDone(result)
         }
