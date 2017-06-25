@@ -51,6 +51,8 @@ Class project
     - Remove pre-comments code.
     - Re-enable an error print().
     
+    - Start and Stop upload activity indicator in upload().
+    
   - Uploading.swift - New
   	Manage mobile mode behavior, with localUser and single packet
   
@@ -58,6 +60,9 @@ Class project
     - Update uploadLocation() to take in whenDone closure, and to call
       back with result whenDone(result).
     - Remove pre-comments code.
+    
+    - Take and Pass the upload Activity indicator for uploadLocation()
+      calls.
   
   - Users.switf - New
   	Knows user name and location info
@@ -152,6 +157,9 @@ Class project
     - Move in handleUploadResult() and handleCheckRemoteResult() from
       MessagesViewController.swift.
     - Update display in handleUploadResult() only if not polling.
+    
+    - Take and Pass the upload Activity indicator for uploadToIcloud()
+      calls.
  
  
   - ETANotifications.swift - New File
@@ -173,6 +181,8 @@ Class project
     Simulate iPhone device mobility by updating iCloud record directly.
     
     - Reduce step increments to 0.0025 when will jump over destination.
+    - Take and Pass the upload Activity indicator for uploadToIcloud()
+      calls.
 
 
   - MessagesViewController.swift
@@ -213,7 +223,11 @@ Class project
       GPSsLocation.swift.
     - Call pollRemote() inside the success path of the fetchRemote() closure,
       right after calling getEtaDistance().
+
     - Don't refreshMapView() in locationManager() if polling.
+    - Plug in Fetch and Upload Activity Indicators, pass in for
+      uploadLocation() and uploadToIcloud() calls.
+      
  
  
 - What is the project supposed to do?
