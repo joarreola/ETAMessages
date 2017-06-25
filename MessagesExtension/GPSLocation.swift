@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 import CoreLocation
 import MapKit
 
@@ -31,11 +32,11 @@ class GPSLocationAdapter {
 
     // MARK: start post-comments
 
-    func uploadToIcloud(user: Users, whenDone: @escaping (Bool) -> ()) -> () {
+    func uploadToIcloud(user: Users, uploadActivityIndicator: UIActivityIndicatorView, whenDone: @escaping (Bool) -> ()) -> () {
         
         let cloud = CloudAdapter(userName: user.name)
 
-        cloud.upload(user: user) { (result: Bool) in
+        cloud.upload(user: user, uploadActivityIndicator: uploadActivityIndicator) { (result: Bool) in
             
             whenDone(result)
         }
