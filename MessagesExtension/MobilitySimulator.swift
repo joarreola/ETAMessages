@@ -28,7 +28,7 @@ class MobilitySimulator {
         self.tempUser = Users(name: userName)
     }
     
-    func startMobilitySimulator(user: Users, display: UILabel, mapView: MKMapView) {
+    func startMobilitySimulator(user: Users, display: UILabel, mapView: MKMapView, uploadActivityIndicator: UIActivityIndicatorView) {
         MobilitySimulator.mobilitySimulatorEnabled = true
         
         // move user away from (ex):
@@ -68,7 +68,7 @@ class MobilitySimulator {
             //print("-- MobilitySimulator -- start() -- DispatchSourceTimer -- in handler -- tempUser.location.latitude: \(String(describing: self.tempUser.location.latitude))")
             //print("-- MobilitySimulator -- start() -- DispatchSourceTimer -- in handler -- tempUser.location.longitude: \(String(describing: self.tempUser.location.longitude))")
             
-            self.gpsLocation.uploadToIcloud(user: self.tempUser) {
+            self.gpsLocation.uploadToIcloud(user: self.tempUser, uploadActivityIndicator: uploadActivityIndicator) {
                 
                 (result: Bool) in
 
