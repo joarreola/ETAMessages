@@ -8,6 +8,7 @@
 
 import Foundation
 import CloudKit
+import UIKit
 
 /// Manage iCloud record accesses.
 ///
@@ -25,6 +26,8 @@ class CloudAdapter {
     private var latitude: CLLocationDegrees?
     private var longitude: CLLocationDegrees?
     private let publicDatabase: CKDatabase
+    
+    
     
     init(userName: String) {
         self.user = userName
@@ -52,10 +55,21 @@ class CloudAdapter {
         
         //print("-- CloudAdapter -- fetchRecord(whenDone: @escaping (Location) -> ()) -> ())")
 
+        //fetchActivityIndicator.startAnimating()
+
         self.publicDatabase.fetch(withRecordID: self.locationRecordID) {
 
             (record, error) in
     
+            // UI updates on main thread
+            DispatchQueue.main.async { [weak self ] in
+                
+                if self != nil {
+                    
+                    //fetchActivityIndicator.stopAnimating()
+                }
+            }
+
             if let error = error {
                 print("-- CloudAdapter -- fetchRecord(whenDone: @escaping (Location) -> ()) -> ()  -- publicDatabase.fetch() -- closure -- Error: \(self.locationRecordID): \(error)")
     
@@ -119,7 +133,7 @@ class CloudAdapter {
     /// - Parameters:
     ///     - whenDone: a closure that takes in a Location parameter
 
-    func upload(user: Users, whenDone: @escaping (Bool) -> ()) -> () {
+    func upload(user: Users, uploadActivityIndicator: UIActivityIndicatorView, whenDone: @escaping (Bool) -> ()) -> () {
         // Called by enable() @IBAction function
         //print("-- CloudAdapter -- upload()")
         /*
@@ -128,6 +142,9 @@ class CloudAdapter {
         self.locationRecord["latitude"]  = user.location.latitude! as CKRecordValue
         self.locationRecord["longitude"] = user.location.longitude! as CKRecordValue
         */
+        
+        uploadActivityIndicator.startAnimating()
+
         self.publicDatabase.delete(withRecordID: self.locationRecordID) {
             (record, error) in
 
@@ -150,6 +167,15 @@ class CloudAdapter {
             // call save() method while in the delete closure
             self.publicDatabase.save(self.locationRecord) {
                 (record, error) in
+
+                // UI updates on main thread
+                DispatchQueue.main.async { [weak self ] in
+                    
+                    if self != nil {
+                        
+                        uploadActivityIndicator.stopAnimating()
+                    }
+                }
 
                 if error != nil {
                     // filter out "Server Record Changed" errors
