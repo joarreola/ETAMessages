@@ -37,10 +37,14 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
     @IBOutlet weak var fetchActivity: UIActivityIndicatorView!
     @IBOutlet weak var uploadActivity: UIActivityIndicatorView!
-    
     @IBOutlet weak var uploadLabel: UILabel!
     @IBOutlet weak var fetchLabel: UILabel!
-
+    
+    @IBOutlet weak var etaProgress: UIProgressView!
+    
+    @IBOutlet weak var progressDisplay: UILabel!
+    
+    
     // hardcoding for now
     let localUser  = Users(name: "Oscar-iphone")
     let remoteUser = Users(name: "Oscar-ipad")
@@ -72,7 +76,10 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         self.mapView.delegate = self
         
         self.pollManager.messagesVC = self
-
+        
+        self.etaProgress.transform = self.etaProgress.transform.scaledBy(x: 1, y: 10)
+        let progress = (eta.eta == nil) ? 0.0 : Float(eta.eta!)
+        self.etaProgress.setProgress(progress, animated: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -459,7 +466,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 // should not call pollRemote() after calling getEtaDistance, as they will trip over
 // each other!
                 // addpin() display() and refreshMapView() are called in pollRemote()
-                self.pollManager.pollRemote(localUser: self.localUser, remotePacket: self.remoteUser.location, mapView: self.mapView, eta: self.eta, display: self.display)
+                self.pollManager.pollRemote(localUser: self.localUser, remotePacket: self.remoteUser.location, mapView: self.mapView, eta: self.eta, display: self.display, etaProgressView: self.etaProgress, progressDisplay: self.progressDisplay)
                 
                 // enable in case stationary user moves during or after polling
                 self.locationManager.startUpdatingLocation()
