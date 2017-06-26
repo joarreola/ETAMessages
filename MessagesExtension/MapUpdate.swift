@@ -73,25 +73,29 @@ class MapUpdate {
             let structlat = MapUpdate.pointAnnotationStruct.pointAnnotation!.coordinate.latitude
             let structlong = MapUpdate.pointAnnotationStruct.pointAnnotation!.coordinate.longitude
             
-                if pointAnnotation.coordinate.latitude != structlat ||  pointAnnotation.coordinate.longitude != structlong {
+            if pointAnnotation.coordinate.latitude != structlat ||  pointAnnotation.coordinate.longitude != structlong {
                     
-                    mapView.removeAnnotation(MapUpdate.pointAnnotationStruct.pointAnnotation!)
+                mapView.removeAnnotation(MapUpdate.pointAnnotationStruct.pointAnnotation!)
+
             }
         }
-            
-        //pointAnnotation.coordinate = CLLocationCoordinate2D(latitude: packet.latitude!, longitude: packet.longitude!)
-        
-        MapUpdate.pointAnnotationStruct.pointAnnotation = pointAnnotation
 
         if remove {
             //print("-- MapUpdate -- addPin -- removed pointAnnotation: \(pointAnnotation)")
+            mapView.removeAnnotation(MapUpdate.pointAnnotationStruct.pointAnnotation!)
+
         } else {
+
+            if MapUpdate.pointAnnotationStruct.pointAnnotation != nil {
+                
+                mapView.removeAnnotation(MapUpdate.pointAnnotationStruct.pointAnnotation!)
+            }
             mapView.addAnnotation(pointAnnotation)
         
             //print("-- MapUpdate -- addPin -- added pointAnnotation: \(pointAnnotation)")
         }
             
-        return
+        MapUpdate.pointAnnotationStruct.pointAnnotation = pointAnnotation
     }
 
     /// Center mapView on localUser's location
