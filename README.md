@@ -233,6 +233,8 @@ Class project
     - Plug in Fetch and Upload Activity Indicators, pass in for
       uploadLocation() and uploadToIcloud() calls.
     - Add etaPogress and progressDisplay. Pass to pollRemote().
+    - Reduce hight of etaPogress bar. Cleat etaPogress and progressDisplay
+      in disable().
       
  
  
