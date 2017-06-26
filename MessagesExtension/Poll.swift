@@ -94,8 +94,7 @@ class PollManager {
     ///     - eta: EtaAdapter instance with eta and distance properties
     ///     - display: UILabel instance display
     
-    func pollRemote(localUser: Users, remotePacket: Location, mapView: MKMapView,
-                    eta: EtaAdapter, display: UILabel) {
+    func pollRemote(localUser: Users, remotePacket: Location, mapView: MKMapView, eta: EtaAdapter, display: UILabel, etaProgressView: UIProgressView, progressDisplay: UILabel) {
         //print("-- PollManager -- pollRemote()")
 
         // request notification authorization
@@ -157,7 +156,7 @@ class PollManager {
                         //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- calling self.etaNotification(display: display)")
                         //print("===============================================================\n")
                     
-                        self.etaNotification(display: display)
+                        //self.etaNotification(display: display)
                     }
                 }
             
@@ -219,6 +218,14 @@ class PollManager {
                                 mapUpdate.refreshMapView(localPacket: (self?.myLocalPacket)!, remotePacket: (self?.myRemotePacket)!, mapView: mapView, eta: eta)
                                 
                                 mapUpdate.displayUpdate(display: display, localPacket: self!.myLocalPacket, remotePacket: self!.myRemotePacket, eta: eta)
+                                
+                                // update progress view
+                                etaProgressView.setProgress(Float((self?.myEta!)!) / Float((self?.etaOriginal!)!), animated: true)
+                                
+                                if self?.myEta != nil {
+                                    progressDisplay.textColor = UIColor.red
+                                    progressDisplay.text = "\(Int((self?.myEta)! / 60)) min"
+                                }
                             }
                         }
                     } // end of location compare
