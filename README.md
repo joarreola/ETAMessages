@@ -94,6 +94,9 @@ Class project
     - Set self.etaOriginal once myEta is no longer nil.
     - Reduce polling interval to 1700 milli seconds for simulation.
     
+    - Note ETA in progress view and progress display. Do not call
+      etaNotification().
+    
   - MapUpdate.swift
     Manage mapView updates for remote-user pin, map centering and spanning, and
     display updates.
@@ -109,6 +112,8 @@ Class project
     - Replace delta switch with:  delta = Float(distance * 0.0000015)
     - Don't remove point annotation if on same location, to reduce
       pin jitter.
+      
+    - Fix multiple pins issue.
   
   - Location.switch
     Location coordinate structure.
@@ -227,6 +232,7 @@ Class project
     - Don't refreshMapView() in locationManager() if polling.
     - Plug in Fetch and Upload Activity Indicators, pass in for
       uploadLocation() and uploadToIcloud() calls.
+    - Add etaPogress and progressDisplay. Pass to pollRemote().
       
  
  
