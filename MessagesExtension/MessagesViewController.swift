@@ -65,7 +65,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        //print("-- viewDidLoad -----------------------------------------------------")
+        print("-- viewDidLoad -----------------------------------------------------")
         
         self.locationManager.delegate = self
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -77,7 +77,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         
         self.pollManager.messagesVC = self
         
-        self.etaProgress.transform = self.etaProgress.transform.scaledBy(x: 1, y: 10)
+        self.etaProgress.transform = self.etaProgress.transform.scaledBy(x: 1, y: 5)
         let progress = (eta.eta == nil) ? 0.0 : Float(eta.eta!)
         self.etaProgress.setProgress(progress, animated: true)
     }
@@ -510,6 +510,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         pollManager.disablePolling()
         poll_entered = 0;
         mobilitySimulator.stopMobilitySimulator()
+        progressDisplay.text = ""
+        self.etaProgress.setProgress(0.0, animated: true)
         
     }
 
