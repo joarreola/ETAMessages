@@ -39,9 +39,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     @IBOutlet weak var uploadActivity: UIActivityIndicatorView!
     @IBOutlet weak var uploadLabel: UILabel!
     @IBOutlet weak var fetchLabel: UILabel!
-    
     @IBOutlet weak var etaProgress: UIProgressView!
-    
     @IBOutlet weak var progressDisplay: UILabel!
     
     
@@ -77,7 +75,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         
         self.pollManager.messagesVC = self
         
-        self.etaProgress.transform = self.etaProgress.transform.scaledBy(x: 1, y: 5)
+        self.etaProgress.transform = self.etaProgress.transform.scaledBy(x: 1, y: 7)
         let progress = (eta.eta == nil) ? 0.0 : Float(eta.eta!)
         self.etaProgress.setProgress(progress, animated: true)
     }
