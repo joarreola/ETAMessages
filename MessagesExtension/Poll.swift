@@ -203,7 +203,7 @@ class PollManager {
                         // get eta and distance. Returns immediately, closure returns later
                         //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- self.fetchRemote() -- closure -- call: eta.getEtaDistance...")
                         
-                        eta.getEtaDistance (localPacket: self.myLocalPacket, remotePacket: self.myRemotePacket, mapView: mapView, etaAdapter: eta, display: display)
+                        eta.getEtaDistance(localPacket: self.myLocalPacket, remotePacket: self.myRemotePacket, mapView: mapView, etaAdapter: eta, display: display)
                         
                         // UI updates on main thread
                         DispatchQueue.main.async { [weak self ] in
@@ -219,12 +219,13 @@ class PollManager {
                                 
                                 mapUpdate.displayUpdate(display: display, localPacket: self!.myLocalPacket, remotePacket: self!.myRemotePacket, eta: eta)
                                 
-                                // update progress view
-                                etaProgressView.setProgress(Float((self?.myEta!)!) / Float((self?.etaOriginal!)!), animated: true)
+                                if self?.myEta != nil && self?.etaOriginal != nil {
+                                    // update progress view
+                                    etaProgressView.setProgress(Float((self?.myEta!)!) / Float((self?.etaOriginal!)!), animated: true)
                                 
-                                if self?.myEta != nil {
                                     //progressDisplay.textColor = UIColor.red
                                     progressDisplay.text = "\(Int((self?.myEta)! / 60)) min"
+
                                 }
                             }
                         }
