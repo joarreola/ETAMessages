@@ -96,6 +96,7 @@ Class project
     
     - Note ETA in progress view and progress display. Do not call
       etaNotification().
+    - Don't set progressDisplay.textColor to red.
     
   - MapUpdate.swift
     Manage mapView updates for remote-user pin, map centering and spanning, and
@@ -235,6 +236,7 @@ Class project
     - Add etaPogress and progressDisplay. Pass to pollRemote().
     - Reduce hight of etaPogress bar. Cleat etaPogress and progressDisplay
       in disable().
+    - Increase etaPogress bar height.
       
  
  
