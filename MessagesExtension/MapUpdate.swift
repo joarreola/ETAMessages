@@ -230,7 +230,7 @@ class MapUpdate {
         // FIXME: center mapView without eta.distance data
 
         // compute delta based on distance
-        if eta.distance == nil || remotePacket.latitude == 0.0 {
+        if EtaAdapter.distance == nil || remotePacket.latitude == 0.0 {
 
             //print("-- MapUpdate -- refreshMapView -- hardcoding delta to \(dist * 3)")
     
@@ -239,7 +239,7 @@ class MapUpdate {
             
         } else {
             // compute a delta to reset the span.
-            let distance = eta.distance!
+            let distance = EtaAdapter.distance!
             
             delta = Float(distance * 0.0000015)
 
@@ -443,16 +443,16 @@ class MapUpdate {
         let etaString: String
         let distanceString: String
 
-        if eta.distance == nil {
+        if EtaAdapter.distance == nil {
             distanceString = "nil"
         } else {
-            distanceString = String(describing: eta.distance!)
+            distanceString = String(describing: EtaAdapter.distance!)
         }
         
-        if eta.eta == nil {
+        if EtaAdapter.eta == nil {
             etaString = "nil"
         } else {
-            etaString = String(describing: eta.eta!)
+            etaString = String(describing: EtaAdapter.eta!)
         }
         
         display.text = ""
