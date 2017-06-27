@@ -14,6 +14,7 @@ import MapKit
 import CoreLocation
 import UserNotifications
 
+
 /// Messages Extension View Controller
 ///
 /// locationManager(CLLocationManager, [CLLocation])
@@ -44,7 +45,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     // thus String literals
     //var cloud = CloudAdapter(userName: "Oscar-iphone") // done in UploadingManager()
     var locationManager = CLLocationManager()
-    var eta = EtaAdapter()
+    //var eta = EtaAdapter()
     var pollManager = PollManager(remoteUserName: "Oscar-ipad")
     var mapUpdate = MapUpdate()
     var uploading = UploadingManager(name: "Oscar-iphone")
@@ -52,8 +53,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     var mobilitySimulator = MobilitySimulator(userName: "Oscar-iphone")
     
     // move these two to the respective class, Poll or GpsLocationAdapter
-    var locPacket_updated: Bool = false
-    var poll_entered: Int = 0
+    var locPacketUpdated: Bool = false
+    //var poll_entered: Int = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -71,7 +72,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         self.pollManager.messagesVC = self
         
         self.etaProgress.transform = self.etaProgress.transform.scaledBy(x: 1, y: 7)
-        let progress = (eta.eta == nil) ? 0.0 : Float(eta.eta!)
+        let progress = (EtaAdapter.eta == nil) ? 0.0 : Float(EtaAdapter.eta!)
         self.etaProgress.setProgress(progress, animated: true)
     }
     
@@ -160,7 +161,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         let lmPacket = Location(userName: "", location: location)
         
         // refresh mapView from locationManager just once
-        if !locPacket_updated
+        if !locPacketUpdated
         {
             
             self.localUser.location = lmPacket
@@ -169,7 +170,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
             mapUpdate.displayUpdate(display: display, string: "locationManager...")
             
-            locPacket_updated = true
+            locPacketUpdated = true
 
         }
         
@@ -215,7 +216,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                 
                 //print("-- locationManager -- gpsLocation.uploadToIcloud(localUser: localUser) -- closure -- call self.gpsLocation.handleUploadResult(result)")
 
-                self.gpsLocation.handleUploadResult(result, display: self.display, localUser: self.localUser, remoteUser: self.remoteUser, mapView: self.mapView, eta: self.eta, pollManager: self.pollManager)
+                //self.gpsLocation.handleUploadResult(result, display: self.display, localUser: self.localUser, remoteUser: self.remoteUser, mapView: self.mapView, eta: self.eta, pollManager: self.pollManager)
+                self.gpsLocation.handleUploadResult(result, display: self.display, localUser: self.localUser, remoteUser: self.remoteUser, mapView: self.mapView, pollManager: self.pollManager)
             }
         }
     }
@@ -407,7 +409,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 // should not call pollRemote() after calling getEtaDistance, as they will trip over
 // each other!
                 // addpin() display() and refreshMapView() are called in pollRemote()
-                self.pollManager.pollRemote(localUser: self.localUser, remotePacket: self.remoteUser.location, mapView: self.mapView, eta: self.eta, display: self.display, etaProgressView: self.etaProgress, progressDisplay: self.progressDisplay)
+                //self.pollManager.pollRemote(localUser: self.localUser, remotePacket: self.remoteUser.location, mapView: self.mapView, eta: self.eta, display: self.display, etaProgressView: self.etaProgress, progressDisplay: self.progressDisplay)
+                self.pollManager.pollRemote(localUser: self.localUser, remotePacket: self.remoteUser.location, mapView: self.mapView, display: self.display, etaProgressView: self.etaProgress, progressDisplay: self.progressDisplay)
                 
                 // enable in case stationary user moves during or after polling
                 self.locationManager.startUpdatingLocation()
@@ -447,7 +450,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
         uploading.disableUploading()
         pollManager.disablePolling()
-        poll_entered = 0;
+        //poll_entered = 0;
         mobilitySimulator.stopMobilitySimulator()
         progressDisplay.text = ""
         self.etaProgress.setProgress(0.0, animated: true)
