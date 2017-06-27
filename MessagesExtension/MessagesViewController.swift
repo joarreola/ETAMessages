@@ -28,21 +28,14 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     weak var delegate: UNUserNotificationCenterDelegate?
 
     @IBOutlet weak var mapView: MKMapView!
-    
-    var locationManager = CLLocationManager()
-    
-    var eta = EtaAdapter()
-
     @IBOutlet weak var display: UILabel!
-
     @IBOutlet weak var fetchActivity: UIActivityIndicatorView!
     @IBOutlet weak var uploadActivity: UIActivityIndicatorView!
     @IBOutlet weak var uploadLabel: UILabel!
     @IBOutlet weak var fetchLabel: UILabel!
     @IBOutlet weak var etaProgress: UIProgressView!
     @IBOutlet weak var progressDisplay: UILabel!
-    
-    
+
     // hardcoding for now
     let localUser  = Users(name: "Oscar-iphone")
     let remoteUser = Users(name: "Oscar-ipad")
@@ -50,6 +43,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     // can't pass above object to CloudAdapter(), PollManager(), or UploadingManager()
     // thus String literals
     //var cloud = CloudAdapter(userName: "Oscar-iphone") // done in UploadingManager()
+    var locationManager = CLLocationManager()
+    var eta = EtaAdapter()
     var pollManager = PollManager(remoteUserName: "Oscar-ipad")
     var mapUpdate = MapUpdate()
     var uploading = UploadingManager(name: "Oscar-iphone")
@@ -202,7 +197,6 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                 self.mapUpdate.refreshMapView(packet: localUser.location, mapView: mapView)
             }
 
-// MARK: post-comments
             //print("-- locationManager -- call: self.gpsLocation.uploadToIcloud(user: localUser)")
 
             //uploadActivity.startAnimating()
@@ -218,19 +212,11 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                         //self?.uploadActivity.stopAnimating()
                     }
                 }
-
-                // MARK: start post-comments
                 
                 //print("-- locationManager -- gpsLocation.uploadToIcloud(localUser: localUser) -- closure -- call self.gpsLocation.handleUploadResult(result)")
 
                 self.gpsLocation.handleUploadResult(result, display: self.display, localUser: self.localUser, remoteUser: self.remoteUser, mapView: self.mapView, eta: self.eta, pollManager: self.pollManager)
-                
-                // MARK:- end post-comments
-                
             }
-
-// MARK:-
-
         }
     }
 
@@ -262,7 +248,6 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         //print("@IBAction func enable()")
         //print("===================================================================")
 
-// MARK: post-comments
 
         // Upload localUserPacket to Cloud repository
         
@@ -307,8 +292,6 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         // refresh mapView
         self.mapUpdate.refreshMapView(packet: self.localUser.location, mapView: self.mapView)
 
-// MARK: -
-
     }
 
     @IBAction func mobilitySumulation(_ sender: UIBarButtonItem) {
@@ -336,43 +319,6 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         //print("\n==================================================================")
         //print("@IBAction func poll()")
         //print("====================================================================")
-/*
-        // vars
-        poll_entered += 1
-    
-// MARK:
-        // FIXME: temporary. will call pollManager.pollRemote() directly, removing all other code
-    
-        // start RemoteUser polling on 2nd tap... for now
-        //  eta and distance checked at 2 sec interval
-        if poll_entered > 1 {
-
-            print("-- Poll -- eta: \(String(describing: self.eta.getEta())) -- distance: \(String(describing: self.eta.getDistance()))")
-    
-            // add pin on mapView for remoteUser, re-center mapView, update span
-            print("-- poll -- mapUpdate.addPin...")
-            
-            self.mapUpdate.addPin(packet: remoteUser.location, mapView: mapView, remove: false)
-
-            print("-- poll -- mapUpdate.refreshMapView...")
-            
-            self.mapUpdate.refreshMapView(localPacket: localUser.location, remotePacket: remoteUser.location, mapView: mapView, eta: eta)
-
-            // note coordinates set, eta and distance on display
-            mapUpdate.displayUpdate(display: display, localPacket: localUser.location, remotePacket: remoteUser.location, eta: eta)
-
-            print("-- poll -- calling pollManager.pollRemote()")
-    
-            pollManager.pollRemote(localUser: localUser, remotePacket: remoteUser.location, mapView: mapView, eta: eta, display: display)
-
-            // enable in case stationary user moves during or after polling
-            self.locationManager.startUpdatingLocation()
-            self.uploading.enableUploading()
-            
-            return
-        }
- */
-// MARK:-
 
 // MARK: Does stationary user have a need to upload location to iCloud?
         /*
@@ -404,7 +350,6 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         
         //print("-- poll --  pollManager.fetchRemote for 1st remote location record...")
 
-// MARK: start of post-comments
 
         self.fetchActivity.startAnimating()
 
@@ -434,8 +379,6 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                 // retries?
                 //self.poll_entered = 0;
 
-                return
-
             } else {
 
                 //print("-- poll -- self.pollManager.fetchRemote() - closure -- remote latitude: \(String(describing: packet.latitude))")
@@ -458,9 +401,9 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                 // get eta and distance. Returns immediately, closure returns later
                 //print("-- poll -- self.pollManager.fetchRemote() -- closure -- call: eta.getEtaDistance")
                 
-                self.eta.getEtaDistance (localPacket: self.localUser.location, remotePacket: self.remoteUser.location, mapView: self.mapView, etaAdapter: self.eta, display: self.display)
+//                self.eta.getEtaDistance (localPacket: self.localUser.location, remotePacket: self.remoteUser.location, mapView: self.mapView, etaAdapter: self.eta, display: self.display)
                 
-                //print("-- poll -- self.pollManager.fetchRemote() -- closure -- call: pollManager.pollRemote")
+                print("-- poll -- self.pollManager.fetchRemote() -- closure -- call: pollManager.pollRemote")
 // should not call pollRemote() after calling getEtaDistance, as they will trip over
 // each other!
                 // addpin() display() and refreshMapView() are called in pollRemote()
@@ -476,8 +419,6 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
             // should polling be enabled here or outside self.pollManager.fetchRemote()?
             self.pollManager.enablePolling()
         }
-
-// MARK:- end of post-comments
 
     }
   
