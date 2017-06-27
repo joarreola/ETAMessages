@@ -35,6 +35,7 @@ class PollManager {
     private let localNotification: ETANotifications
     var messagesVC: MSMessagesAppViewController?
     var timer: DispatchSourceTimer?
+    private var etaAdapter: EtaAdapter
     
     init(remoteUserName: String) {
         self.latitude = 0.0
@@ -49,7 +50,7 @@ class PollManager {
         self.myRemotePacket = Location()
         self.localNotification = ETANotifications()
         self.messagesVC = nil
-        
+        self.etaAdapter = EtaAdapter()
     }
 
     /// Fetch remoteUser's location record from iCloud
@@ -94,7 +95,9 @@ class PollManager {
     ///     - eta: EtaAdapter instance with eta and distance properties
     ///     - display: UILabel instance display
     
-    func pollRemote(localUser: Users, remotePacket: Location, mapView: MKMapView, eta: EtaAdapter, display: UILabel, etaProgressView: UIProgressView, progressDisplay: UILabel) {
+    //func pollRemote(localUser: Users, remotePacket: Location, mapView: MKMapView, eta: EtaAdapter, display: UILabel, etaProgressView: UIProgressView, progressDisplay: UILabel) {
+    func pollRemote(localUser: Users, remotePacket: Location, mapView: MKMapView, display: UILabel, etaProgressView: UIProgressView, progressDisplay: UILabel) {
+    
         //print("-- PollManager -- pollRemote()")
 
         // request notification authorization
@@ -108,7 +111,7 @@ class PollManager {
         let mapUpdate = MapUpdate();
         
         // etaOriginal
-        self.etaOriginal = eta.getEta()
+        self.etaOriginal = etaAdapter.getEta()
         //print("-- PollManager -- pollRemote() -- pre-DispatchSourceTimer -- self.etaOriginal: \(String(describing: self.etaOriginal))")
 
         // MARK: DispatchSourceTimer
@@ -131,8 +134,8 @@ class PollManager {
 
                 // check pointer
                 //self.myEta = eta.loadPointer()
-                self.myEta = eta.getEta()
-                self.myDistance = eta.getDistance()
+                self.myEta = self.etaAdapter.getEta()
+                self.myDistance = self.etaAdapter.getDistance()
             
                 // need to set etaOriginal the 1st time myEta is no longer nil
                 if self.etaOriginal == nil {
@@ -203,7 +206,8 @@ class PollManager {
                         // get eta and distance. Returns immediately, closure returns later
                         //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- self.fetchRemote() -- closure -- call: eta.getEtaDistance...")
                         
-                        eta.getEtaDistance(localPacket: self.myLocalPacket, remotePacket: self.myRemotePacket, mapView: mapView, etaAdapter: eta, display: display)
+                        //eta.getEtaDistance(localPacket: self.myLocalPacket, remotePacket: self.myRemotePacket, mapView: mapView, etaAdapter: self.etaAdapter, display: display)
+                        self.etaAdapter.getEtaDistance(localPacket: self.myLocalPacket, remotePacket: self.myRemotePacket, mapView: mapView, display: display)
                         
                         // UI updates on main thread
                         DispatchQueue.main.async { [weak self ] in
@@ -215,9 +219,9 @@ class PollManager {
                                 
                                 mapUpdate.addPin(packet: (self?.myRemotePacket)!, mapView: mapView, remove: false)
                                 
-                                mapUpdate.refreshMapView(localPacket: (self?.myLocalPacket)!, remotePacket: (self?.myRemotePacket)!, mapView: mapView, eta: eta)
+                                mapUpdate.refreshMapView(localPacket: (self?.myLocalPacket)!, remotePacket: (self?.myRemotePacket)!, mapView: mapView, eta: (self?.etaAdapter)!)
                                 
-                                mapUpdate.displayUpdate(display: display, localPacket: self!.myLocalPacket, remotePacket: self!.myRemotePacket, eta: eta)
+                                mapUpdate.displayUpdate(display: display, localPacket: self!.myLocalPacket, remotePacket: self!.myRemotePacket, eta: (self?.etaAdapter)!)
                                 
                                 if self?.myEta != nil && self?.etaOriginal != nil {
                                     // update progress view
