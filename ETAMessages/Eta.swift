@@ -17,32 +17,32 @@ import MapKit
 
 class EtaAdapter {
     //private var etaPointer: UnsafeMutableRawPointer
-    var eta: TimeInterval?
-    var distance: Double?
+    static var eta: TimeInterval?
+    static var distance: Double?
     private var mapUdate: MapUpdate
     private var previousDistance: TimeInterval? = nil
     
     init() {
-        self.eta = nil
-        self.distance = nil
+        EtaAdapter.eta = nil
+        EtaAdapter.distance = nil
         self.mapUdate = MapUpdate()
 
     }
 
     func setEta(eta: TimeInterval) {
-        self.eta = eta
+        EtaAdapter.eta = eta
     }
     
     func getEta() -> TimeInterval? {
-        return self.eta
+        return EtaAdapter.eta
     }
     
     func setDistance(distance: Double) {
-        self.distance = distance
+        EtaAdapter.distance = distance
     }
     
     func getDistance() -> Double? {
-        return self.distance
+        return EtaAdapter.distance
     }
     
     /// Makes mkDirections.calculate() call for eta and distance data
@@ -53,7 +53,8 @@ class EtaAdapter {
     ///     - etaAdapter: update eta and distance data
     ///     - display: update display content
 
-    func getEtaDistance (localPacket: Location, remotePacket: Location, mapView: MKMapView, etaAdapter: EtaAdapter, display: UILabel) {
+    //func getEtaDistance (localPacket: Location, remotePacket: Location, mapView: MKMapView, etaAdapter: EtaAdapter, display: UILabel) {
+    func getEtaDistance (localPacket: Location, remotePacket: Location, mapView: MKMapView, display: UILabel) {
         //print("-- EtaAdapter -- getEtaDistance(): get eta from local to remote device," + " and travel distance between devices")
     
         let mkDirReq: MKDirectionsRequest = MKDirectionsRequest()
@@ -84,12 +85,12 @@ class EtaAdapter {
                         
                         etaAdapter.mapUdate.refreshMapView(localPacket: localPacket, remotePacket: remotePacket, mapView: mapView, eta: etaAdapter)
                         */
-                        etaAdapter.mapUdate.displayUpdate(display: display, localPacket: localPacket, remotePacket: remotePacket, string: "eta not available", secondString: "distance not available")
+                        self?.mapUdate.displayUpdate(display: display, localPacket: localPacket, remotePacket: remotePacket, string: "eta not available", secondString: "distance not available")
                     }
                 }
                 
-                self.eta = nil
-                self.distance = nil
+                EtaAdapter.eta = nil
+                EtaAdapter.distance = nil
 
                 return
             }
@@ -99,8 +100,8 @@ class EtaAdapter {
                 
                 //print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closire -- unwrappedResponse -- Error: \(String(describing: error))")
                 
-                self.eta = nil
-                self.distance = nil
+                EtaAdapter.eta = nil
+                EtaAdapter.distance = nil
                 
                 return
             }
@@ -118,19 +119,19 @@ class EtaAdapter {
                 //print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- self.distance: \(String(describing: self.distance!)) feet")
                 //print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- self.eta: \(self.eta!)) sec")
                 
-                for _ in route.steps {
-                    //print(step.instructions)
+                for step in route.steps {
+                    print(step.instructions)
                 }
 
-                etaAdapter.setEta(eta: route.expectedTravelTime)
-                etaAdapter.setDistance(distance: route.distance * 3.2808)
+                self.setEta(eta: route.expectedTravelTime)
+                self.setDistance(distance: route.distance * 3.2808)
                 
-                if self.previousDistance == nil || Double(self.distance!) < Double(self.previousDistance!){
+                if self.previousDistance == nil || Double(EtaAdapter.distance!) < Double(self.previousDistance!){
                     //print("--  EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- self.previousDistance = self.distance: \(String(describing: self.previousDistance))")
 
-                    self.previousDistance = self.distance
+                    self.previousDistance = EtaAdapter.distance
 
-                } else if Double(self.distance!) > Double(self.previousDistance!) {
+                } else if Double(EtaAdapter.distance!) > Double(self.previousDistance!) {
                     // for simulation: don't update mapView if got a greater DISTANCE
                     //print("--  EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- eta > previousDistance: \(String(describing: self.distance)) , \(String(describing: self.previousDistance))")
 
@@ -145,11 +146,11 @@ class EtaAdapter {
                     // add pin and refresh mapView
                     //print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- DispatchQueue.main.async -- closure")
                     
-                    etaAdapter.mapUdate.addPin(packet: remotePacket, mapView: mapView, remove: false)
+                    self?.mapUdate.addPin(packet: remotePacket, mapView: mapView, remove: false)
                     
-                    etaAdapter.mapUdate.refreshMapView(localPacket: localPacket, remotePacket: remotePacket, mapView: mapView, eta: etaAdapter)
+                    self?.mapUdate.refreshMapView(localPacket: localPacket, remotePacket: remotePacket, mapView: mapView, eta: self!)
                     
-                    etaAdapter.mapUdate.displayUpdate(display: display, localPacket: localPacket, remotePacket: remotePacket, eta: etaAdapter)
+                    self?.mapUdate.displayUpdate(display: display, localPacket: localPacket, remotePacket: remotePacket, eta: self!)
                 }
             }
         }
