@@ -223,7 +223,7 @@ class PollManager {
                                 etaProgressView.setProgress(Float((self?.myEta!)!) / Float((self?.etaOriginal!)!), animated: true)
                                 
                                 if self?.myEta != nil {
-                                    progressDisplay.textColor = UIColor.red
+                                    //progressDisplay.textColor = UIColor.red
                                     progressDisplay.text = "\(Int((self?.myEta)! / 60)) min"
                                 }
                             }
