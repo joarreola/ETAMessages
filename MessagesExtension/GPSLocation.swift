@@ -57,8 +57,7 @@ class GPSLocationAdapter {
     ///     - eta: EtaAdapter instance to make the getEtaDistance() call
     /// - Returns: Location packet fetching outcome: true or false
 
-    //func checkRemote(pollRemoteUser: PollManager, localUser: Users, remoteUser: Users, mapView: MKMapView, eta: EtaAdapter, display: UILabel, result: @escaping (Bool) -> ()) {
-    func checkRemote(pollRemoteUser: PollManager, localUser: Users, remoteUser: Users, mapView: MKMapView, display: UILabel, result: @escaping (Bool) -> ()) {
+    func checkRemote(pollRemoteUser: PollManager, localUser: Users, remoteUser: Users, mapView: MKMapView, display: UILabel, fetchActivity: UIActivityIndicatorView, result: @escaping (Bool) -> ()) {
 
         //print("-- GPSLocation -- checkRemote() -- User: \(remoteUser.name)")
  
@@ -66,7 +65,7 @@ class GPSLocationAdapter {
 
         // MARK: start post-comments
 
-        pollRemoteUser.fetchRemote() {
+        pollRemoteUser.fetchRemote(fetchActivity: fetchActivity) {
             
             (packet: Location) in
             
@@ -93,13 +92,12 @@ class GPSLocationAdapter {
                         mapUpdate.addPin(packet: remoteUser.location, mapView: mapView, remove: false)
                     }
                 }
-                
+                /*
                 // get eta and distance. Returns immediately, closure returns later
                 //print("-- GPSLocation -- check_remote -- eta.getEtaDistance()")
  
-                //self.etaAdapter.getEtaDistance(localPacket: localUser.location, remotePacket: remoteUser.location, mapView: mapView, etaAdapter: self.etaAdapter, display: display)
                 self.etaAdapter.getEtaDistance(localPacket: localUser.location, remotePacket: remoteUser.location, mapView: mapView, display: display)
-                
+                */
                 result(true)
             }
             
@@ -109,9 +107,8 @@ class GPSLocationAdapter {
     }
     
     // MARK: moving from locationManager() in MessagesViewcontroller.swift
-    
-    //func handleUploadResult(_ result: Bool, display: UILabel, localUser: Users, remoteUser: Users, mapView: MKMapView, eta: EtaAdapter, pollManager: PollManager) {
-    func handleUploadResult(_ result: Bool, display: UILabel, localUser: Users, remoteUser: Users, mapView: MKMapView, pollManager: PollManager) {
+
+    func handleUploadResult(_ result: Bool, display: UILabel, localUser: Users, remoteUser: Users, mapView: MKMapView, pollManager: PollManager, fetchActivity: UIActivityIndicatorView) {
         
         if !result {
             
@@ -152,22 +149,19 @@ class GPSLocationAdapter {
                 return
                 
             }
-            
-            //self.checkRemote(pollRemoteUser: pollManager, localUser: localUser, remoteUser: remoteUser, mapView: mapView, eta: eta, display: display) {
-            self.checkRemote(pollRemoteUser: pollManager, localUser: localUser, remoteUser: remoteUser, mapView: mapView, display: display) {
+
+            self.checkRemote(pollRemoteUser: pollManager, localUser: localUser, remoteUser: remoteUser, mapView: mapView, display: display, fetchActivity: fetchActivity) {
                 
                 (result: Bool) in
                 
                 //print("-- GPSLocation -- handleUploadResult() -- gpsLocation.checkRemote() closure -- call self.handleCheckRemoteResult(result)")
-                
-                //self.handleCheckRemoteResult(result, display: display, localUser: localUser, remoteUser: remoteUser, eta: eta)
+
                 self.handleCheckRemoteResult(result, display: display, localUser: localUser, remoteUser: remoteUser)
                 
             }
         }
     }
-    
-    //func handleCheckRemoteResult(_ result: Bool, display: UILabel, localUser: Users, remoteUser: Users, eta: EtaAdapter) {
+
     func handleCheckRemoteResult(_ result: Bool, display: UILabel, localUser: Users, remoteUser: Users) {
         
         if !result {
@@ -199,14 +193,12 @@ class GPSLocationAdapter {
                 if self != nil {
                     //print("-- GPSLocationAdapter -- handleCheckRemoteResult -- closure -- DispatchQueue.main.async -- success -- call: self?.mapUpdate.displayUpdate()")
                     
-                    self?.mapUpdate.displayUpdate(display: display, localPacket: localUser.location, remotePacket: remoteUser.location, eta: (self?.etaAdapter)!)
-                    
+                    self?.mapUpdate.displayUpdate(display: display, localPacket: localUser.location, remotePacket: remoteUser.location, eta: true)
                 }
             }
             
         }
     }
-    
     
     // MARK:-
 
