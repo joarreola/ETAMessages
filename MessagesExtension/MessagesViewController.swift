@@ -302,9 +302,12 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         //print("@IBAction func mobilitySumulation()")
         //print("====================================================================")
         
+        // clear
         self.locationManager.stopUpdatingLocation()
-        
         self.progressDisplay.text = ""
+        self.etaProgress.setProgress(Float(0.0), animated: true)
+        mapUpdate.displayUpdate(display: display)
+        mapUpdate.addPin(packet: localUser.location, mapView: mapView, remove: true)
          
         //print("-- mobilitySumulation -- starting mobility simulation")
          
