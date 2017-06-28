@@ -58,7 +58,7 @@ class MobilitySimulator {
         let queue = DispatchQueue(label: "edu.ucsc.ETAMessages.timer", attributes: .concurrent)
         timer?.cancel()
         timer = DispatchSource.makeTimerSource(queue: queue)
-        timer?.scheduleRepeating(deadline: .now(), interval: .seconds(1))
+        timer?.scheduleRepeating(deadline: .now(), interval: .seconds(2))
         //print("-- MobilitySimulator -- start() -- DispatchSourceTimer -- end configuration")
         
         timer?.setEventHandler(handler: {
@@ -138,7 +138,6 @@ class MobilitySimulator {
         }) //  end of timer?.setEventHandler(handler)
         
         self.timer?.resume()
-        
 
     }
     
