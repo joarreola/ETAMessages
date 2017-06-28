@@ -49,6 +49,7 @@ class MapUpdate {
     private var locLongitude: CLLocationDegrees = 0.0
     private var remLatitude: CLLocationDegrees = 0.0
     private var remLongitude: CLLocationDegrees = 0.0
+    //private var etaAdapter = EtaAdapter()
 
 
     /// Upload location packet to iCloud
@@ -81,8 +82,11 @@ class MapUpdate {
         }
 
         if remove {
-            //print("-- MapUpdate -- addPin -- removed pointAnnotation: \(pointAnnotation)")
-            mapView.removeAnnotation(MapUpdate.pointAnnotationStruct.pointAnnotation!)
+            if MapUpdate.pointAnnotationStruct.pointAnnotation != nil {
+
+                //print("-- MapUpdate -- addPin -- removed pointAnnotation: \(pointAnnotation)")
+                mapView.removeAnnotation(MapUpdate.pointAnnotationStruct.pointAnnotation!)
+            }
 
         } else {
 
@@ -216,8 +220,8 @@ class MapUpdate {
     ///     - mapView: instance of MKMapView to re-center mapView
     ///     - eta: EtaAdapter instance with eta and distance properties
     
-    func refreshMapView(localPacket: Location, remotePacket: Location,
-                        mapView: MKMapView, eta: EtaAdapter) {
+    //func refreshMapView(localPacket: Location, remotePacket: Location, mapView: MKMapView, eta: EtaAdapter) {
+    func refreshMapView(localPacket: Location, remotePacket: Location, mapView: MKMapView, eta: Bool) {
         //print("-- MapUpdate -- refreshMapView: refresh mapView for local and remote coordinates")
 
         let delta: Float
@@ -433,8 +437,8 @@ class MapUpdate {
     ///     - remotePacket: remote location coordinates to display
     ///     - eta: EtaAdapter instance with eta and distance properties
 
-    func displayUpdate(display: UILabel, localPacket: Location, remotePacket: Location,
-                       eta: EtaAdapter) {
+    //func displayUpdate(display: UILabel, localPacket: Location, remotePacket: Location, eta: EtaAdapter) {
+    func displayUpdate(display: UILabel, localPacket: Location, remotePacket: Location, eta: Bool) {
         //print("-- MapUpdate -- displayUpdate(display: UILabel, localPacket: Location, remotePacket: Location, eta: EtaAdapter)")
         
         // cleanup packets
