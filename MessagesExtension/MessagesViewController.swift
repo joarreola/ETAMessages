@@ -72,8 +72,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         self.pollManager.messagesVC = self
         
         self.etaProgress.transform = self.etaProgress.transform.scaledBy(x: 1, y: 7)
-        let progress = (EtaAdapter.eta == nil) ? 0.0 : Float(EtaAdapter.eta!)
-        self.etaProgress.setProgress(progress, animated: true)
+        //let progress = (EtaAdapter.eta == nil) ? 0.0 : Float(EtaAdapter.eta!)
+        self.etaProgress.setProgress(Float(0.0), animated: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -216,8 +216,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                 
                 //print("-- locationManager -- gpsLocation.uploadToIcloud(localUser: localUser) -- closure -- call self.gpsLocation.handleUploadResult(result)")
 
-                //self.gpsLocation.handleUploadResult(result, display: self.display, localUser: self.localUser, remoteUser: self.remoteUser, mapView: self.mapView, eta: self.eta, pollManager: self.pollManager)
-                self.gpsLocation.handleUploadResult(result, display: self.display, localUser: self.localUser, remoteUser: self.remoteUser, mapView: self.mapView, pollManager: self.pollManager)
+                self.gpsLocation.handleUploadResult(result, display: self.display, localUser: self.localUser, remoteUser: self.remoteUser, mapView: self.mapView, pollManager: self.pollManager, fetchActivity: self.fetchActivity)
             }
         }
     }
@@ -245,6 +244,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         
         // reenable in case disabled
         self.locationManager.startUpdatingLocation()
+        self.progressDisplay.text = ""
 
         //print("\n=================================================================")
         //print("@IBAction func enable()")
@@ -303,6 +303,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         //print("====================================================================")
         
         self.locationManager.stopUpdatingLocation()
+        
+        self.progressDisplay.text = ""
          
         //print("-- mobilitySumulation -- starting mobility simulation")
          
@@ -352,10 +354,19 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         
         //print("-- poll --  pollManager.fetchRemote for 1st remote location record...")
 
+        // initialize vars for proper restart with a pol retap
+        pollManager.disablePolling()
+        //mobilitySimulator.stopMobilitySimulator()
+        progressDisplay.text = ""
+        self.etaProgress.setProgress(0.0, animated: true)
+        EtaAdapter.eta = nil
+        EtaAdapter.distance = nil
+        EtaAdapter.previousDistance = nil
+        pollManager.etaOriginal = 0.0
+        pollManager.myEta = 0.0
+        pollManager.myDistance = 0.0
 
-        self.fetchActivity.startAnimating()
-
-        self.pollManager.fetchRemote() {
+        self.pollManager.fetchRemote(fetchActivity: fetchActivity) {
             
             (packet: Location) in
             
@@ -369,9 +380,6 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                         
                         // display localUserPacket
                         self?.mapUpdate.displayUpdate(display: (self?.display)!, packet: (self?.localUser.location)!, string: "fetchRemote failed")
-                        
-                        self?.fetchActivity.stopAnimating()
-
                     }
                 }
                 
@@ -395,22 +403,13 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                     if self != nil {
                         // note coordinates set on display
                         self?.mapUpdate.displayUpdate(display: (self?.display)!, localPacket: (self?.localUser.location)!, remotePacket: packet)
-                        
-                        self?.fetchActivity.stopAnimating()
                     }
                 }
                 
-                // get eta and distance. Returns immediately, closure returns later
-                //print("-- poll -- self.pollManager.fetchRemote() -- closure -- call: eta.getEtaDistance")
-                
-//                self.eta.getEtaDistance (localPacket: self.localUser.location, remotePacket: self.remoteUser.location, mapView: self.mapView, etaAdapter: self.eta, display: self.display)
-                
                 print("-- poll -- self.pollManager.fetchRemote() -- closure -- call: pollManager.pollRemote")
-// should not call pollRemote() after calling getEtaDistance, as they will trip over
-// each other!
+
                 // addpin() display() and refreshMapView() are called in pollRemote()
-                //self.pollManager.pollRemote(localUser: self.localUser, remotePacket: self.remoteUser.location, mapView: self.mapView, eta: self.eta, display: self.display, etaProgressView: self.etaProgress, progressDisplay: self.progressDisplay)
-                self.pollManager.pollRemote(localUser: self.localUser, remotePacket: self.remoteUser.location, mapView: self.mapView, display: self.display, etaProgressView: self.etaProgress, progressDisplay: self.progressDisplay)
+                self.pollManager.pollRemote(localUser: self.localUser, remotePacket: self.remoteUser.location, mapView: self.mapView, display: self.display, etaProgressView: self.etaProgress, progressDisplay: self.progressDisplay, fetchActivity: self.fetchActivity)
                 
                 // enable in case stationary user moves during or after polling
                 self.locationManager.startUpdatingLocation()
@@ -454,6 +453,11 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         mobilitySimulator.stopMobilitySimulator()
         progressDisplay.text = ""
         self.etaProgress.setProgress(0.0, animated: true)
+        EtaAdapter.eta = nil
+        EtaAdapter.distance = nil
+        pollManager.etaOriginal = 0.0
+        pollManager.myEta = 0.0
+        pollManager.myDistance = 0.0
         
     }
 
