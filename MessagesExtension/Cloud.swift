@@ -51,11 +51,18 @@ class CloudAdapter {
 
     // MARK: start post-comments
 
-    func fetchRecord(whenDone: @escaping (Location) -> ()) -> () {
+    func fetchRecord(fetchActivity: UIActivityIndicatorView, whenDone: @escaping (Location) -> ()) -> () {
         
         //print("-- CloudAdapter -- fetchRecord(whenDone: @escaping (Location) -> ()) -> ())")
 
-        //fetchActivityIndicator.startAnimating()
+        // UI updates on main thread
+        DispatchQueue.main.async { [weak self ] in
+            
+            if self != nil {
+                
+                fetchActivity.startAnimating()
+            }
+        }
 
         self.publicDatabase.fetch(withRecordID: self.locationRecordID) {
 
@@ -66,7 +73,7 @@ class CloudAdapter {
                 
                 if self != nil {
                     
-                    //fetchActivityIndicator.stopAnimating()
+                    fetchActivity.stopAnimating()
                 }
             }
 
@@ -136,14 +143,15 @@ class CloudAdapter {
     func upload(user: Users, uploadActivityIndicator: UIActivityIndicatorView, whenDone: @escaping (Bool) -> ()) -> () {
         // Called by enable() @IBAction function
         //print("-- CloudAdapter -- upload()")
-        /*
-        // Set the record’s fields.
-        print("-- CloudAdapter -- upload() -- set coordinates")
-        self.locationRecord["latitude"]  = user.location.latitude! as CKRecordValue
-        self.locationRecord["longitude"] = user.location.longitude! as CKRecordValue
-        */
         
-        uploadActivityIndicator.startAnimating()
+        // UI updates on main thread
+        DispatchQueue.main.async { [weak self ] in
+            
+            if self != nil {
+                
+                uploadActivityIndicator.startAnimating()
+            }
+        }
 
         self.publicDatabase.delete(withRecordID: self.locationRecordID) {
             (record, error) in
