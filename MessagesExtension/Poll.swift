@@ -26,12 +26,12 @@ class PollManager {
     private let remoteUserName: String
     private var myLocalPacket: Location
     private var myRemotePacket: Location
-    private var myEta: TimeInterval?
-    private var myDistance: Double?
-    private var etaOriginal: TimeInterval?
+    public var myEta: TimeInterval?
+    public var myDistance: Double?
+    public var etaOriginal: TimeInterval?
     private let cloudRemote: CloudAdapter
     static  var enabledPolling: Bool = false
-    private let hasArrivedEta: Double = 20.0
+    private let hasArrivedEta: Double = 60.0
     private let localNotification: ETANotifications
     var messagesVC: MSMessagesAppViewController?
     var timer: DispatchSourceTimer?
@@ -59,10 +59,10 @@ class PollManager {
 
 // MARK: post comments
 
-    func fetchRemote(whenDone: @escaping (Location) -> ()) -> () {
+    func fetchRemote(fetchActivity: UIActivityIndicatorView, whenDone: @escaping (Location) -> ()) -> () {
         //print("-- PollManager -- fetchRemote(whenDone: @escaping (Location) -> ()) -> ()")
         
-        cloudRemote.fetchRecord() {
+        cloudRemote.fetchRecord(fetchActivity: fetchActivity) {
             
             (packet: Location) in
 
@@ -95,8 +95,7 @@ class PollManager {
     ///     - eta: EtaAdapter instance with eta and distance properties
     ///     - display: UILabel instance display
     
-    //func pollRemote(localUser: Users, remotePacket: Location, mapView: MKMapView, eta: EtaAdapter, display: UILabel, etaProgressView: UIProgressView, progressDisplay: UILabel) {
-    func pollRemote(localUser: Users, remotePacket: Location, mapView: MKMapView, display: UILabel, etaProgressView: UIProgressView, progressDisplay: UILabel) {
+    func pollRemote(localUser: Users, remotePacket: Location, mapView: MKMapView, display: UILabel, etaProgressView: UIProgressView, progressDisplay: UILabel, fetchActivity: UIActivityIndicatorView) {
     
         //print("-- PollManager -- pollRemote()")
 
@@ -138,11 +137,18 @@ class PollManager {
                 self.myDistance = self.etaAdapter.getDistance()
             
                 // need to set etaOriginal the 1st time myEta is no longer nil
+                /*
                 if self.etaOriginal == nil {
                 
                     self.etaOriginal = self.myEta
                 }
-            
+                */
+                if self.myEta == nil && self.etaOriginal == nil {
+                    self.etaOriginal = 0.0
+                } else if self.etaOriginal == 0.0 && self.myEta != nil {
+                    self.etaOriginal = self.myEta
+                }
+    
                 //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- self.myEta: \(String(describing: self.myEta)) self.myDistance: \(String(describing: self.myDistance))")
     
                 // self.fetchRemote()
@@ -164,7 +170,7 @@ class PollManager {
                 }
             
 
-                self.fetchRemote() {
+                self.fetchRemote(fetchActivity: fetchActivity) {
                     
                     (packet: Location) in
                     
@@ -205,9 +211,9 @@ class PollManager {
 
                         // get eta and distance. Returns immediately, closure returns later
                         //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- self.fetchRemote() -- closure -- call: eta.getEtaDistance...")
-                        
-                        //eta.getEtaDistance(localPacket: self.myLocalPacket, remotePacket: self.myRemotePacket, mapView: mapView, etaAdapter: self.etaAdapter, display: display)
-                        self.etaAdapter.getEtaDistance(localPacket: self.myLocalPacket, remotePacket: self.myRemotePacket, mapView: mapView, display: display)
+
+                        //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- self.fetchRemote() -- closure -- self.etaOriginal: \(String(describing: self.etaOriginal))")
+                        self.etaAdapter.getEtaDistance(localPacket: self.myLocalPacket, remotePacket: self.myRemotePacket, mapView: mapView, display: display, etaProgressView: etaProgressView, progressDisplay: progressDisplay, etaOriginal: self.etaOriginal!)
                         
                         // UI updates on main thread
                         DispatchQueue.main.async { [weak self ] in
@@ -219,18 +225,10 @@ class PollManager {
                                 
                                 mapUpdate.addPin(packet: (self?.myRemotePacket)!, mapView: mapView, remove: false)
                                 
-                                mapUpdate.refreshMapView(localPacket: (self?.myLocalPacket)!, remotePacket: (self?.myRemotePacket)!, mapView: mapView, eta: (self?.etaAdapter)!)
+                                mapUpdate.refreshMapView(localPacket: (self?.myLocalPacket)!, remotePacket: (self?.myRemotePacket)!, mapView: mapView, eta: true)
                                 
-                                mapUpdate.displayUpdate(display: display, localPacket: self!.myLocalPacket, remotePacket: self!.myRemotePacket, eta: (self?.etaAdapter)!)
+                                mapUpdate.displayUpdate(display: display, localPacket: self!.myLocalPacket, remotePacket: self!.myRemotePacket, eta: true)
                                 
-                                if self?.myEta != nil && self?.etaOriginal != nil {
-                                    // update progress view
-                                    etaProgressView.setProgress(Float((self?.myEta!)!) / Float((self?.etaOriginal!)!), animated: true)
-                                
-                                    //progressDisplay.textColor = UIColor.red
-                                    progressDisplay.text = "\(Int((self?.myEta)! / 60)) min"
-
-                                }
                             }
                         }
                     } // end of location compare
@@ -239,12 +237,16 @@ class PollManager {
                 // MARK:- end of post-comments
 
                 // ETA == has-arrived, break out of while-loop
-                if self.myEta != nil && (Double(self.myEta!) <= self.hasArrivedEta) {
-                    //print("\n===========================================================")
-                    //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- STOPPING POLLREMOTE")
-                    //print("===============================================================\n")
+                if self.myEta != nil {
+                
+                    if (Double(self.myEta!) <= self.hasArrivedEta) || !PollManager.enabledPolling {
+                        //print("\n===========================================================")
+                        //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- STOPPING POLLREMOTE")
+                        //print("===============================================================\n")
+                        //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- self.myEta: \(self.myEta!) --  self.hasArrivedEta: \(self.hasArrivedEta)")
                     
-                    self.timer?.cancel()
+                        self.timer?.cancel()
+                    }
                 }
     
                 //print("\n===========================================================")
@@ -390,6 +392,8 @@ class PollManager {
         //print("-- PollManager -- disablePolling")
         
         PollManager.enabledPolling = false
+        
+        self.timer?.cancel()
     }
 
     /// presentViewController()
