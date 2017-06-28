@@ -52,6 +52,7 @@ Class project
     - Re-enable an error print().
     
     - Start and Stop upload activity indicator in upload().
+    - Add fetchActivity support.
     
   - Uploading.swift - New
   	Manage mobile mode behavior, with localUser and single packet
@@ -98,6 +99,10 @@ Class project
       etaNotification().
     - Don't set progressDisplay.textColor to red.
     - Don't update etaProgressView if eta or etaOriginal are nil.
+    - Get instance of EtaAdapter. Don't pass Eta Adapter to pollRemote(),
+      getEtaDistance()
+    - Add fetchActivity support. Move etaProgress and progressDisplay to
+      getEtaDistance. Update hasArrivedEta to 60. Don't call etaNotification().
     
   - MapUpdate.swift
     Manage mapView updates for remote-user pin, map centering and spanning, and
@@ -116,6 +121,8 @@ Class project
       pin jitter.
       
     - Fix multiple pins issue.
+    - Reference eta and distance as class properties of EtaAdapter.
+    - Pass eta: Bool vs. EtaAdapter.
   
   - Location.switch
     Location coordinate structure.
@@ -144,6 +151,10 @@ Class project
     - Track distance vs. eta for simulation.
     - Don't addPin() nor etaAdapter.mapUdate.refreshMapView() on getEtaDistance()
       failure, and add secondString to displayUpdate() to reduce jumpiness.
+      
+    - Make eta and distance class properties. Don't pass etaAdapter to
+      getEtaDistance(). Make mapUpdate calls directly.
+    - Move ETA Progress Bar and label into getEtaDistance().
 
 
   - GPSsLocation.swift
@@ -167,6 +178,9 @@ Class project
     
     - Take and Pass the upload Activity indicator for uploadToIcloud()
       calls.
+    - Get instances of MapUpdate and EtaAdapter. Don't pass EtaAdapter to
+      checkRemote(), getEtaDistance(), nor handleCheckRemoteResult().
+    - Add fetchActivity support.
  
  
   - ETANotifications.swift - New File
@@ -190,6 +204,8 @@ Class project
     - Reduce step increments to 0.0025 when will jump over destination.
     - Take and Pass the upload Activity indicator for uploadToIcloud()
       calls.
+    - Reduce step increments to 0.0005 when will jump over destination.
+    - Update location record every 2 sec (vs. 1).
 
 
   - MessagesViewController.swift
@@ -240,6 +256,11 @@ Class project
     - Increase etaPogress bar height.
     - Remove commented-out code in poll(). Don't call getEtaDistance() in
       pollManager.fetchRemote() success path.
+    - Don't need to get an instance of EtaAdapter. Reference eta as class
+      property of EtaAdapter without instantiating EtaAdapter. Don't pass
+      EtaAdapter to handleUploadResult() nor pollRemote().
+    - Add fetchActivity support. Reset vars when in poll(), simulate() and
+      disable().
       
  
  
