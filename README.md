@@ -103,6 +103,7 @@ Class project
       getEtaDistance()
     - Add fetchActivity support. Move etaProgress and progressDisplay to
       getEtaDistance. Update hasArrivedEta to 60. Don't call etaNotification().
+    - Remove references to etaProgress and progressLabel.
     
   - MapUpdate.swift
     Manage mapView updates for remote-user pin, map centering and spanning, and
@@ -155,6 +156,10 @@ Class project
     - Make eta and distance class properties. Don't pass etaAdapter to
       getEtaDistance(). Make mapUpdate calls directly.
     - Move ETA Progress Bar and label into getEtaDistance().
+    - Convert EtaAdapter to a Container View. Move etaProgress and progressLabel
+      objects to EtaAdapter. Create struct ETAIndicator to hold etaProgress and
+      progressLabel for use in getEtaDistance(). Update getEtaDistance() signature to
+      remove etaProgress and progressLabel. Add prototype sound-playing code.
 
 
   - GPSsLocation.swift
@@ -206,6 +211,7 @@ Class project
       calls.
     - Reduce step increments to 0.0005 when will jump over destination.
     - Update location record every 2 sec (vs. 1).
+    - Reduce step increments to 0.00025 when will jump over destination.
 
 
   - MessagesViewController.swift
@@ -261,6 +267,8 @@ Class project
       EtaAdapter to handleUploadResult() nor pollRemote().
     - Add fetchActivity support. Reset vars when in poll(), simulate() and
       disable().
+    - Move etaProgress and progressLabel to EtaAdapter Container View controller.
+      
       
  
  
