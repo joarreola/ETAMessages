@@ -14,6 +14,10 @@
 		DF49C9E41EFDEBEC00EBB1E8 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DF49C9E31EFDEBEC00EBB1E8 /* Settings.bundle */; };
 		DF4FFE681EFAE61D00D6A00D /* MobilitySimulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4FFE671EFAE61D00D6A00D /* MobilitySimulator.swift */; };
 		DF5A3C011EF8625000833CCF /* LocalNotificationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5A3C001EF8625000833CCF /* LocalNotificationDelegate.swift */; };
+		DF7905461F05876500D8D51F /* hornSound.m4a in Resources */ = {isa = PBXBuildFile; fileRef = DF7905441F05876500D8D51F /* hornSound.m4a */; };
+		DF7905471F05876500D8D51F /* hornSoundLong.m4a in Resources */ = {isa = PBXBuildFile; fileRef = DF7905451F05876500D8D51F /* hornSoundLong.m4a */; };
+		DF7905481F0589CD00D8D51F /* hornSound.m4a in Resources */ = {isa = PBXBuildFile; fileRef = DF7905441F05876500D8D51F /* hornSound.m4a */; };
+		DF7905491F0589D300D8D51F /* hornSoundLong.m4a in Resources */ = {isa = PBXBuildFile; fileRef = DF7905451F05876500D8D51F /* hornSoundLong.m4a */; };
 		DF85038C1EE88EAC00734D4C /* GPSLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF85038B1EE88EAC00734D4C /* GPSLocation.swift */; };
 		DF8503921EEDE08400734D4C /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF8503911EEDE08400734D4C /* CloudKit.framework */; };
 		DF8503941EEE49F700734D4C /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF8503931EEE49F700734D4C /* MapKit.framework */; };
@@ -62,6 +66,8 @@
 		DF49C9E31EFDEBEC00EBB1E8 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		DF4FFE671EFAE61D00D6A00D /* MobilitySimulator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MobilitySimulator.swift; sourceTree = "<group>"; };
 		DF5A3C001EF8625000833CCF /* LocalNotificationDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalNotificationDelegate.swift; sourceTree = "<group>"; };
+		DF7905441F05876500D8D51F /* hornSound.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = hornSound.m4a; sourceTree = "<group>"; };
+		DF7905451F05876500D8D51F /* hornSoundLong.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = hornSoundLong.m4a; sourceTree = "<group>"; };
 		DF85038B1EE88EAC00734D4C /* GPSLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPSLocation.swift; sourceTree = "<group>"; };
 		DF8503911EEDE08400734D4C /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		DF8503931EEE49F700734D4C /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -99,6 +105,8 @@
 		DFC5DD601ED3920900FF8D97 = {
 			isa = PBXGroup;
 			children = (
+				DF7905441F05876500D8D51F /* hornSound.m4a */,
+				DF7905451F05876500D8D51F /* hornSoundLong.m4a */,
 				DFC5DD691ED3920900FF8D97 /* ETAMessages */,
 				DFC5DD781ED3920900FF8D97 /* MessagesExtension */,
 				DFC5DD751ED3920900FF8D97 /* Frameworks */,
@@ -253,7 +261,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF7905471F05876500D8D51F /* hornSoundLong.m4a in Resources */,
 				DFC5DD6B1ED3920900FF8D97 /* Assets.xcassets in Resources */,
+				DF7905461F05876500D8D51F /* hornSound.m4a in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -261,6 +271,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF7905491F0589D300D8D51F /* hornSoundLong.m4a in Resources */,
+				DF7905481F0589CD00D8D51F /* hornSound.m4a in Resources */,
 				DFC5DD7F1ED3920900FF8D97 /* Assets.xcassets in Resources */,
 				DF49C9E41EFDEBEC00EBB1E8 /* Settings.bundle in Resources */,
 				DFC5DD7D1ED3920900FF8D97 /* MainInterface.storyboard in Resources */,
