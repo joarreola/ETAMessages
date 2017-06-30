@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-//import AppKit
 import Messages
 import MapKit
 import CoreLocation
@@ -34,8 +33,6 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     @IBOutlet weak var uploadActivity: UIActivityIndicatorView!
     @IBOutlet weak var uploadLabel: UILabel!
     @IBOutlet weak var fetchLabel: UILabel!
-    @IBOutlet weak var etaProgress: UIProgressView!
-    @IBOutlet weak var progressDisplay: UILabel!
 
     // hardcoding for now
     let localUser  = Users(name: "Oscar-iphone")
@@ -45,16 +42,14 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     // thus String literals
     //var cloud = CloudAdapter(userName: "Oscar-iphone") // done in UploadingManager()
     var locationManager = CLLocationManager()
-    //var eta = EtaAdapter()
+    //var eta = EtaAdapter(). Done in PollManager and GPSLocation.
     var pollManager = PollManager(remoteUserName: "Oscar-ipad")
     var mapUpdate = MapUpdate()
     var uploading = UploadingManager(name: "Oscar-iphone")
     var gpsLocation = GPSLocationAdapter()
     var mobilitySimulator = MobilitySimulator(userName: "Oscar-iphone")
     
-    // move these two to the respective class, Poll or GpsLocationAdapter
     var locPacketUpdated: Bool = false
-    //var poll_entered: Int = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,14 +61,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         self.locationManager.requestWhenInUseAuthorization()
         self.locationManager.startUpdatingLocation()
         self.mapView.showsUserLocation = true
-
         self.mapView.delegate = self
-        
         self.pollManager.messagesVC = self
-        
-        self.etaProgress.transform = self.etaProgress.transform.scaledBy(x: 1, y: 7)
-        //let progress = (EtaAdapter.eta == nil) ? 0.0 : Float(EtaAdapter.eta!)
-        self.etaProgress.setProgress(Float(0.0), animated: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -200,19 +189,9 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
             //print("-- locationManager -- call: self.gpsLocation.uploadToIcloud(user: localUser)")
 
-            //uploadActivity.startAnimating()
-
             self.gpsLocation.uploadToIcloud(user: localUser, uploadActivityIndicator: uploadActivity) {
                 
                 (result: Bool) in
-                
-                DispatchQueue.main.async { [weak self ] in
-                    
-                    if self != nil {
-                        
-                        //self?.uploadActivity.stopAnimating()
-                    }
-                }
                 
                 //print("-- locationManager -- gpsLocation.uploadToIcloud(localUser: localUser) -- closure -- call self.gpsLocation.handleUploadResult(result)")
 
@@ -244,16 +223,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         
         // reenable in case disabled
         self.locationManager.startUpdatingLocation()
-        self.progressDisplay.text = ""
-
-        //print("\n=================================================================")
-        //print("@IBAction func enable()")
-        //print("===================================================================")
-
 
         // Upload localUserPacket to Cloud repository
-        
-        //self.uploadActivity.startAnimating()
         
         self.uploading.uploadLocation(user: localUser, uploadActivityIndicator: uploadActivity) {
             
@@ -267,8 +238,6 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
                         // display localUserPacket and error message
                         self?.uploading.updateMap(display: (self?.display)!, packet: (self?.localUser.location)!, string: "upload to iCloud failed")
-                        
-                        //self?.uploadActivity.stopAnimating()
                     }
                 }
 
@@ -281,9 +250,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                 if self != nil {
                     // display localUserPacket and error message
                     self?.uploading.updateMap(display: (self?.display)!, packet: (self?.localUser.location)!, string: "uploaded to iCloud")
-                    
-                    //self?.uploadActivity.stopAnimating()
-                }
+                                    }
             }
 
             // this allows for uploading of coordinates on LocalUser location changes
@@ -298,14 +265,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
     @IBAction func mobilitySumulation(_ sender: UIBarButtonItem) {
         
-        //print("\n==================================================================")
-        //print("@IBAction func mobilitySumulation()")
-        //print("====================================================================")
-        
         // clear
         self.locationManager.stopUpdatingLocation()
-        self.progressDisplay.text = ""
-        self.etaProgress.setProgress(Float(0.0), animated: true)
         mapUpdate.displayUpdate(display: display)
         mapUpdate.addPin(packet: localUser.location, mapView: mapView, remove: true)
          
@@ -322,10 +283,6 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
      */
     @IBAction func poll(_ sender: UIBarButtonItem) {
         // check for remoteUser record
-
-        //print("\n==================================================================")
-        //print("@IBAction func poll()")
-        //print("====================================================================")
 
 // MARK: Does stationary user have a need to upload location to iCloud?
         /*
@@ -359,9 +316,6 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
         // initialize vars for proper restart with a pol retap
         pollManager.disablePolling()
-        //mobilitySimulator.stopMobilitySimulator()
-        progressDisplay.text = ""
-        self.etaProgress.setProgress(0.0, animated: true)
         EtaAdapter.eta = nil
         EtaAdapter.distance = nil
         EtaAdapter.previousDistance = nil
@@ -411,20 +365,16 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                 
                 print("-- poll -- self.pollManager.fetchRemote() -- closure -- call: pollManager.pollRemote")
 
-                // addpin() display() and refreshMapView() are called in pollRemote()
-                self.pollManager.pollRemote(localUser: self.localUser, remotePacket: self.remoteUser.location, mapView: self.mapView, display: self.display, etaProgressView: self.etaProgress, progressDisplay: self.progressDisplay, fetchActivity: self.fetchActivity)
+                self.pollManager.pollRemote(localUser: self.localUser, remotePacket: self.remoteUser.location, mapView: self.mapView, display: self.display,  fetchActivity: self.fetchActivity)
                 
                 // enable in case stationary user moves during or after polling
                 self.locationManager.startUpdatingLocation()
                 self.uploading.enableUploading()
-                
-                //print("-- poll -- self.pollManager.fetchRemote() -- exit closure")
             }
             
             // should polling be enabled here or outside self.pollManager.fetchRemote()?
             self.pollManager.enablePolling()
         }
-
     }
   
     /**
@@ -434,10 +384,6 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
      */
     @IBAction func disable(_ sender: UIBarButtonItem) {
         // Remove location record from iCloud repository.
-
-        //print("\n==================================================================")
-        //print("@IBAction func disable()")
-        //print("====================================================================")
 
         // clear display
         mapUpdate.displayUpdate(display: display)
@@ -452,10 +398,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
         uploading.disableUploading()
         pollManager.disablePolling()
-        //poll_entered = 0;
         mobilitySimulator.stopMobilitySimulator()
-        progressDisplay.text = ""
-        self.etaProgress.setProgress(0.0, animated: true)
         EtaAdapter.eta = nil
         EtaAdapter.distance = nil
         pollManager.etaOriginal = 0.0
