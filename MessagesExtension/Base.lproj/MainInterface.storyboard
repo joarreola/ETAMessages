@@ -57,10 +57,6 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <progressView opaque="NO" alpha="0.29999999999999999" contentMode="scaleToFill" verticalHuggingPriority="750" progressViewStyle="bar" progress="1" translatesAutoresizingMaskIntoConstraints="NO" id="qKl-aS-oiv">
-                                <rect key="frame" x="0.0" y="474.5" width="320" height="2.5"/>
-                                <color key="progressTintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                            </progressView>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LtH-d8-iox">
                                 <rect key="frame" x="0.0" y="484" width="320" height="44"/>
                                 <items>
@@ -89,39 +85,39 @@
                                     </barButtonItem>
                                 </items>
                             </toolbar>
-                            <label opaque="NO" userInteractionEnabled="NO" alpha="0.80000000000000004" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n19-Qy-Om8">
-                                <rect key="frame" x="160" y="484" width="0.0" height="0.0"/>
-                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="I2p-yE-aNF">
+                                <rect key="frame" x="0.0" y="462" width="320" height="22"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="22" id="dnp-Mo-elJ"/>
+                                </constraints>
+                                <connections>
+                                    <segue destination="TxT-Yv-9DU" kind="embed" id="RXh-Yw-Fzt"/>
+                                </connections>
+                            </containerView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="qKl-aS-oiv" firstAttribute="trailing" secondItem="1E5-RL-iKt" secondAttribute="trailing" id="0KR-fK-C5i"/>
-                            <constraint firstItem="LtH-d8-iox" firstAttribute="top" secondItem="qKl-aS-oiv" secondAttribute="bottom" constant="8" id="1QQ-tK-pwD"/>
                             <constraint firstItem="LtH-d8-iox" firstAttribute="leading" secondItem="1E5-RL-iKt" secondAttribute="leading" id="2lM-5v-J6z"/>
                             <constraint firstItem="FaM-9b-iVS" firstAttribute="top" secondItem="tlP-iX-7M6" secondAttribute="top" id="3jZ-D3-bSN"/>
                             <constraint firstItem="LtH-d8-iox" firstAttribute="trailing" secondItem="1E5-RL-iKt" secondAttribute="trailing" id="48Z-QO-Ulg"/>
                             <constraint firstItem="n38-gi-rB5" firstAttribute="top" secondItem="LtH-d8-iox" secondAttribute="bottom" id="4Rz-V0-DMC"/>
-                            <constraint firstItem="LtH-d8-iox" firstAttribute="top" secondItem="n19-Qy-Om8" secondAttribute="bottom" id="ATc-Oz-pen"/>
                             <constraint firstItem="tlP-iX-7M6" firstAttribute="leading" secondItem="LtH-d8-iox" secondAttribute="leading" id="Aa9-1c-h1R"/>
-                            <constraint firstItem="qKl-aS-oiv" firstAttribute="top" secondItem="1lU-nL-d0j" secondAttribute="bottom" constant="8" id="CUe-v5-5f0"/>
                             <constraint firstItem="hlj-21-K3t" firstAttribute="top" secondItem="tlP-iX-7M6" secondAttribute="top" id="Jls-oD-470"/>
                             <constraint firstAttribute="trailingMargin" secondItem="FaM-9b-iVS" secondAttribute="trailing" id="KBN-af-MDN"/>
                             <constraint firstItem="o76-xN-19c" firstAttribute="top" secondItem="tlP-iX-7M6" secondAttribute="top" id="LRn-DP-6SX"/>
+                            <constraint firstAttribute="trailing" secondItem="I2p-yE-aNF" secondAttribute="trailing" id="Mt4-78-j5V"/>
                             <constraint firstItem="1E5-RL-iKt" firstAttribute="top" secondItem="qkL-Od-lgU" secondAttribute="bottom" id="SZg-w1-Sn5"/>
                             <constraint firstAttribute="trailingMargin" secondItem="1lU-nL-d0j" secondAttribute="trailing" id="SpA-EB-LHJ"/>
                             <constraint firstAttribute="trailing" secondItem="1E5-RL-iKt" secondAttribute="trailing" id="TLN-g4-YOY"/>
+                            <constraint firstItem="LtH-d8-iox" firstAttribute="top" secondItem="1lU-nL-d0j" secondAttribute="bottom" constant="17" id="Tuw-T5-KgB"/>
+                            <constraint firstItem="LtH-d8-iox" firstAttribute="top" secondItem="I2p-yE-aNF" secondAttribute="bottom" id="UpV-gx-Eeb"/>
                             <constraint firstItem="1E5-RL-iKt" firstAttribute="top" secondItem="tlP-iX-7M6" secondAttribute="top" id="V8r-oI-rEh"/>
                             <constraint firstItem="hlj-21-K3t" firstAttribute="leading" secondItem="tlP-iX-7M6" secondAttribute="trailing" constant="5" id="VF9-9q-c8r"/>
-                            <constraint firstItem="n19-Qy-Om8" firstAttribute="centerX" secondItem="zMn-AG-sqS" secondAttribute="centerX" id="XHT-XH-3Gr"/>
                             <constraint firstItem="n38-gi-rB5" firstAttribute="top" secondItem="1E5-RL-iKt" secondAttribute="bottom" id="XOW-lj-Wem"/>
+                            <constraint firstItem="I2p-yE-aNF" firstAttribute="leading" secondItem="zMn-AG-sqS" secondAttribute="leading" id="XOo-9P-1qN"/>
                             <constraint firstItem="n38-gi-rB5" firstAttribute="top" secondItem="1E5-RL-iKt" secondAttribute="bottom" id="ddn-XP-0vW"/>
                             <constraint firstItem="1E5-RL-iKt" firstAttribute="leading" secondItem="zMn-AG-sqS" secondAttribute="leading" id="i4G-QK-msM"/>
                             <constraint firstItem="1lU-nL-d0j" firstAttribute="leading" secondItem="zMn-AG-sqS" secondAttribute="leadingMargin" id="nqN-sq-mN6"/>
-                            <constraint firstItem="qKl-aS-oiv" firstAttribute="leading" secondItem="1E5-RL-iKt" secondAttribute="leading" id="vOP-cP-pH3"/>
                             <constraint firstItem="FaM-9b-iVS" firstAttribute="leading" secondItem="o76-xN-19c" secondAttribute="trailing" constant="3" id="yIz-KO-bbE"/>
                             <constraint firstItem="n38-gi-rB5" firstAttribute="top" secondItem="LtH-d8-iox" secondAttribute="bottom" id="yq5-fR-Zhy"/>
                         </constraints>
@@ -130,11 +126,9 @@
                     <size key="freeformSize" width="320" height="528"/>
                     <connections>
                         <outlet property="display" destination="1lU-nL-d0j" id="duo-6h-GgI"/>
-                        <outlet property="etaProgress" destination="qKl-aS-oiv" id="fA2-6b-DHY"/>
                         <outlet property="fetchActivity" destination="hlj-21-K3t" id="lpm-eA-yZx"/>
                         <outlet property="fetchLabel" destination="tlP-iX-7M6" id="4Uc-TE-Z0a"/>
                         <outlet property="mapView" destination="1E5-RL-iKt" id="kRj-RT-Sb0"/>
-                        <outlet property="progressDisplay" destination="n19-Qy-Om8" id="bU4-Ek-Cmd"/>
                         <outlet property="uploadActivity" destination="o76-xN-19c" id="Wbf-cZ-Cdb"/>
                         <outlet property="uploadLabel" destination="FaM-9b-iVS" id="3ns-kH-SO2"/>
                     </connections>
@@ -181,6 +175,46 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rga-61-zwi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-56" y="168"/>
+        </scene>
+        <!--Eta Adapter-->
+        <scene sceneID="8IK-qC-H4l">
+            <objects>
+                <viewController id="TxT-Yv-9DU" customClass="EtaAdapter" customModule="MessagesExtension" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" opaque="NO" contentMode="scaleToFill" id="uiD-e7-Gms">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="22"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <progressView opaque="NO" alpha="0.40000000000000002" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="vRn-JL-Z1d">
+                                <rect key="frame" x="0.0" y="10" width="320" height="2"/>
+                                <color key="progressTintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="trackTintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </progressView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q2r-L2-gvy">
+                                <rect key="frame" x="160.5" y="11" width="0.0" height="0.0"/>
+                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="vRn-JL-Z1d" firstAttribute="centerY" secondItem="uiD-e7-Gms" secondAttribute="centerY" id="8PB-FI-ix7"/>
+                            <constraint firstItem="vRn-JL-Z1d" firstAttribute="centerX" secondItem="uiD-e7-Gms" secondAttribute="centerX" id="96X-Jy-K5h"/>
+                            <constraint firstItem="q2r-L2-gvy" firstAttribute="centerY" secondItem="uiD-e7-Gms" secondAttribute="centerY" id="BGw-v5-gMJ"/>
+                            <constraint firstAttribute="trailing" secondItem="vRn-JL-Z1d" secondAttribute="trailing" id="PvX-pS-LVg"/>
+                            <constraint firstItem="vRn-JL-Z1d" firstAttribute="leading" secondItem="uiD-e7-Gms" secondAttribute="leading" id="VCU-JF-FQb"/>
+                            <constraint firstItem="q2r-L2-gvy" firstAttribute="centerX" secondItem="uiD-e7-Gms" secondAttribute="centerX" id="hoF-YG-bTE"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="etaProgress" destination="vRn-JL-Z1d" id="hVW-9p-gXN"/>
+                        <outlet property="progressLabel" destination="q2r-L2-gvy" id="sOs-Sr-umE"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="akt-v3-wxl" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-56" y="-253"/>
         </scene>
     </scenes>
 </document>
