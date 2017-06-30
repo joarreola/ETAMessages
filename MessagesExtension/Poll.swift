@@ -95,8 +95,8 @@ class PollManager {
     ///     - eta: EtaAdapter instance with eta and distance properties
     ///     - display: UILabel instance display
     
-    func pollRemote(localUser: Users, remotePacket: Location, mapView: MKMapView, display: UILabel, etaProgressView: UIProgressView, progressDisplay: UILabel, fetchActivity: UIActivityIndicatorView) {
-    
+    func pollRemote(localUser: Users, remotePacket: Location, mapView: MKMapView, display: UILabel, fetchActivity: UIActivityIndicatorView) {
+
         //print("-- PollManager -- pollRemote()")
 
         // request notification authorization
@@ -209,12 +209,17 @@ class PollManager {
                         
                         self.myLocalPacket.setLocation(latitude: localUser.location.latitude, longitude: localUser.location.longitude)
 
+// MARK: getEtaDistance()
+
                         // get eta and distance. Returns immediately, closure returns later
                         //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- self.fetchRemote() -- closure -- call: eta.getEtaDistance...")
 
                         //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- self.fetchRemote() -- closure -- self.etaOriginal: \(String(describing: self.etaOriginal))")
-                        self.etaAdapter.getEtaDistance(localPacket: self.myLocalPacket, remotePacket: self.myRemotePacket, mapView: mapView, display: display, etaProgressView: etaProgressView, progressDisplay: progressDisplay, etaOriginal: self.etaOriginal!)
-                        
+
+                        self.etaAdapter.getEtaDistance(localPacket: self.myLocalPacket, remotePacket: self.myRemotePacket, mapView: mapView, display: display,  etaOriginal: self.etaOriginal!)
+
+// MARK:-
+
                         // UI updates on main thread
                         DispatchQueue.main.async { [weak self ] in
                             
