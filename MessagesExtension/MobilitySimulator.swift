@@ -110,7 +110,7 @@ class MobilitySimulator {
                     if Double(self.tempUser.location.longitude!) + 0.005 > Double(self.origLocation.longitude!) {
                         
                         //self.tempUser.location.longitude = self.tempUser.location.longitude! + 0.0025
-                        self.tempUser.location.longitude = self.tempUser.location.longitude! + 0.0005
+                        self.tempUser.location.longitude = self.tempUser.location.longitude! + 0.00025
 
                     } else {
                         
