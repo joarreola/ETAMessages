@@ -29,7 +29,9 @@ class UploadingManager {
 
     init(name: String) {
         self.mapUdate = MapUpdate()
-        self.cloud  = CloudAdapter(userName: name)
+        MessagesViewController.UserName = name
+        //self.cloud  = CloudAdapter(userName: name)
+        self.cloud  = CloudAdapter()
     }
 
     /// Upload location packet to iCloud
@@ -39,9 +41,9 @@ class UploadingManager {
     
 /// MARK: post-comments
 
-    func uploadLocation(user: Users, uploadActivityIndicator: UIActivityIndicatorView, whenDone: @escaping (Bool) -> ()) -> () {
+    func uploadLocation(user: Users, whenDone: @escaping (Bool) -> ()) -> () {
 
-        cloud.upload(user: user, uploadActivityIndicator: uploadActivityIndicator) { (result: Bool) in
+        cloud.upload(user: user) { (result: Bool) in
 
             whenDone(result)
         }
@@ -55,7 +57,6 @@ class UploadingManager {
     ///     - packet: location coordinates to display
 
     func updateMap(display: UILabel, packet: Location) {
-        //print("--Uploading -- updateMap(display: UILabel, packet: Location)")
 
         // display locPacket
         mapUdate.displayUpdate(display: display, packet: packet)
@@ -69,7 +70,6 @@ class UploadingManager {
     ///     - string: message to display
 
     func updateMap(display: UILabel, packet: Location, string: String) {
-        //print("--Uploading -- updateMap(display: UILabel, packet: Location, string; String)")
         
         // display locPacket
         mapUdate.displayUpdate(display: display, packet: packet, string: string)
@@ -79,7 +79,6 @@ class UploadingManager {
     /// Note that uploading has been enabled after a tap on the Enable button
 
     func enableUploading() {
-        //print("--Uploading -- enableUploading")
 
         // this allows for uploading of coordinates on LocalUser location changes
         UploadingManager.enabledUploading = true
@@ -88,7 +87,6 @@ class UploadingManager {
     /// Note that uploading has been disabled after a tap on the Disable button
 
     func disableUploading() {
-        //print("--Uploading -- disableUploading")
         
         // remove record
         self.cloud.deleteRecord()

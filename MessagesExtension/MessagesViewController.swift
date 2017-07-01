@@ -29,14 +29,11 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var display: UILabel!
-    @IBOutlet weak var fetchActivity: UIActivityIndicatorView!
-    @IBOutlet weak var uploadActivity: UIActivityIndicatorView!
-    @IBOutlet weak var uploadLabel: UILabel!
-    @IBOutlet weak var fetchLabel: UILabel!
 
     // hardcoding for now
     let localUser  = Users(name: "Oscar-iphone")
     let remoteUser = Users(name: "Oscar-ipad")
+    static var UserName = "Oscar-iphone"
     
     // can't pass above object to CloudAdapter(), PollManager(), or UploadingManager()
     // thus String literals
@@ -51,6 +48,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     
     var locPacketUpdated: Bool = false
     static var locationManagerEnabled: Bool = true
+    static var localUserName = "Oscar-iphone"
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -196,13 +194,11 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
             //print("-- locationManager -- call: self.gpsLocation.uploadToIcloud(user: localUser)")
 
-            self.gpsLocation.uploadToIcloud(user: localUser, uploadActivityIndicator: uploadActivity) {
-                
+            self.gpsLocation.uploadToIcloud(user: localUser) {
+
                 (result: Bool) in
                 
-                //print("-- locationManager -- gpsLocation.uploadToIcloud(localUser: localUser) -- closure -- call self.gpsLocation.handleUploadResult(result)")
-
-                self.gpsLocation.handleUploadResult(result, display: self.display, localUser: self.localUser, remoteUser: self.remoteUser, mapView: self.mapView, pollManager: self.pollManager, fetchActivity: self.fetchActivity)
+                self.gpsLocation.handleUploadResult(result, display: self.display, localUser: self.localUser, remoteUser: self.remoteUser, mapView: self.mapView, pollManager: self.pollManager)
             }
         }
     }
@@ -233,7 +229,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
         // Upload localUserPacket to Cloud repository
         
-        self.uploading.uploadLocation(user: localUser, uploadActivityIndicator: uploadActivity) {
+        self.uploading.uploadLocation(user: localUser) {
             
             (result) in
 
@@ -288,11 +284,11 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
             // remote needs to get back to the original local's location
             remoteUser.location = localUser.location
 
-            mobilitySimulator.startMobilitySimulator(user: remoteUser, display: display, mapView: mapView, uploadActivityIndicator: uploadActivity, remote: true)
+            mobilitySimulator.startMobilitySimulator(user: remoteUser, display: display, mapView: mapView, remote: true)
 
         } else {
 
-            mobilitySimulator.startMobilitySimulator(user: localUser, display: display, mapView: mapView, uploadActivityIndicator: uploadActivity, remote: false)
+            mobilitySimulator.startMobilitySimulator(user: localUser, display: display, mapView: mapView, remote: false)
         }
     }
 
@@ -304,35 +300,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     @IBAction func poll(_ sender: UIBarButtonItem) {
         // check for remoteUser record
 
-// MARK: Does stationary user have a need to upload location to iCloud?
-        /*
-        // Upload localUserPacket to Cloud repository
-        // Hardcode localuser for now
-        print("-- poll --  upload local record once...")
-        
-        let cloudRet = cloud.upload(packet: localUser.location)
-
-        if cloudRet == false {
-            print("-- poll -- cloud.upload(localUserPacket) returned nil. Exiting poll()")
-            
-            // display localUserPacket
-            mapUpdate.displayUpdate(display: display, packet: localUser.location,
-                                    string: "upload to cloud failed")
-            
-            poll_entered = 0;
-
-            print("-- poll -- poll(): return\n")
-
-            return
-    
-        }
-        */
-// MARK:-
-        
         // display localUserPacket
         self.mapUpdate.displayUpdate(display: self.display, packet: self.localUser.location)
-        
-        //print("-- poll --  pollManager.fetchRemote for 1st remote location record...")
 
         // initialize vars for proper restart with a pol retap
         pollManager.disablePolling()
@@ -343,12 +312,11 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         pollManager.myEta = 0.0
         pollManager.myDistance = 0.0
 
-        self.pollManager.fetchRemote(fetchActivity: fetchActivity) {
-            
+        self.pollManager.fetchRemote() {
+
             (packet: Location) in
             
             if packet.latitude == nil {
-                //print("-- poll -- self.pollManager.fetchRemote() - closure -- failed")
                 
                 // UI updates on main thread
                 DispatchQueue.main.async { [weak self ] in
@@ -368,9 +336,6 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
             } else {
 
-                //print("-- poll -- self.pollManager.fetchRemote() - closure -- remote latitude: \(String(describing: packet.latitude))")
-                //print("-- poll -- self.pollManager.fetchRemote() - closure -- remote longitude: \(String(describing: packet.longitude))")
-                
                 // update remoteUser Location
                 self.remoteUser.location.setLocation(latitude: packet.latitude!, longitude: packet.longitude!)
                 
@@ -383,7 +348,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                     }
                 }
 
-                self.pollManager.pollRemote(localUser: self.localUser, remotePacket: self.remoteUser.location, mapView: self.mapView, display: self.display,  fetchActivity: self.fetchActivity)
+                self.pollManager.pollRemote(localUser: self.localUser, remotePacket: self.remoteUser.location, mapView: self.mapView, display: self.display)
                 
                 // enable in case stationary user moves during or after polling
                 //but not if simulator is running

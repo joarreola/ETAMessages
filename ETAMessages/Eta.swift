@@ -123,7 +123,6 @@ class EtaAdapter: UIViewController {
     }
 
     func _getEtaDistance (localPacket: Location, remotePacket: Location, mapView: MKMapView, display: UILabel, etaOriginal: TimeInterval?) {
-        //print("-- EtaAdapter -- getEtaDistance() ------------------------------")
 
         let mkDirReq: MKDirectionsRequest = MKDirectionsRequest()
         
@@ -171,10 +170,7 @@ class EtaAdapter: UIViewController {
             for route in unwrappedResponse.routes {
                 //mapView.add(route.polyline)
                 //mapView.setVisibleMapRect(route.polyline.boundingMapRect, animated: true)
-                
-                //print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- Distance: \(route.distance) meters")
-                //print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- ETA: \(route.expectedTravelTime) sec")
-                
+
                 self.setEta(eta: route.expectedTravelTime)
                 self.setDistance(distance: route.distance * 3.2808)
 
@@ -182,9 +178,6 @@ class EtaAdapter: UIViewController {
                     //print(step.instructions)
                 }
 
-                //self.setEta(eta: route.expectedTravelTime)
-                //self.setDistance(distance: route.distance * 3.2808)
-                
                 if EtaAdapter.previousDistance == nil || Double(EtaAdapter.distance!) < Double(EtaAdapter.previousDistance!) {
 
                     EtaAdapter.previousDistance = EtaAdapter.distance

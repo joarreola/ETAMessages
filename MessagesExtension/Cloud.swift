@@ -10,31 +10,38 @@ import Foundation
 import CloudKit
 import UIKit
 
+struct CloudIndicator {
+    var fetchActivity: UIActivityIndicatorView? = nil
+    var uploadActivity: UIActivityIndicatorView? = nil
+}
+
 /// Manage iCloud record accesses.
 ///
 /// upload(Location)
 /// fetchRecord(CLLocationDegrees?, CLLocationDegrees?)
 /// deleteRecord()
 
-class CloudAdapter {
-    private var locationRecordID: CKRecordID
-    private var locationRecord: CKRecord
-    private var myContainer: CKContainer
+class CloudAdapter: UIViewController {
+    
     private var recordSaved: Bool = false
     private var recordFound: Bool = false
-    private let user: String
-    private var latitude: CLLocationDegrees?
-    private var longitude: CLLocationDegrees?
-    private let publicDatabase: CKDatabase
+    private var user: String = ""
 
-    init(userName: String) {
-        self.user = userName
-        
-        self.locationRecordID = CKRecordID(recordName: self.user)
-        self.locationRecord = CKRecord(recordType: "Location",
-                                       recordID: locationRecordID)
-        self.myContainer = CKContainer.default()
-        publicDatabase = self.myContainer.publicCloudDatabase
+    @IBOutlet weak var fetchLabel: UILabel!
+    @IBOutlet weak var uploadLabel: UILabel!
+    @IBOutlet weak var fetchActivity: UIActivityIndicatorView!
+    @IBOutlet weak var uploadActivity: UIActivityIndicatorView!
+
+    static var cloudIndicator = CloudIndicator()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view.
+        //print("-- EtaAdapter -- viewDidLoad() -----------------------------")
+
+        // to hold progress and label
+        CloudAdapter.cloudIndicator.fetchActivity = self.fetchActivity
+        CloudAdapter.cloudIndicator.uploadActivity = self.uploadActivity
         
     }
     
@@ -42,18 +49,23 @@ class CloudAdapter {
     /// - Parameters:
     ///     - whenDone: a closure that takes in a Location parameter
 
-    func fetchRecord(fetchActivity: UIActivityIndicatorView, whenDone: @escaping (Location) -> ()) -> () {
+    func fetchRecord(whenDone: @escaping (Location) -> ()) -> () {
 
         // UI updates on main thread
         DispatchQueue.main.async { [weak self ] in
             
             if self != nil {
                 
-                fetchActivity.startAnimating()
+                CloudAdapter.cloudIndicator.fetchActivity?.startAnimating()
             }
         }
 
-        self.publicDatabase.fetch(withRecordID: self.locationRecordID) {
+        // do here instead
+        let locationRecordID: CKRecordID = CKRecordID(recordName: MessagesViewController.UserName)
+        let myContainer: CKContainer = CKContainer.default()
+        let publicDatabase: CKDatabase = myContainer.publicCloudDatabase
+    
+        publicDatabase.fetch(withRecordID: locationRecordID) {
 
             (record, error) in
     
@@ -62,12 +74,12 @@ class CloudAdapter {
                 
                 if self != nil {
                     
-                    fetchActivity.stopAnimating()
+                    CloudAdapter.cloudIndicator.fetchActivity?.stopAnimating()
                 }
             }
 
             if let error = error {
-                print("-- CloudAdapter -- fetchRecord(whenDone: @escaping (Location) -> ()) -> ()  -- publicDatabase.fetch() -- closure -- Error: \(self.locationRecordID): \(error)")
+                print("-- CloudAdapter -- fetchRecord(whenDone: @escaping (Location) -> ()) -> ()  -- publicDatabase.fetch() -- closure -- Error: \(locationRecordID): \(error)")
     
                 self.recordFound = false
     
@@ -81,43 +93,46 @@ class CloudAdapter {
                 return
             }
 
-            self.latitude = record?["latitude"] as? CLLocationDegrees
-            self.longitude = record?["longitude"] as? CLLocationDegrees
+            let latitude = record?["latitude"] as? CLLocationDegrees
+            let longitude = record?["longitude"] as? CLLocationDegrees
             self.recordFound = true
     
             // callback to the passed closure
 
             var packet: Location = Location()
-            packet.setLocation(latitude: self.latitude, longitude: self.longitude)
+            packet.setLocation(latitude: latitude, longitude: longitude)
 
             whenDone(packet)
         }
     }
 
-    // MARK:- end post-comments
-
     /// Delete location record from iCloud
 
     func deleteRecord() {
 
-        self.publicDatabase.delete(withRecordID: self.locationRecordID) {
+        // do here instead
+        let locationRecordID: CKRecordID = CKRecordID(recordName: MessagesViewController.UserName)
+        let myContainer: CKContainer = CKContainer.default()
+        let publicDatabase: CKDatabase = myContainer.publicCloudDatabase
+
+        publicDatabase.delete(withRecordID: locationRecordID) {
             (record, error) in
             if let error = error {
                 // Insert error handling
-                print("-- CloudAdapter -- deleteRecord() -- self.publicDatabase.delete() -- closure -- Error: \(self.locationRecordID): \(error)")
+                print("-- CloudAdapter -- deleteRecord() -- self.publicDatabase.delete() -- closure -- Error: \(locationRecordID): \(error)")
                 
                 return
             }
         }
     }
     
-    // MARK: start post-comment
 
     /// Upload a location record to iCloud. Delete then save.
     /// - Parameters:
     ///     - whenDone: a closure that takes in a Location parameter
 
-    func upload(user: Users, uploadActivityIndicator: UIActivityIndicatorView, whenDone: @escaping (Bool) -> ()) -> () {
+    func upload(user: Users, whenDone: @escaping (Bool) -> ()) -> () {
+
         // Called by enable() @IBAction function
         
         // UI updates on main thread
@@ -125,28 +140,30 @@ class CloudAdapter {
             
             if self != nil {
                 
-                uploadActivityIndicator.startAnimating()
+                CloudAdapter.cloudIndicator.uploadActivity?.startAnimating()
             }
         }
 
-        self.publicDatabase.delete(withRecordID: self.locationRecordID) {
+        // do here instead
+        let locationRecordID: CKRecordID = CKRecordID(recordName: MessagesViewController.UserName)
+        let locationRecord: CKRecord = CKRecord(recordType: "Location", recordID: locationRecordID)
+        let myContainer: CKContainer = CKContainer.default()
+        let publicDatabase: CKDatabase = myContainer.publicCloudDatabase
+
+        publicDatabase.delete(withRecordID: locationRecordID) {
             (record, error) in
 
             if let error = error {
-                print("-- CloudAdapter -- upload() -- self.publicDatabase.delete -- closure -- Error: \(self.locationRecordID): \(error)")
+                print("-- CloudAdapter -- upload() -- self.publicDatabase.delete -- closure -- Error: \(locationRecordID): \(error)")
 
             }
 
-            self.locationRecordID = CKRecordID(recordName: self.user)
-            self.locationRecord = CKRecord(recordType: "Location", recordID: self.locationRecordID)
-
-            //print("-- CloudAdapter -- upload() -- set coordinates")
-            self.locationRecord["latitude"]  = user.location.latitude! as CKRecordValue
-            self.locationRecord["longitude"] = user.location.longitude! as CKRecordValue
+            locationRecord["latitude"]  = user.location.latitude! as CKRecordValue
+            locationRecord["longitude"] = user.location.longitude! as CKRecordValue
 
 
             // call save() method while in the delete closure
-            self.publicDatabase.save(self.locationRecord) {
+            publicDatabase.save(locationRecord) {
                 (record, error) in
 
                 // UI updates on main thread
@@ -154,7 +171,7 @@ class CloudAdapter {
                     
                     if self != nil {
                         
-                        uploadActivityIndicator.stopAnimating()
+                        CloudAdapter.cloudIndicator.uploadActivity?.stopAnimating()
                     }
                 }
 

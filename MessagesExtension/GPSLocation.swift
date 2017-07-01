@@ -31,12 +31,15 @@ class GPSLocationAdapter {
     ///     - localUser:
     /// - Returns: Location packet uploading outcome: true or false
 
-    func uploadToIcloud(user: Users, uploadActivityIndicator: UIActivityIndicatorView, whenDone: @escaping (Bool) -> ()) -> () {
-        
-        let cloud = CloudAdapter(userName: user.name)
+    func uploadToIcloud(user: Users, whenDone: @escaping (Bool) -> ()) -> () {
 
-        cloud.upload(user: user, uploadActivityIndicator: uploadActivityIndicator) { (result: Bool) in
-            
+        MessagesViewController.UserName = user.name
+        //let cloud = CloudAdapter(userName: user.name)
+        let cloud = CloudAdapter()
+
+        //cloud.upload(user: user, uploadActivityIndicator: uploadActivityIndicator) { (result: Bool) in
+        cloud.upload(user: user) { (result: Bool) in
+
             whenDone(result)
         }
     }
@@ -52,11 +55,12 @@ class GPSLocationAdapter {
     ///     - eta: EtaAdapter instance to make the getEtaDistance() call
     /// - Returns: Location packet fetching outcome: true or false
 
-    func checkRemote(pollRemoteUser: PollManager, localUser: Users, remoteUser: Users, mapView: MKMapView, display: UILabel, fetchActivity: UIActivityIndicatorView, result: @escaping (Bool) -> ()) {
- 
+    func checkRemote(pollRemoteUser: PollManager, localUser: Users, remoteUser: Users, mapView: MKMapView, display: UILabel, result: @escaping (Bool) -> ()) {
+
         let mapUpdate = MapUpdate()
 
-        pollRemoteUser.fetchRemote(fetchActivity: fetchActivity) {
+        //pollRemoteUser.fetchRemote(fetchActivity: fetchActivity) {
+        pollRemoteUser.fetchRemote() {
             
             (packet: Location) in
             
@@ -84,8 +88,8 @@ class GPSLocationAdapter {
     }
     
 
-    func handleUploadResult(_ result: Bool, display: UILabel, localUser: Users, remoteUser: Users, mapView: MKMapView, pollManager: PollManager, fetchActivity: UIActivityIndicatorView) {
-        
+    func handleUploadResult(_ result: Bool, display: UILabel, localUser: Users, remoteUser: Users, mapView: MKMapView, pollManager: PollManager) {
+
         if !result {
 
             // UI updates on main thread
@@ -119,7 +123,7 @@ class GPSLocationAdapter {
                 
             }
 
-            self.checkRemote(pollRemoteUser: pollManager, localUser: localUser, remoteUser: remoteUser, mapView: mapView, display: display, fetchActivity: fetchActivity) {
+            self.checkRemote(pollRemoteUser: pollManager, localUser: localUser, remoteUser: remoteUser, mapView: mapView, display: display) {
                 
                 (result: Bool) in
 

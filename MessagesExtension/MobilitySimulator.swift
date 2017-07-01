@@ -28,7 +28,7 @@ class MobilitySimulator {
         self.tempUser = Users(name: userName)
     }
     
-    func startMobilitySimulator(user: Users, display: UILabel, mapView: MKMapView, uploadActivityIndicator: UIActivityIndicatorView, remote: Bool) {
+    func startMobilitySimulator(user: Users, display: UILabel, mapView: MKMapView, remote: Bool) {
 
         MobilitySimulator.mobilitySimulatorEnabled = true
         UploadingManager.enabledUploading = false
@@ -63,7 +63,7 @@ class MobilitySimulator {
 
         timer?.setEventHandler(handler: {
 
-            self.gpsLocation.uploadToIcloud(user: self.tempUser, uploadActivityIndicator: uploadActivityIndicator) {
+            self.gpsLocation.uploadToIcloud(user: self.tempUser) {
 
                 (result: Bool) in
 

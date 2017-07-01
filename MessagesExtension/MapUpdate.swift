@@ -104,7 +104,6 @@ class MapUpdate {
     /// - Returns: new center coordinates
 
     func centerView (localpacket: Location, mapView: MKMapView) -> CLLocationCoordinate2D {
-        //print("-- MapUpdate -- centerView: center mapView on local user")
         
         var center: CLLocationCoordinate2D
 

@@ -45,7 +45,9 @@ class PollManager {
         self.etaOriginal = 0.0
         self.myDistance = 0.0
         
-        self.cloudRemote  = CloudAdapter(userName: remoteUserName)
+        //self.cloudRemote  = CloudAdapter(userName: remoteUserName)
+        MessagesViewController.UserName = remoteUserName
+        self.cloudRemote  = CloudAdapter()
         self.myLocalPacket = Location()
         self.myRemotePacket = Location()
         self.localNotification = ETANotifications()
@@ -57,9 +59,9 @@ class PollManager {
     /// - Parameters:
     ///     - whenDone: a closure that returns a Location parameter
 
-    func fetchRemote(fetchActivity: UIActivityIndicatorView, whenDone: @escaping (Location) -> ()) -> () {
-        
-        cloudRemote.fetchRecord(fetchActivity: fetchActivity) {
+    func fetchRemote(whenDone: @escaping (Location) -> ()) -> () {
+
+        cloudRemote.fetchRecord() {
             
             (packet: Location) in
 
@@ -87,7 +89,7 @@ class PollManager {
     ///     - eta: EtaAdapter instance with eta and distance properties
     ///     - display: UILabel instance display
     
-    func pollRemote(localUser: Users, remotePacket: Location, mapView: MKMapView, display: UILabel, fetchActivity: UIActivityIndicatorView) {
+    func pollRemote(localUser: Users, remotePacket: Location, mapView: MKMapView, display: UILabel) {
 
 
         // request notification authorization
@@ -128,8 +130,8 @@ class PollManager {
                 }
                 */
 
-                self.fetchRemote(fetchActivity: fetchActivity) {
-                    
+                self.fetchRemote() {
+
                     (packet: Location) in
                     
                     if packet.latitude == nil {
