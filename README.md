@@ -65,6 +65,8 @@ Class project
     - Start and Stop upload activity indicator in upload().
     - Add fetchActivity support.
     - Remove print lines. 
+    - Convert CloudAdapter to a Container View. Move in fetch and upload
+      activity and labels.
     
   - Uploading.swift - New
   	Manage mobile mode behavior, with localUser and single packet
