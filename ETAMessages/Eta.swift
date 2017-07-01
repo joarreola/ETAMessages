@@ -182,8 +182,8 @@ class EtaAdapter: UIViewController {
                     //print(step.instructions)
                 }
 
-                self.setEta(eta: route.expectedTravelTime)
-                self.setDistance(distance: route.distance * 3.2808)
+                //self.setEta(eta: route.expectedTravelTime)
+                //self.setDistance(distance: route.distance * 3.2808)
                 
                 if EtaAdapter.previousDistance == nil || Double(EtaAdapter.distance!) < Double(EtaAdapter.previousDistance!) {
 
@@ -202,13 +202,13 @@ class EtaAdapter: UIViewController {
                 if self != nil {
                     // add pin and refresh mapView
                     //print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- DispatchQueue.main.async -- closure")
-                    /*
+                    ///*
                     self?.mapUdate.addPin(packet: remotePacket, mapView: mapView, remove: false)
                     
                     self?.mapUdate.refreshMapView(localPacket: localPacket, remotePacket: remotePacket, mapView: mapView, eta: true)
                     
                     self?.mapUdate.displayUpdate(display: display, localPacket: localPacket, remotePacket: remotePacket, eta: true)
-                    */
+                    //*/
                     //print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- DispatchQueue.main.async -- closure -- etaOriginal: \(String(describing: etaOriginal))")
 
                     if etaOriginal != 0.0 {
