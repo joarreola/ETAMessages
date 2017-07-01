@@ -37,7 +37,7 @@ class EtaAdapter: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        print("-- EtaAdapter -- viewDidLoad() -----------------------------")
+        //print("-- EtaAdapter -- viewDidLoad() -----------------------------")
         
         self.etaProgress.transform = self.etaProgress.transform.scaledBy(x: 1, y: 7)
         self.etaProgress.setProgress(Float(0.0), animated: true)
@@ -50,28 +50,28 @@ class EtaAdapter: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print("-- EtaAdapter -- viewWillAppear -----------------------------------")
+        //print("-- EtaAdapter -- viewWillAppear -----------------------------------")
         
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print("-- EtaAdapter -- viewDidAppear ------------------------------------")
+        //print("-- EtaAdapter -- viewDidAppear ------------------------------------")
         
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print("-- EtaAdapter -- viewWillDisappear --------------------------------")
+        //print("-- EtaAdapter -- viewWillDisappear --------------------------------")
         
     }
     override func viewDidDisappear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print("-- EtaAdapter -- viewDidDisappear ---------------------------------")
+        //print("-- EtaAdapter -- viewDidDisappear ---------------------------------")
         
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-        print("-- EtaAdapter -- didReceiveMemoryWarning --------------------------")
+        //print("-- EtaAdapter -- didReceiveMemoryWarning --------------------------")
     }
     
     //var player: AVAudioPlayer?
@@ -123,7 +123,7 @@ class EtaAdapter: UIViewController {
     }
 
     func _getEtaDistance (localPacket: Location, remotePacket: Location, mapView: MKMapView, display: UILabel, etaOriginal: TimeInterval?) {
-        //print("-- EtaAdapter -- getEtaDistance(): get eta from local to remote device," + " and travel distance between devices")
+        //print("-- EtaAdapter -- getEtaDistance() ------------------------------")
 
         let mkDirReq: MKDirectionsRequest = MKDirectionsRequest()
         
@@ -178,9 +178,6 @@ class EtaAdapter: UIViewController {
                 self.setEta(eta: route.expectedTravelTime)
                 self.setDistance(distance: route.distance * 3.2808)
 
-                //print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- self.distance: \(String(describing: self.distance!)) feet")
-                //print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- self.eta: \(self.eta!)) sec")
-                
                 for _ in route.steps {
                     //print(step.instructions)
                 }
@@ -189,13 +186,11 @@ class EtaAdapter: UIViewController {
                 self.setDistance(distance: route.distance * 3.2808)
                 
                 if EtaAdapter.previousDistance == nil || Double(EtaAdapter.distance!) < Double(EtaAdapter.previousDistance!) {
-                    //print("--  EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- EtaAdapter.previousDistance = EtaAdapter.distance: \(String(describing: EtaAdapter.previousDistance))")
 
                     EtaAdapter.previousDistance = EtaAdapter.distance
 
                 } else if Double(EtaAdapter.distance!) > Double(EtaAdapter.previousDistance!) {
                     // for simulation: don't update mapView if got a greater DISTANCE
-                    //print("--  EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- EtaAdapter.distance > EtaAdapter.previousDistance: \(String(describing: EtaAdapter.distance)) , \(String(describing: EtaAdapter.previousDistance))")
 
                     return
                 }
@@ -207,20 +202,29 @@ class EtaAdapter: UIViewController {
                 if self != nil {
                     // add pin and refresh mapView
                     //print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- DispatchQueue.main.async -- closure")
-                    
+                    /*
                     self?.mapUdate.addPin(packet: remotePacket, mapView: mapView, remove: false)
                     
                     self?.mapUdate.refreshMapView(localPacket: localPacket, remotePacket: remotePacket, mapView: mapView, eta: true)
                     
                     self?.mapUdate.displayUpdate(display: display, localPacket: localPacket, remotePacket: remotePacket, eta: true)
-                    
+                    */
                     //print("-- EtaAdapter -- getEtaDistance() -- mkDirections.calculate() -- closure -- DispatchQueue.main.async -- closure -- etaOriginal: \(String(describing: etaOriginal))")
 
                     if etaOriginal != 0.0 {
                         
                         EtaAdapter.etaIndicator.etaProgress?.setProgress(Float(EtaAdapter.eta!) / Float(etaOriginal!), animated: true)
 
-                        EtaAdapter.etaIndicator.progressLabel?.text = "\(Int(EtaAdapter.eta! / 60)) min"
+                        let etaMinutes = Int(EtaAdapter.eta! / 60)
+                        if etaMinutes != 0 {
+                            EtaAdapter.etaIndicator.progressLabel?.text = "\(etaMinutes) min"
+                        } else {
+                            EtaAdapter.etaIndicator.progressLabel?.text = ""
+                            EtaAdapter.etaIndicator.etaProgress?.setProgress(Float(0.0), animated: true)
+                            
+                            UploadingManager.enabledUploading = false
+                            
+                        }
 
                         /*
                         self?.player = self?.loadSound(name: "hornSound")
