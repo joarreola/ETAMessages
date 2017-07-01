@@ -98,7 +98,7 @@ class PollManager {
 
         self.myRemotePacket = Location(userName: remoteUserName, location: remotePacket)
 
-        let mapUpdate = MapUpdate();
+        //let mapUpdate = MapUpdate();
         
         // etaOriginal
         self.etaOriginal = etaAdapter.getEta()
@@ -151,7 +151,7 @@ class PollManager {
                         self.myLocalPacket.setLocation(latitude: localUser.location.latitude, longitude: localUser.location.longitude)
 
                         self.etaAdapter.getEtaDistance(localPacket: self.myLocalPacket, remotePacket: self.myRemotePacket, mapView: mapView, display: display,  etaOriginal: self.etaOriginal!)
-                        
+/* do in getEtaDistance()
                         // UI updates on main thread
                         DispatchQueue.main.async { [weak self ] in
                             
@@ -165,7 +165,7 @@ class PollManager {
                                 
                             }
                         }
-                        
+*/
                     } // end of location compare
                 } // end of self.fetchRemote()
    
