@@ -50,6 +50,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     var mobilitySimulator = MobilitySimulator(userName: "Oscar-iphone")
     
     var locPacketUpdated: Bool = false
+    static var locationManagerEnabled: Bool = true
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -163,6 +164,12 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
         }
         
+        // abort if disabled
+        if !MessagesViewController.locationManagerEnabled {
+
+            return
+        }
+        
         // nothing to update if same location
         if lmPacket.latitude == localUser.location.latitude &&
             lmPacket.longitude == localUser.location.longitude
@@ -265,8 +272,11 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
 
     @IBAction func mobilitySumulation(_ sender: UIBarButtonItem) {
         
-        // clear
+        // make sure CLLocation doesn't create UI-access contention
         self.locationManager.stopUpdatingLocation()
+        MessagesViewController.locationManagerEnabled = false
+        
+        // 
         mapUpdate.displayUpdate(display: display)
         mapUpdate.addPin(packet: localUser.location, mapView: mapView, remove: true)
 
