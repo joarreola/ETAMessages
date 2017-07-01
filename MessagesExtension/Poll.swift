@@ -57,31 +57,23 @@ class PollManager {
     /// - Parameters:
     ///     - whenDone: a closure that returns a Location parameter
 
-// MARK: post comments
-
     func fetchRemote(fetchActivity: UIActivityIndicatorView, whenDone: @escaping (Location) -> ()) -> () {
-        //print("-- PollManager -- fetchRemote(whenDone: @escaping (Location) -> ()) -> ()")
         
         cloudRemote.fetchRecord(fetchActivity: fetchActivity) {
             
             (packet: Location) in
 
             if packet.latitude == nil {
-                //print("-- PollManager -- fetchRemote(whenDone: @escaping (Location) -> ()) -> () -- cloudRemote.fetchRecord() -- closure -- failed")
 
                 whenDone(packet)
                 
             } else {
-                //print("-- PollManager -- fetchRemote(whenDone: @escaping (Location) -> ()) -> () -- cloudRemote.fetchRecord() -- closure -- latitude: \(String(describing: packet.latitude)) -- longitude: \(String(describing: packet.longitude))")
-                
-                //print("-- PollManager -- fetchRemote(whenDone: @escaping (Location) -> ()) -> () -- cloudRemote.fetchRecord() -- closure -- call: whenDone(Location)")
 
                 whenDone(packet)
             }
         }
     }
 
-// MARK:-
 
     /// Poll iCloud for remote User's location record.
     /// while-loop runs in a background DispatchQueue.global thread.
@@ -97,7 +89,6 @@ class PollManager {
     
     func pollRemote(localUser: Users, remotePacket: Location, mapView: MKMapView, display: UILabel, fetchActivity: UIActivityIndicatorView) {
 
-        //print("-- PollManager -- pollRemote()")
 
         // request notification authorization
         //localNotification.requestAuthorization()
@@ -111,64 +102,31 @@ class PollManager {
         
         // etaOriginal
         self.etaOriginal = etaAdapter.getEta()
-        //print("-- PollManager -- pollRemote() -- pre-DispatchSourceTimer -- self.etaOriginal: \(String(describing: self.etaOriginal))")
 
-        // MARK: DispatchSourceTimer
-    
-        /**
-         *
-         * Below code runs in a separate thread
-         *
-         */
-        //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- start configuration")
-        
         let queue = DispatchQueue(label: "edu.ucsc.ETAMessages.timer", attributes: .concurrent)
         timer?.cancel()
         timer = DispatchSource.makeTimerSource(queue: queue)
         timer?.scheduleRepeating(deadline: .now(), interval: .milliseconds(1700))
-        //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- end configuration")
         
         timer?.setEventHandler(handler: {
-            //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- in handler")
 
-                // check pointer
-                //self.myEta = eta.loadPointer()
                 self.myEta = self.etaAdapter.getEta()
                 self.myDistance = self.etaAdapter.getDistance()
             
-                // need to set etaOriginal the 1st time myEta is no longer nil
-                /*
-                if self.etaOriginal == nil {
-                
-                    self.etaOriginal = self.myEta
-                }
-                */
                 if self.myEta == nil && self.etaOriginal == nil {
                     self.etaOriginal = 0.0
                 } else if self.etaOriginal == 0.0 && self.myEta != nil {
                     self.etaOriginal = self.myEta
                 }
     
-                //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- self.myEta: \(String(describing: self.myEta)) self.myDistance: \(String(describing: self.myDistance))")
-    
-                // self.fetchRemote()
-                //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- pre self.fetchRemote()")
-
-                // MARK: start of post-comments
-
-                //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- self.myEta: \(String(describing: self.myEta))")
-                //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- etaOriginal: \(String(describing: self.etaOriginal))")
-
+                /*
                 if self.myEta != nil && self.etaOriginal != nil {
                     if self.myEta! != self.etaOriginal!  || Double(self.myEta!) <= self.hasArrivedEta {
-                        //print("\n===============================================================")
-                        //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- calling self.etaNotification(display: display)")
-                        //print("===============================================================\n")
                     
-                        //self.etaNotification(display: display)
+                        self.etaNotification(display: display)
                     }
                 }
-            
+                */
 
                 self.fetchRemote(fetchActivity: fetchActivity) {
                     
@@ -177,17 +135,6 @@ class PollManager {
                     if packet.latitude == nil {
                         //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- self.fetchRemote() -- closure -- returned nil")
                         
-                        // UI updates on main thread
-                        DispatchQueue.main.async { [weak self ] in
-                            
-                            if self != nil {
-                                
-                                // display localUserPacket
-// verbosity                    mapUpdate.displayUpdate(display: (display), packet: packet, string: "fetchRemote failed")
-                                
-                            }
-                        }
-
                         return
                         
                     }
@@ -197,36 +144,18 @@ class PollManager {
                         localUser.location.latitude != self.myLocalPacket.latitude ||
                         localUser.location.longitude != self.myLocalPacket.longitude
                     {
-                        //print("\n===============================================================")
-                        //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- LOCATION CHANGED")
-                        //print("===============================================================\n")
-            
-                        //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- self.fetchRemote() -- closure -- remote latitude: \(String(describing: packet.latitude))")
-                        //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- self.fetchRemote() -- closure -- remote longitude: \(String(describing: packet.longitude))")
-                        
+
                         // update myRemotePacket and myLocalPacket
                         self.myRemotePacket.setLocation(latitude: packet.latitude, longitude: packet.longitude)
                         
                         self.myLocalPacket.setLocation(latitude: localUser.location.latitude, longitude: localUser.location.longitude)
 
-// MARK: getEtaDistance()
-
-                        // get eta and distance. Returns immediately, closure returns later
-                        //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- self.fetchRemote() -- closure -- call: eta.getEtaDistance...")
-
-                        //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- self.fetchRemote() -- closure -- self.etaOriginal: \(String(describing: self.etaOriginal))")
-
                         self.etaAdapter.getEtaDistance(localPacket: self.myLocalPacket, remotePacket: self.myRemotePacket, mapView: mapView, display: display,  etaOriginal: self.etaOriginal!)
-
-// MARK:-
-
+                        
                         // UI updates on main thread
                         DispatchQueue.main.async { [weak self ] in
                             
                             if self != nil {
-                               
-                                // refreshMapView here vs. in eta.getEtaDistance()
-                                //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- self.fetchRemote() -- call mapUpdate.refreshMapView()")
                                 
                                 mapUpdate.addPin(packet: (self?.myRemotePacket)!, mapView: mapView, remove: false)
                                 
@@ -236,33 +165,25 @@ class PollManager {
                                 
                             }
                         }
+                        
                     } // end of location compare
                 } // end of self.fetchRemote()
    
-                // MARK:- end of post-comments
 
-                // ETA == has-arrived, break out of while-loop
+                // ETA == has-arrived, cancel timer
                 if self.myEta != nil {
                 
                     if (Double(self.myEta!) <= self.hasArrivedEta) || !PollManager.enabledPolling {
-                        //print("\n===========================================================")
-                        //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- STOPPING POLLREMOTE")
-                        //print("===============================================================\n")
-                        //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- self.myEta: \(self.myEta!) --  self.hasArrivedEta: \(self.hasArrivedEta)")
                     
                         self.timer?.cancel()
+
+                        UploadingManager.enabledUploading = false
                     }
                 }
-    
-                //print("\n===========================================================")
-                //print("-- PollManager -- pollRemote() -- DispatchSourceTimer -- end of timer?.setEventHandler(handler")
-                //print("===============================================================\n")
     
         }) //  end of timer?.setEventHandler(handler)
         
         self.timer?.resume()
-
-        // MARK:- end of DispatchQueue.global(qos: .background).async
 
     }
 
