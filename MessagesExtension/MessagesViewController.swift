@@ -269,11 +269,21 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         self.locationManager.stopUpdatingLocation()
         mapUpdate.displayUpdate(display: display)
         mapUpdate.addPin(packet: localUser.location, mapView: mapView, remove: true)
-         
-        //print("-- mobilitySumulation -- starting mobility simulation")
-         
-        mobilitySimulator.startMobilitySimulator(user: localUser, display: display, mapView: mapView, uploadActivityIndicator: uploadActivity)
 
+        // simulate remote location if polling
+        if PollManager.enabledPolling {
+
+            mobilitySimulator.stopMobilitySimulator()
+
+            // remote needs to get back to the original local's location
+            remoteUser.location = localUser.location
+
+            mobilitySimulator.startMobilitySimulator(user: remoteUser, display: display, mapView: mapView, uploadActivityIndicator: uploadActivity, remote: true)
+
+        } else {
+
+            mobilitySimulator.startMobilitySimulator(user: localUser, display: display, mapView: mapView, uploadActivityIndicator: uploadActivity, remote: false)
+        }
     }
 
     /**
@@ -362,14 +372,15 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                         self?.mapUpdate.displayUpdate(display: (self?.display)!, localPacket: (self?.localUser.location)!, remotePacket: packet)
                     }
                 }
-                
-                print("-- poll -- self.pollManager.fetchRemote() -- closure -- call: pollManager.pollRemote")
 
                 self.pollManager.pollRemote(localUser: self.localUser, remotePacket: self.remoteUser.location, mapView: self.mapView, display: self.display,  fetchActivity: self.fetchActivity)
                 
                 // enable in case stationary user moves during or after polling
-                self.locationManager.startUpdatingLocation()
-                self.uploading.enableUploading()
+                //but not if simulator is running
+                if !MobilitySimulator.mobilitySimulatorEnabled {
+                    self.locationManager.startUpdatingLocation()
+                    self.uploading.enableUploading()
+                }
             }
             
             // should polling be enabled here or outside self.pollManager.fetchRemote()?
