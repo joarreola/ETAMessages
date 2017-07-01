@@ -3,6 +3,9 @@ Class project
 
 - How to test (recommend to do in extended View: ^)
 
+	Launch in Xcode on device iPhone 5s. Set location to Apple:
+	Debug->Location->Apple
+
 	Mobile Mode:
 
 		- Tap Enable button:
@@ -116,6 +119,7 @@ Class project
     - Remove print lines.
     - Don't update pin, display, or mapView in pollRemote(). Do instead in
       getEtaDistance().
+    - Undo previous. Do UI updates in pollRemote().
     
   - MapUpdate.swift
     Manage mapView updates for remote-user pin, map centering and spanning, and
@@ -176,6 +180,8 @@ Class project
     - Don't do pin, display or map updates in getEtaDistance(). Remove print
       lines.
     - Update pin, mapView, and display in getEtaDistance().
+    - Getting blue screen at end of simulation, undo preview UI updating
+      in getEtaDistance().
 
 
   - GPSsLocation.swift
@@ -234,6 +240,7 @@ Class project
       simulation is for the remote location. Also update user's location
       struct fields. Set mobilitySimulatorEnabled to false when stopping
       simulation.
+    - Condition all UI updates on !PollManager.enabledPolling.
 
 
   - MessagesViewController.swift
@@ -292,6 +299,8 @@ Class project
     - Move etaProgress and progressLabel to EtaAdapter Container View controller.
     - Update mobilitySimulator.stopMobilitySimulator() call to coordinate
       with Polling. And vice-versa.
+    - Create class property locationManagerEnabled to disable locationManager
+      globally.
       
  
  
