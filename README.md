@@ -53,6 +53,7 @@ Class project
     
     - Start and Stop upload activity indicator in upload().
     - Add fetchActivity support.
+    - Remove print lines. 
     
   - Uploading.swift - New
   	Manage mobile mode behavior, with localUser and single packet
@@ -160,6 +161,8 @@ Class project
       objects to EtaAdapter. Create struct ETAIndicator to hold etaProgress and
       progressLabel for use in getEtaDistance(). Update getEtaDistance() signature to
       remove etaProgress and progressLabel. Add prototype sound-playing code.
+    - Don't do pin, display or map updates in getEtaDistance(). Remove print
+      lines.
 
 
   - GPSsLocation.swift
@@ -186,6 +189,8 @@ Class project
     - Get instances of MapUpdate and EtaAdapter. Don't pass EtaAdapter to
       checkRemote(), getEtaDistance(), nor handleCheckRemoteResult().
     - Add fetchActivity support.
+    - Remove EtaAdapter references. Remove print and commented-out lines.
+      Don't do UI updates if polling enabled.
  
  
   - ETANotifications.swift - New File
