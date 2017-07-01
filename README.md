@@ -13,21 +13,29 @@ Class project
 		  Blue dot will move to new location, mapView will be centered.
 
 
-	Stationary Mode:
+	Stationary Mode with Mobility Simulator:
 
-		- Tap Poll button again:
-		  Remote user is noted with a pointAnnotation (red pin), local user
-		  noted with blue dot. eta and distance data is appended to the display.
-		  mapView is refreshed, centered between users, span'ed appropriately
-		  to cover most of mapView.
+		- Tap Poll button:
+		  Local and Remote coordinates are noted in the display.
+		  
+		- Tap the Simulate button:
+		  Remote user location is noted with a pointAnnotation (red pin)
+		  to the left of screen, local user noted with blue dot. eta and
+		  distance data is appended to the display. mapView is refreshed,
+		  centered between users, span'ed appropriately to cover most of
+		  mapView.
 
-		- Move local user closer to remote user (backwards but works to
-		  test eta notification trigger code) via Simulator:
-		  Debug -> Location -> CustomLocation. Changing the 3rd and 4th
-		  decimals to match remote coordinates is sufficient to trigger the
-		  ETA==0 condition (<= 20 sec):
-		  Local user blue dot moves to red pin. Polling stops. Display
-		  notes "Oscar has arrived"
+		- Remote user (red pin) will incrementally move closer to the
+		  blue dot. Remote longitude, eta, and distance will be updated
+		  in the display UILabel. A wide, red progress view will appear
+		  above the ToolBar along with a centered progressLabel.
+		  
+		  Both progressView and progressLabel will be updated as the red
+		  pin gets closer to the blue dot (decreasing). And will disappear
+		  when the pin and dot locations are equal. Fetch and Upload
+		  Activity stop.
+		  
+		- Tap Disable button to reset the app and the screen.
 		
 	Known Issues:
 		- Reloading the app via the txt-msgs app-store may result in
@@ -105,6 +113,9 @@ Class project
     - Add fetchActivity support. Move etaProgress and progressDisplay to
       getEtaDistance. Update hasArrivedEta to 60. Don't call etaNotification().
     - Remove references to etaProgress and progressLabel.
+    - Remove print lines.
+    - Don't update pin, display, or mapView in pollRemote(). Do instead in
+      getEtaDistance().
     
   - MapUpdate.swift
     Manage mapView updates for remote-user pin, map centering and spanning, and
@@ -125,6 +136,7 @@ Class project
     - Fix multiple pins issue.
     - Reference eta and distance as class properties of EtaAdapter.
     - Pass eta: Bool vs. EtaAdapter.
+    - Remove commented-out lines. Adjust display text tabs and spaces.
   
   - Location.switch
     Location coordinate structure.
@@ -163,6 +175,7 @@ Class project
       remove etaProgress and progressLabel. Add prototype sound-playing code.
     - Don't do pin, display or map updates in getEtaDistance(). Remove print
       lines.
+    - Update pin, mapView, and display in getEtaDistance().
 
 
   - GPSsLocation.swift
@@ -217,6 +230,10 @@ Class project
     - Reduce step increments to 0.0005 when will jump over destination.
     - Update location record every 2 sec (vs. 1).
     - Reduce step increments to 0.00025 when will jump over destination.
+    - Add a remote paramater to startMobilitySimulator() to note the
+      simulation is for the remote location. Also update user's location
+      struct fields. Set mobilitySimulatorEnabled to false when stopping
+      simulation.
 
 
   - MessagesViewController.swift
@@ -273,7 +290,8 @@ Class project
     - Add fetchActivity support. Reset vars when in poll(), simulate() and
       disable().
     - Move etaProgress and progressLabel to EtaAdapter Container View controller.
-      
+    - Update mobilitySimulator.stopMobilitySimulator() call to coordinate
+      with Polling. And vice-versa.
       
  
  
