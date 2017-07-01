@@ -72,7 +72,7 @@ class MobilitySimulator {
                     // UI updates on main thread
                     DispatchQueue.main.async { [weak self ] in
                         
-                        if self != nil {
+                        if self != nil && !PollManager.enabledPolling {
                             
                             self?.mapUpdate.displayUpdate(display: display, packet: (self?.tempUser.location)!, string: "upload to iCloud failed")
                             
@@ -118,7 +118,7 @@ class MobilitySimulator {
 
                         DispatchQueue.main.async { [weak self ] in
 
-                            if self != nil {
+                            if self != nil && !PollManager.enabledPolling {
 
                                 self?.mapUpdate.displayUpdate(display: display, packet: (self?.tempUser.location)!, string: "Simulation Completed")
                             }
