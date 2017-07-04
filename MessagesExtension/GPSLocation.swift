@@ -60,7 +60,7 @@ class GPSLocationAdapter {
         let mapUpdate = MapUpdate()
 
         //pollRemoteUser.fetchRemote(fetchActivity: fetchActivity) {
-        pollRemoteUser.fetchRemote() {
+        pollRemoteUser.fetchRemote(userUUID: remoteUser.name) {
             
             (packet: Location) in
             
