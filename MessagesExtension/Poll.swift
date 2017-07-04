@@ -29,7 +29,7 @@ class PollManager {
     public var myEta: TimeInterval?
     public var myDistance: Double?
     public var etaOriginal: TimeInterval?
-    private let cloudRemote: CloudAdapter
+    public let cloudRemote: CloudAdapter
     static  var enabledPolling: Bool = false
     private let hasArrivedEta: Double = 60.0
     private let localNotification: ETANotifications
@@ -59,9 +59,9 @@ class PollManager {
     /// - Parameters:
     ///     - whenDone: a closure that returns a Location parameter
 
-    func fetchRemote(whenDone: @escaping (Location) -> ()) -> () {
+    func fetchRemote(userUUID: String, whenDone: @escaping (Location) -> ()) -> () {
 
-        cloudRemote.fetchRecord() {
+        cloudRemote.fetchRecord(userUUID: userUUID) {
             
             (packet: Location) in
 
@@ -89,7 +89,7 @@ class PollManager {
     ///     - eta: EtaAdapter instance with eta and distance properties
     ///     - display: UILabel instance display
     
-    func pollRemote(localUser: Users, remotePacket: Location, mapView: MKMapView, display: UILabel) {
+    func pollRemote(localUser: Users, remoteUser: Users, mapView: MKMapView, display: UILabel) {
 
 
         // request notification authorization
@@ -98,7 +98,7 @@ class PollManager {
         // initialize to current local and remote postions
         self.myLocalPacket = Location(userName: localUser.name, location: localUser.location)
 
-        self.myRemotePacket = Location(userName: remoteUserName, location: remotePacket)
+        self.myRemotePacket = Location(userName: remoteUser.name, location: remoteUser.location)
 
         let mapUpdate = MapUpdate();
         
@@ -130,7 +130,7 @@ class PollManager {
                 }
                 */
 
-                self.fetchRemote() {
+            self.fetchRemote(userUUID: remoteUser.name) {
 
                     (packet: Location) in
                     
@@ -153,7 +153,7 @@ class PollManager {
                         self.myLocalPacket.setLocation(latitude: localUser.location.latitude, longitude: localUser.location.longitude)
 
                         self.etaAdapter.getEtaDistance(localPacket: self.myLocalPacket, remotePacket: self.myRemotePacket, mapView: mapView, display: display,  etaOriginal: self.etaOriginal!)
-///* do in getEtaDistance()
+
                         // UI updates on main thread
                         DispatchQueue.main.async { [weak self ] in
                             
@@ -166,7 +166,7 @@ class PollManager {
                                 mapUpdate.refreshMapView(localPacket: (self?.myLocalPacket)!, remotePacket: (self?.myRemotePacket)!, mapView: mapView, eta: true)
                             }
                         }
-//*/
+
                     } // end of location compare
                 } // end of self.fetchRemote()
    
