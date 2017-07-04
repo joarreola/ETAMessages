@@ -30,7 +30,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var display: UILabel!
 
-    // hardcoding for now
+    // hardcoding for now. But no need to update per device.
     let localUser  = Users(name: "Oscar-iphone")
     let remoteUser = Users(name: "Oscar-ipad")
     static var UserName = "Oscar-iphone"
@@ -244,11 +244,11 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                                   didFailWithError error: NSError!) {
         
         print("-- locationManager -- didFailWithError: \(error.description)")
-        //let alert: UIAlertControllerStyle = UIAlertControllerStyle.alert
-        //let errorAlert = UIAlertController(title: "Error",
-        //                                   message: "Failed to Get Your Location",
-        //                                   preferredStyle: alert)
-        //errorAlert.show(UIViewController(), sender: manager)
+        let alert: UIAlertControllerStyle = UIAlertControllerStyle.alert
+        let errorAlert = UIAlertController(title: "Error",
+                                           message: "Failed to Get Your Location",
+                                           preferredStyle: alert)
+        errorAlert.show(UIViewController(), sender: manager)
         
     }
 
