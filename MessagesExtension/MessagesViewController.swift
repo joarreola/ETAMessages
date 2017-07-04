@@ -48,7 +48,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     
     var locPacketUpdated: Bool = false
     static var locationManagerEnabled: Bool = true
-    static var localUserName = "Oscar-iphone"
+    var localUUID: UUID = UUID(uuidString: "49B5E9E4-967F-4CD4-BCD7-B3439715EE58")!
+    var remoteUUID: UUID = UUID(uuidString: "49B5E9E4-967F-4CD4-BCD7-B3439715EE58")!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,14 +80,49 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     
     // MARK: - Conversation Handling
     
+    
     override func willBecomeActive(with conversation: MSConversation) {
         // Called when the extension is about to move from the inactive to active state.
         // This will happen when the extension is about to present UI.
         
         // Use this method to configure the extension and restore previously stored state.
         //print("-- willBecomeActive ------------------------------------------------")
+        
+        print("-- willBecomeActive -- local UUID: \(conversation.localParticipantIdentifier)")
+        self.localUUID = conversation.localParticipantIdentifier
+        
+        // refresh mapView
+        self.mapUpdate.refreshMapView(packet: self.localUser.location, mapView: self.mapView)
 
+        let controller: UUIDViewController = UUIDViewController()
+    
+        if presentationStyle == .expanded {
+
+            // recieve side of message in URL
+            guard let message = conversation.selectedMessage else {
+                fatalError("Message not found")
+            }
+            
+            let components = URLComponents(string: (message.url?.absoluteString)!)
+            let queryItem = components?.queryItems?[0]
+            
+            print("-- willBecomeActive -- queryItem?.value: \(String(describing: queryItem?.value!))")
+            
+            controller.messageInUrl = (queryItem?.value)!
+            remoteUUID = UUID(uuidString: (queryItem?.value)!)!
+
+            print("-- willBecomeActive -- remoteUUID: \(remoteUUID)")
+
+            controller.viewDidLoad()
+            
+            // start polling if user taps on image
+            print("-- willBecomeActive -- call:self.startPolling()")
+
+            self.startPolling()
+        }
     }
+    
+    
     
     override func didResignActive(with conversation: MSConversation) {
         // Called when the extension is about to move from the active to inactive state.
@@ -96,7 +132,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         // Use this method to release shared resources, save user data, invalidate timers,
         // and store enough state information to restore your extension to its current state
         // in case it is terminated later.
-        //print("-- didResignActive -------------------------------------------------")
+        print("-- didResignActive -------------------------------------------------")
     }
    
     override func didReceive(_ message: MSMessage, conversation: MSConversation) {
@@ -104,26 +140,26 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         // extension on a remote device.
         
         // Use this method to trigger UI updates in response to the message.
-        //print("-- didReceive ------------------------------------------------------")
+        print("-- didReceive ------------------------------------------------------")
     }
     
     override func didStartSending(_ message: MSMessage, conversation: MSConversation) {
         // Called when the user taps the send button.
-        //print("-- didStartSending -------------------------------------------------")
+        print("-- didStartSending -------------------------------------------------")
     }
     
     override func didCancelSending(_ message: MSMessage, conversation: MSConversation) {
         // Called when the user deletes the message without sending it.
     
         // Use this to clean up state related to the deleted message.
-        //print("-- didCancelSending ------------------------------------------------")
+        print("-- didCancelSending ------------------------------------------------")
     }
     
     override func willTransition(to presentationStyle: MSMessagesAppPresentationStyle) {
         // Called before the extension transitions to a new presentation style.
     
         // Use this method to prepare for the change in presentation style.
-        //print("-- willTransition --------------------------------------------------")
+        print("-- willTransition to: \(presentationStyle) -------------------------")
         
     }
     
@@ -131,7 +167,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         // Called after the extension transitions to a new presentation style.
     
         // Use this method to finalize any behaviors associated with the change in presentation style.
-        //print("-- didTransition ---------------------------------------------------")
+        print("-- didTransition to: \(presentationStyle) --------------------------")
     }
     
 
@@ -177,7 +213,7 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         }
         
         // A new location: update User's Location object
-        //print("-- locationManager -- location: '\(location)'")
+        print("-- locationManager -- location: '\(location)'")
             
         //gpsLocation.updateUserCoordinates(localUser: localUser, packet: lmPacket)
         self.localUser.location = lmPacket
@@ -226,9 +262,16 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         
         // reenable in case disabled
         self.locationManager.startUpdatingLocation()
+        
+        // UUID
+        addImage()
+
+        // reset localUser name
+        localUser.name = String(describing: self.localUUID)
+        localUser.location.userName = String(describing: self.localUUID)
 
         // Upload localUserPacket to Cloud repository
-        
+
         self.uploading.uploadLocation(user: localUser) {
             
             (result) in
@@ -265,9 +308,44 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         self.mapUpdate.refreshMapView(packet: self.localUser.location, mapView: self.mapView)
 
     }
+    
+    func addImage() {
+        
+        print("-- addImage -- self.localUUID: \(self.localUUID)")
+
+        let components = NSURLComponents()
+        
+        // send side of message in URL
+        let queryItem = URLQueryItem(name: "uuid", value: String(describing: self.localUUID))
+        
+        components.queryItems = [queryItem]
+        
+        let layout = MSMessageTemplateLayout()
+        layout.image = UIImage(named: "applePark.png")
+        layout.caption = "UUID"
+        
+        let message = MSMessage()
+        message.url = components.url!
+        message.layout = layout
+        
+        self.activeConversation?.insert(message, completionHandler: { (error: Error?) in
+
+            if error != nil {
+                print("-- addImage -- self.activeConversation?.insert() -- error: \(String(describing: error))")
+            }
+        })
+        
+        UUIDViewController.uuidIndicator.URLMessage?.text = "LOCAL\n" + "\(String(describing: queryItem.value!))"
+    }
 
     @IBAction func mobilitySumulation(_ sender: UIBarButtonItem) {
         
+        // reset localUser and remoteUser names to the respective UUID strings
+        localUser.name = String(describing: self.localUUID)
+        localUser.location.userName = String(describing: self.localUUID)
+        remoteUser.name = String(describing: self.remoteUUID)
+        remoteUser.location.userName = String(describing: self.remoteUUID)
+
         // make sure CLLocation doesn't create UI-access contention
         self.locationManager.stopUpdatingLocation()
         MessagesViewController.locationManagerEnabled = false
@@ -300,9 +378,14 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     @IBAction func poll(_ sender: UIBarButtonItem) {
         // check for remoteUser record
 
+        self.startPolling()
+    }
+        
+    func startPolling() {
+        
         // display localUserPacket
         self.mapUpdate.displayUpdate(display: self.display, packet: self.localUser.location)
-
+        
         // initialize vars for proper restart with a pol retap
         pollManager.disablePolling()
         EtaAdapter.eta = nil
@@ -311,8 +394,15 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         pollManager.etaOriginal = 0.0
         pollManager.myEta = 0.0
         pollManager.myDistance = 0.0
+        
+        
+        // reset localUser and remoteUser names to the respective UUID strings
+        localUser.name = String(describing: self.localUUID)
+        localUser.location.userName = String(describing: self.localUUID)
+        remoteUser.name = String(describing: self.remoteUUID)
+        remoteUser.location.userName = String(describing: self.remoteUUID)
 
-        self.pollManager.fetchRemote() {
+        self.pollManager.fetchRemote(userUUID: String(describing: self.remoteUUID)) {
 
             (packet: Location) in
             
@@ -348,7 +438,8 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
                     }
                 }
 
-                self.pollManager.pollRemote(localUser: self.localUser, remotePacket: self.remoteUser.location, mapView: self.mapView, display: self.display)
+                self.pollManager.pollRemote(localUser: self.localUser, remoteUser: self.remoteUser, mapView: self.mapView, display: self.display)
+                
                 
                 // enable in case stationary user moves during or after polling
                 //but not if simulator is running
@@ -371,6 +462,16 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
     @IBAction func disable(_ sender: UIBarButtonItem) {
         // Remove location record from iCloud repository.
 
+        // reset localUser and remoteUser names to the respective UUID strings
+        localUser.name = String(describing: self.localUUID)
+        localUser.location.userName = String(describing: self.localUUID)
+        remoteUser.name = String(describing: self.remoteUUID)
+        remoteUser.location.userName = String(describing: self.remoteUUID)
+        
+        // remove cloud record
+        pollManager.cloudRemote.deleteRecord(userUUID: localUser.name)
+        pollManager.cloudRemote.deleteRecord(userUUID: remoteUser.name)
+        
         // clear display
         mapUpdate.displayUpdate(display: display)
         
@@ -390,6 +491,11 @@ class MessagesViewController: MSMessagesAppViewController, MKMapViewDelegate, CL
         pollManager.etaOriginal = 0.0
         pollManager.myEta = 0.0
         pollManager.myDistance = 0.0
+        
+        // cleanup display
+        self.mapUpdate.refreshMapView(packet: localUser.location , mapView: mapView)
+        
+        mapUpdate.displayUpdate(display: display, string: "locationManager...")
         
     }
 
