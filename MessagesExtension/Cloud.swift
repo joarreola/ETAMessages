@@ -49,7 +49,7 @@ class CloudAdapter: UIViewController {
     /// - Parameters:
     ///     - whenDone: a closure that takes in a Location parameter
 
-    func fetchRecord(whenDone: @escaping (Location) -> ()) -> () {
+    func fetchRecord(userUUID: String, whenDone: @escaping (Location) -> ()) -> () {
 
         // UI updates on main thread
         DispatchQueue.main.async { [weak self ] in
@@ -61,7 +61,7 @@ class CloudAdapter: UIViewController {
         }
 
         // do here instead
-        let locationRecordID: CKRecordID = CKRecordID(recordName: MessagesViewController.UserName)
+        let locationRecordID: CKRecordID = CKRecordID(recordName: userUUID)
         let myContainer: CKContainer = CKContainer.default()
         let publicDatabase: CKDatabase = myContainer.publicCloudDatabase
     
@@ -108,10 +108,10 @@ class CloudAdapter: UIViewController {
 
     /// Delete location record from iCloud
 
-    func deleteRecord() {
+    func deleteRecord(userUUID: String) {
 
         // do here instead
-        let locationRecordID: CKRecordID = CKRecordID(recordName: MessagesViewController.UserName)
+        let locationRecordID: CKRecordID = CKRecordID(recordName: userUUID)
         let myContainer: CKContainer = CKContainer.default()
         let publicDatabase: CKDatabase = myContainer.publicCloudDatabase
 
@@ -145,7 +145,7 @@ class CloudAdapter: UIViewController {
         }
 
         // do here instead
-        let locationRecordID: CKRecordID = CKRecordID(recordName: MessagesViewController.UserName)
+        let locationRecordID: CKRecordID = CKRecordID(recordName: user.name)
         let locationRecord: CKRecord = CKRecord(recordType: "Location", recordID: locationRecordID)
         let myContainer: CKContainer = CKContainer.default()
         let publicDatabase: CKDatabase = myContainer.publicCloudDatabase
