@@ -67,6 +67,7 @@ Class project
     - Remove print lines. 
     - Convert CloudAdapter to a Container View. Move in fetch and upload
       activity and labels.
+    - Take a userUUID: String parameter in fetchRecord() and deleteRecord().
     
   - Uploading.swift - New
   	Manage mobile mode behavior, with localUser and single packet
@@ -78,6 +79,7 @@ Class project
     
     - Take and Pass the upload Activity indicator for uploadLocation()
       calls.
+    - Pass in a userUUID: String argument to cloud.deleteRecord().
   
   - Users.switf - New
   	Knows user name and location info
@@ -122,6 +124,8 @@ Class project
     - Don't update pin, display, or mapView in pollRemote(). Do instead in
       getEtaDistance().
     - Undo previous. Do UI updates in pollRemote().
+    - Take in a userUUID: String parameter in fetchRemote() and pollRemote().
+      Pass in to cloudRemote.fetchRecord().
     
   - MapUpdate.swift
     Manage mapView updates for remote-user pin, map centering and spanning, and
@@ -212,6 +216,7 @@ Class project
     - Add fetchActivity support.
     - Remove EtaAdapter references. Remove print and commented-out lines.
       Don't do UI updates if polling enabled.
+    - Pass in a userUUID: String argument to pollRemoteUser.fetchRemote().
  
  
   - ETANotifications.swift - New File
@@ -229,7 +234,7 @@ Class project
     message. Instantiated in PollManager.etaNotification() when ETA == 0
     (or close enough).
     
-  - MobilitySimulator.swift - New file.
+  - MobilitySimulator.swift
     Simulate iPhone device mobility by updating iCloud record directly.
     
     - Reduce step increments to 0.0025 when will jump over destination.
@@ -244,6 +249,11 @@ Class project
       simulation.
     - Condition all UI updates on !PollManager.enabledPolling.
 
+
+  - UUIDViewController.swift - New file.
+    A Container View Controller containing the URLMessage UILabel.
+    Displayed when user taps on the send image. The Remote user's
+    UUID will be noted in the URLMessage label.
 
   - MessagesViewController.swift
     Manages the UI implemented in IBACtion functions enable() and poll().
@@ -303,6 +313,13 @@ Class project
       with Polling. And vice-versa.
     - Create class property locationManagerEnabled to disable locationManager
       globally.
+    - Create localUUID and remoteUUID properties. Extract the remote user's
+      UUID from the inserted-image's URLComponent in the willBecomeActive()
+      override. Start polling if local user taps on the inserted image. Compose
+      and Insert the UUID image in addImage(), which is called in enable().
+      Reset local and remote user names to UUID strings in each @IBAction func.
+      Break out most of poll() code to startPolling(). Refresh mapview in
+      disable().
       
  
  
