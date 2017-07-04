@@ -89,7 +89,7 @@ class UploadingManager {
     func disableUploading() {
         
         // remove record
-        self.cloud.deleteRecord()
+        //self.cloud.deleteRecord(userUUID: <#String#>)
 
         // this allows for uploading of coordinates on LocalUser location changes
         UploadingManager.enabledUploading = false
